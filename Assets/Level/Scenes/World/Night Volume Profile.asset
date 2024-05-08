@@ -108,17 +108,17 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 2
   exposure:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: -1.6
   multiplier:
     m_OverrideState: 1
     m_Value: 1
   upperHemisphereLuxValue:
     m_OverrideState: 1
-    m_Value: 0.031915013
+    m_Value: 0.055034183
   upperHemisphereLuxColor:
     m_OverrideState: 1
-    m_Value: {x: 0.2040205, y: 0.31952956, z: 0.5}
+    m_Value: {x: 0.0724197, y: 0.23439252, z: 0.5}
   desiredLuxValue:
     m_OverrideState: 0
     m_Value: 20000
@@ -133,7 +133,7 @@ MonoBehaviour:
     m_Value: 0
   hdriSky:
     m_OverrideState: 1
-    m_Value: {fileID: 8900000, guid: 5a842ee509f3f3d4d8f7ee2c8b05612d, type: 3}
+    m_Value: {fileID: 8900000, guid: 30f8f570631b5d14f81bdd5e7f5d29a0, type: 3}
   distortionMode:
     m_OverrideState: 0
     m_Value: 0
@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: Global Volume Profile
+  m_Name: Night Volume Profile
   m_EditorClassIdentifier: 
   components:
   - {fileID: -4223303945256657470}
