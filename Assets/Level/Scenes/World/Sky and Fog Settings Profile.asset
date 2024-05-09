@@ -29,7 +29,7 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   enabled:
     m_OverrideState: 1
     m_Value: 1
@@ -40,11 +40,11 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   tint:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   maxFogDistance:
     m_OverrideState: 1
-    m_Value: 70.4
+    m_Value: 30
   mipFogMaxMip:
     m_OverrideState: 0
     m_Value: 0.5
@@ -56,28 +56,28 @@ MonoBehaviour:
     m_Value: 1000
   baseHeight:
     m_OverrideState: 1
-    m_Value: 5.1
+    m_Value: 0
   maximumHeight:
     m_OverrideState: 1
-    m_Value: 87.38
+    m_Value: 10
   meanFreePath:
     m_OverrideState: 1
-    m_Value: 105.66
+    m_Value: 160
   enableVolumetricFog:
     m_OverrideState: 1
     m_Value: 1
   albedo:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   globalLightProbeDimmer:
     m_OverrideState: 1
-    m_Value: 0.052
+    m_Value: 0
   depthExtent:
     m_OverrideState: 1
-    m_Value: 63.4
+    m_Value: 15
   denoisingMode:
     m_OverrideState: 1
-    m_Value: 3
+    m_Value: 1
   anisotropy:
     m_OverrideState: 0
     m_Value: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
     m_Value: 64
   m_VolumetricFogBudget:
     m_OverrideState: 1
-    m_Value: 0.75
+    m_Value: 0.5
   m_ResolutionDepthRatio:
     m_OverrideState: 1
     m_Value: 0.5
