@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 167.79315, g: 125.17395, b: 133.34717, a: 1}
+  m_IndirectSpecularColor: {r: 166.07343, g: 124.71344, b: 135.82788, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1392,7 +1392,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &79565427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12434,7 +12434,6 @@ MonoBehaviour:
   dayLength: 720
   sun: {fileID: 1651955862}
   moon: {fileID: 1649480091}
-  volume: {fileID: 43222317}
   rain: {fileID: 570676937}
   rainDaySeed: 0
   testX: 0
