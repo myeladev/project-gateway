@@ -21,8 +21,6 @@ namespace ProjectGateway
         [SerializeField]
         private Light moon;
         [SerializeField]
-        private Volume volume;
-        [SerializeField]
         private ParticleSystem rain;
 
         private const float MaxRainParticles = 1000f;
@@ -50,7 +48,6 @@ namespace ProjectGateway
             precipitation = Mathf.Clamp(precipitationNoise, 0, 1);
             
             UpdateTime();
-            UpdateSky();
             UpdateRain();
         }
         
@@ -70,14 +67,6 @@ namespace ProjectGateway
             moon.transform.rotation = Quaternion.Euler(moonRotation, 90f, 0);
         }
 
-        private Vector3 skyRotation;
-        void UpdateSky()
-        {
-            if (volume.profile.TryGet(out PhysicallyBasedSky sky))
-            {
-                sky.spaceRotation.value = new Vector3(0, skyRotation.y += Time.deltaTime * 0.2f, 0);
-            }
-        }
 
         [SerializeField]
         private float lerpedPrecipitation;
