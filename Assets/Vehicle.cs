@@ -30,6 +30,7 @@ namespace ProjectGateway
         }
 
         public ControlMode control;
+        public bool hasControl;
 
         public float maxAcceleration = 30.0f;
         public float brakeAcceleration = 50.0f;
@@ -85,8 +86,8 @@ namespace ProjectGateway
         {
             if(control == ControlMode.Keyboard)
             {
-                moveInput = Input.GetAxis("Vertical");
-                steerInput = Input.GetAxis("Horizontal");
+                moveInput = hasControl ? Input.GetAxis("Vertical") : 0f;
+                steerInput = hasControl ? Input.GetAxis("Horizontal") : 0f;
             }
         }
 
@@ -112,7 +113,7 @@ namespace ProjectGateway
 
         void Brake()
         {
-            var handbrake = Input.GetKey(KeyCode.Space);
+            var handbrake = hasControl && Input.GetKey(KeyCode.Space);
             if (handbrake || moveInput == 0)
             {
                 foreach (var wheel in wheels)
