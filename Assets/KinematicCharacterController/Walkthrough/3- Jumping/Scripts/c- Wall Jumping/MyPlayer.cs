@@ -1,23 +1,30 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
-using KinematicCharacterController;
 using KinematicCharacterController.Examples;
 
 namespace ProjectGateway
 {
     public class MyPlayer : MonoBehaviour
     {
-        public ExampleCharacterCamera OrbitCamera;
+        public CharacterCamera OrbitCamera;
+        public CinemachineVirtualCamera vehicleCamera;
         public Transform CameraFollowPoint;
         public MyCharacterController Character;
 
+        private Vehicle drivingVehicle;
+        
         private const string MouseXInput = "Mouse X";
         private const string MouseYInput = "Mouse Y";
         private const string MouseScrollInput = "Mouse ScrollWheel";
         private const string HorizontalInput = "Horizontal";
         private const string VerticalInput = "Vertical";
+
+        public static MyPlayer instance;
+        private void Awake()
+        {
+            instance = this;
+        }
 
         private void Start()
         {
@@ -36,6 +43,11 @@ namespace ProjectGateway
             if (Input.GetMouseButtonDown(0))
             {
                 Cursor.lockState = CursorLockMode.Locked;
+            }
+
+            if (drivingVehicle is not null && Input.GetKeyDown(KeyCode.Q))
+            {
+                drivingVehicle.Exit();
             }
 
             HandleCharacterInput();
@@ -67,12 +79,6 @@ namespace ProjectGateway
 
             // Apply inputs to the camera
             OrbitCamera.UpdateWithInput(Time.deltaTime, scrollInput, lookInputVector);
-
-            // Handle toggling zoom level
-            if (Input.GetMouseButtonDown(1))
-            {
-                OrbitCamera.TargetDistance = (OrbitCamera.TargetDistance == 0f) ? OrbitCamera.DefaultDistance : 0f;
-            }
         }
 
         private void HandleCharacterInput()
@@ -88,6 +94,16 @@ namespace ProjectGateway
 
             // Apply inputs to character
             Character.SetInputs(ref characterInputs);
+        }
+
+        public void SetVehicle(Vehicle newVehicle)
+        {
+            drivingVehicle = newVehicle;
+
+            vehicleCamera.gameObject.SetActive(drivingVehicle is not null);
+            vehicleCamera.LookAt = drivingVehicle?.transform;
+            vehicleCamera.Follow = drivingVehicle?.transform;
+            Character.gameObject.SetActive(drivingVehicle is null);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace ProjectGateway
             {
                 if (Input.GetMouseButtonDown(0)) interactable.Interact(InteractType.Grab);
                 
-                if(Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use);
+                if (Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use);
             }
         }
 

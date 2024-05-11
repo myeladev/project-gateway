@@ -9,7 +9,7 @@ namespace KinematicCharacterController.Examples
     public class ExamplePlayer : MonoBehaviour
     {
         public ExampleCharacterController Character;
-        public ExampleCharacterCamera CharacterCamera;
+        public CharacterCamera CharacterCamera;
 
         private const string MouseXInput = "Mouse X";
         private const string MouseYInput = "Mouse Y";

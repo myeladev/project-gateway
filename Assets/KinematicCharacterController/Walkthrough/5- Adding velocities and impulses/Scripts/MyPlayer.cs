@@ -8,7 +8,7 @@ namespace KinematicCharacterController.Walkthrough.AddingImpulses
 {
     public class MyPlayer : MonoBehaviour
     {
-        public ExampleCharacterCamera OrbitCamera;
+        public CharacterCamera OrbitCamera;
         public Transform CameraFollowPoint;
         public MyCharacterController Character;
 

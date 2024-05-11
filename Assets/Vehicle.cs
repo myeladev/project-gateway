@@ -40,20 +40,21 @@ namespace ProjectGateway
         public Vector3 centerOfMass;
 
         public List<Wheel> wheels;
-
+        public List<ExitLocation> exitLocations;
+        
         private float moveInput;
         private float steerInput;
 
         private Rigidbody carRb;
 
-        //private CarLights carLights;
+        private CarLights carLights;
 
         private void Start()
         {
             carRb = GetComponent<Rigidbody>();
             carRb.centerOfMass = centerOfMass;
 
-            //carLights = GetComponent<CarLights>();
+            carLights = GetComponent<CarLights>();
         }
 
         private void Update()
@@ -120,8 +121,7 @@ namespace ProjectGateway
                     wheel.wheelCollider.brakeTorque = (handbrake ? 1000 : 300) * brakeAcceleration * Time.deltaTime;
                 }
 
-                //carLights.isBackLightOn = true;
-                //carLights.OperateBackLights();
+                carLights.OperateBackLights(true);
             }
             else
             {
@@ -129,9 +129,8 @@ namespace ProjectGateway
                 {
                     wheel.wheelCollider.brakeTorque = 0;
                 }
-
-                //carLights.isBackLightOn = false;
-                //carLights.OperateBackLights();
+                
+                carLights.OperateBackLights(false);
             }
         }
 
@@ -167,6 +166,7 @@ namespace ProjectGateway
         public new string InteractText => "Drive";
         public new void Interact(InteractType interactType)
         {
+            base.Interact(interactType);
             switch (interactType)
             {
                 case InteractType.Use:
@@ -178,6 +178,29 @@ namespace ProjectGateway
         private void Drive()
         {
             hasControl = true;
+            MyPlayer.instance.SetVehicle(this);
+            carLights.OperateFrontLights(true);
+        }
+        
+        public void Exit()
+        {
+            var exitLocation = GetFreeExitLocation();
+
+            if (exitLocation is null) return;
+            hasControl = false;
+            MyPlayer.instance.SetVehicle(null);
+            carLights.OperateFrontLights(false);
+            MyPlayer.instance.Character.Motor.SetPosition(exitLocation.Value);
+        }
+
+        private Vector3? GetFreeExitLocation()
+        {
+            foreach (var exitLocation in exitLocations)
+            {
+                if (exitLocation.IsFree) return exitLocation.transform.position;
+            }
+
+            return null;
         }
     }
 }
