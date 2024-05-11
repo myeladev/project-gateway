@@ -59,7 +59,7 @@ namespace ProjectGateway
         {
             var alpha = timeOfDay / 24f;
             var sunRotation = Mathf.Lerp(-90, 270, alpha);
-            var moonRotation = sunRotation - 180;
+            var moonRotation = sunRotation - 170;
 
             sun.transform.rotation = Quaternion.Euler(sunRotation, 90f, 0);
             moon.transform.rotation = Quaternion.Euler(moonRotation, 90f, 0);

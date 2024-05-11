@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace KinematicCharacterController.Examples
 {
-    public class ExampleCharacterCamera : MonoBehaviour
+    public class CharacterCamera : MonoBehaviour
     {
         [Header("Framing")]
         public Camera Camera;
