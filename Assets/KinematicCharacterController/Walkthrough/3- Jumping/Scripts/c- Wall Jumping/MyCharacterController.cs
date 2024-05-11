@@ -4,7 +4,7 @@ using UnityEngine;
 using KinematicCharacterController;
 using System;
 
-namespace KinematicCharacterController.Walkthrough.WallJumping
+namespace ProjectGateway
 {
     public struct PlayerCharacterInputs
     {
@@ -18,6 +18,7 @@ namespace KinematicCharacterController.Walkthrough.WallJumping
     public class MyCharacterController : MonoBehaviour, ICharacterController
     {
         public KinematicCharacterMotor Motor;
+        public bool IsHoldingProp => _holdingProp is not null;
 
         [Header("Stable Movement")]
         public float MaxStableMoveSpeed = 10f;
@@ -54,6 +55,13 @@ namespace KinematicCharacterController.Walkthrough.WallJumping
         private bool _doubleJumpConsumed = false;
         private bool _canWallJump = false;
         private Vector3 _wallJumpNormal;
+        private Prop _holdingProp;
+        private Camera _camera;
+
+        private void Awake()
+        {
+            _camera = Camera.main;
+        }
 
         private void Start()
         {
@@ -61,6 +69,22 @@ namespace KinematicCharacterController.Walkthrough.WallJumping
             Motor.CharacterController = this;
         }
 
+        void Update()
+        {
+            if (_holdingProp is not null)
+            {
+                if (Input.GetMouseButtonUp(0))
+                {
+                    ReleaseProp(_holdingProp, false);
+                }
+                if (Input.GetMouseButtonUp(1))
+                {
+                    ReleaseProp(_holdingProp, true);
+                }
+            }
+            _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 2f));
+        }
+        
         /// <summary>
         /// This is called every frame by MyPlayer in order to tell the character what its inputs are
         /// </summary>
@@ -279,6 +303,20 @@ namespace KinematicCharacterController.Walkthrough.WallJumping
 
         public void OnDiscreteCollisionDetected(Collider hitCollider)
         {
+        }
+
+        public void GrabProp(Prop propToHold)
+        {
+            _holdingProp = propToHold;
+        }
+
+        public void ReleaseProp(Prop propToRelease, bool launch)
+        {
+            if (_holdingProp == propToRelease)
+            {
+                _holdingProp.Release(launch);
+                _holdingProp = null;
+            }
         }
     }
 }

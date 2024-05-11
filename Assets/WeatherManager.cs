@@ -1,7 +1,5 @@
 using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.HighDefinition;
 
 namespace ProjectGateway
 {
@@ -23,7 +21,7 @@ namespace ProjectGateway
         [SerializeField]
         private ParticleSystem rain;
 
-        private const float MaxRainParticles = 1000f;
+        private const float MaxRainParticles = 3000f;
         [SerializeField]
         private float rainDaySeed = 0f;
 

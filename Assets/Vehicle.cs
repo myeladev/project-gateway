@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProjectGateway
 {
-    public class Vehicle : MonoBehaviour
-        {
+    public class Vehicle : Prop, IInteractable
+    {
         public enum ControlMode
         {
             Keyboard,
@@ -38,26 +37,26 @@ namespace ProjectGateway
         public float turnSensitivity = 1.0f;
         public float maxSteerAngle = 30.0f;
 
-        public Vector3 _centerOfMass;
+        public Vector3 centerOfMass;
 
         public List<Wheel> wheels;
 
-        float moveInput;
-        float steerInput;
+        private float moveInput;
+        private float steerInput;
 
         private Rigidbody carRb;
 
         //private CarLights carLights;
 
-        void Start()
+        private void Start()
         {
             carRb = GetComponent<Rigidbody>();
-            carRb.centerOfMass = _centerOfMass;
+            carRb.centerOfMass = centerOfMass;
 
             //carLights = GetComponent<CarLights>();
         }
 
-        void Update()
+        private void Update()
         {
             GetInputs();
             AnimateWheels();
@@ -65,7 +64,7 @@ namespace ProjectGateway
             Debug.DrawRay(transform.position, transform.forward);
         }
 
-        void LateUpdate()
+        private void LateUpdate()
         {
             Move();
             Steer();
@@ -82,16 +81,16 @@ namespace ProjectGateway
             steerInput = input;
         }
 
-        void GetInputs()
+        private void GetInputs()
         {
-            if(control == ControlMode.Keyboard)
+            if (control == ControlMode.Keyboard)
             {
                 moveInput = hasControl ? Input.GetAxis("Vertical") : 0f;
                 steerInput = hasControl ? Input.GetAxis("Horizontal") : 0f;
             }
         }
 
-        void Move()
+        private void Move()
         {
             foreach(var wheel in wheels)
             {
@@ -99,19 +98,19 @@ namespace ProjectGateway
             }
         }
 
-        void Steer()
+        private void Steer()
         {
             foreach(var wheel in wheels)
             {
                 if (wheel.axel == Axel.Front)
                 {
-                    var _steerAngle = steerInput * turnSensitivity * maxSteerAngle;
-                    wheel.wheelCollider.steerAngle = Mathf.Lerp(wheel.wheelCollider.steerAngle, _steerAngle, 0.6f);
+                    var steerAngle = steerInput * turnSensitivity * maxSteerAngle;
+                    wheel.wheelCollider.steerAngle = Mathf.Lerp(wheel.wheelCollider.steerAngle, steerAngle, 0.6f);
                 }
             }
         }
 
-        void Brake()
+        private void Brake()
         {
             var handbrake = hasControl && Input.GetKey(KeyCode.Space);
             if (handbrake || moveInput == 0)
@@ -136,25 +135,23 @@ namespace ProjectGateway
             }
         }
 
-        void AnimateWheels()
+        private void AnimateWheels()
         {
             foreach(var wheel in wheels)
             {
-                Quaternion rot;
-                Vector3 pos;
-                wheel.wheelCollider.GetWorldPose(out pos, out rot);
+                wheel.wheelCollider.GetWorldPose(out var pos, out var rot);
                 wheel.wheelModel.transform.position = pos;
                 wheel.wheelModel.transform.rotation = rot;
             }
         }
 
-        void WheelEffects()
+        private void WheelEffects()
         {
             foreach (var wheel in wheels)
             {
                 //var dirtParticleMainSettings = wheel.smokeParticle.main;
 
-                if (Input.GetKey(KeyCode.Space) && wheel.axel == Axel.Rear && wheel.wheelCollider.isGrounded == true && carRb.velocity.magnitude >= 10.0f)
+                if (Input.GetKey(KeyCode.Space) && wheel.axel == Axel.Rear && wheel.wheelCollider.isGrounded && carRb.velocity.magnitude >= 10.0f)
                 {
                     wheel.wheelEffectObj.GetComponentInChildren<TrailRenderer>().emitting = true;
                     wheel.smokeParticle.Emit(1);
@@ -164,6 +161,23 @@ namespace ProjectGateway
                     wheel.wheelEffectObj.GetComponentInChildren<TrailRenderer>().emitting = false;
                 }
             }
+        }
+
+        public new bool IsInteractable => true;
+        public new string InteractText => "Drive";
+        public new void Interact(InteractType interactType)
+        {
+            switch (interactType)
+            {
+                case InteractType.Use:
+                    Drive();
+                    break;
+            }
+        }
+
+        private void Drive()
+        {
+            hasControl = true;
         }
     }
 }
