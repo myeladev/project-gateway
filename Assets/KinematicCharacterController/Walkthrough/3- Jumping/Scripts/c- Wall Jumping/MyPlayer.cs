@@ -5,7 +5,7 @@ using UnityEngine;
 using KinematicCharacterController;
 using KinematicCharacterController.Examples;
 
-namespace KinematicCharacterController.Walkthrough.WallJumping
+namespace ProjectGateway
 {
     public class MyPlayer : MonoBehaviour
     {
@@ -52,7 +52,6 @@ namespace KinematicCharacterController.Walkthrough.WallJumping
             float mouseLookAxisUp = Input.GetAxisRaw(MouseYInput);
             float mouseLookAxisRight = Input.GetAxisRaw(MouseXInput);
             Vector3 lookInputVector = new Vector3(mouseLookAxisRight, mouseLookAxisUp, 0f);
-            Debug.Log(lookInputVector);
 
             // Prevent moving the camera while the cursor isn't locked
             if (Cursor.lockState != CursorLockMode.Locked)
