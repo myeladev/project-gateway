@@ -113,8 +113,9 @@ namespace ProjectGateway
 
         private void Brake()
         {
+            // Handbrake
             var handbrake = hasControl && Input.GetKey(KeyCode.Space);
-            if (handbrake || moveInput == 0)
+            if (handbrake)
             {
                 foreach (var wheel in wheels)
                 {
@@ -123,13 +124,23 @@ namespace ProjectGateway
 
                 carLights.OperateBackLights(true);
             }
-            else
+            // Reversing
+            else if(moveInput < 0)
             {
                 foreach (var wheel in wheels)
                 {
                     wheel.wheelCollider.brakeTorque = 0;
                 }
                 
+                carLights.OperateBackLights(true);
+            }
+            // Default behaviour
+            else
+            {
+                foreach (var wheel in wheels)
+                {
+                    wheel.wheelCollider.brakeTorque = 0;
+                }
                 carLights.OperateBackLights(false);
             }
         }
@@ -163,7 +174,15 @@ namespace ProjectGateway
         }
 
         public new bool IsInteractable => true;
-        public new string InteractText => "Drive";
+        public new Dictionary<InteractType, string> GetInteractText()
+        {
+            // Get the base prop interactions
+            var interactList = base.GetInteractText();
+            // Add the "drive" interaction for items
+            interactList.Add(InteractType.Use, "Drive");
+            // Return the modified list
+            return interactList;
+        }
         public new void Interact(InteractType interactType)
         {
             base.Interact(interactType);

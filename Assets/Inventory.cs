@@ -9,8 +9,8 @@ namespace ProjectGateway
         private readonly List<Item> _items = new();
         private GameObject _player;
 
-        private const int CarryLimit = 200;
-        private float CurrentWeight => _items.Sum(item => item.weight);
+        public const int CarryLimit = 200;
+        public float CurrentWeight => _items.Sum(item => item.weight);
 
         private void Awake()
         {
@@ -33,6 +33,7 @@ namespace ProjectGateway
         private void AddItemToInventory(Item itemToAdd)
         {
             itemToAdd.gameObject.SetActive(false);
+            _items.Add(itemToAdd);
         }
 
         public GameObject RemoveFromInventory(Item itemToRemove)

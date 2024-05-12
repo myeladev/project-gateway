@@ -82,7 +82,7 @@ namespace ProjectGateway
                     ReleaseProp(_holdingProp, true);
                 }
             }
-            _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 2f));
+            _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 1.2f));
         }
         
         /// <summary>
