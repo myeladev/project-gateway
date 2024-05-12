@@ -2,6 +2,7 @@ using System;
 using Cinemachine;
 using UnityEngine;
 using KinematicCharacterController.Examples;
+using UnityEngine.Serialization;
 
 namespace ProjectGateway
 {
@@ -19,11 +20,21 @@ namespace ProjectGateway
         private const string MouseScrollInput = "Mouse ScrollWheel";
         private const string HorizontalInput = "Horizontal";
         private const string VerticalInput = "Vertical";
+        private const float HungerRate = 0.06f;
+        private const float SleepRate = 0.045f;
 
         public static MyPlayer instance;
+        [HideInInspector]
+        public Inventory inventory;
+
+        [HideInInspector] public float hunger;
+        [HideInInspector] public float sleep;
         private void Awake()
         {
             instance = this;
+            inventory = GetComponent<Inventory>();
+            hunger = 60f;
+            sleep = 85f;
         }
 
         private void Start()
@@ -49,6 +60,11 @@ namespace ProjectGateway
             {
                 drivingVehicle.Exit();
             }
+
+            hunger -= Time.deltaTime * HungerRate;
+            sleep -= Time.deltaTime * SleepRate;
+            hunger = Mathf.Clamp(hunger, 0, 100);
+            sleep = Mathf.Clamp(sleep, 0, 100);
 
             HandleCharacterInput();
         }
@@ -104,6 +120,12 @@ namespace ProjectGateway
             vehicleCamera.LookAt = drivingVehicle?.transform;
             vehicleCamera.Follow = drivingVehicle?.transform;
             Character.gameObject.SetActive(drivingVehicle is null);
+        }
+
+        public void EatFood(Food food)
+        {
+            hunger += food.hungerRestoration;
+            food.gameObject.SetActive(false);
         }
     }
 }

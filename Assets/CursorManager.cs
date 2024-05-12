@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,15 +28,29 @@ namespace ProjectGateway
             var interactable = CheckInteractables();
 
             interactText.enabled = interactable is not null;
-            interactText.text = interactable?.InteractText ?? "";
+            interactText.text = "";
             cursorImage.enabled = interactable is not null;
 
             if (interactable is not null)
             {
+                var interactStrings = interactable.GetInteractText().Select(m => $"[{ GetInputTextForInteractType(m.Key) }] {m.Value}");
+                interactText.text = string.Join(Environment.NewLine, interactStrings);
+
                 if (Input.GetMouseButtonDown(0)) interactable.Interact(InteractType.Grab);
-                
                 if (Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use);
+                if (Input.GetKeyDown(KeyCode.F)) interactable.Interact(InteractType.Pickup);
             }
+        }
+
+        private string GetInputTextForInteractType(InteractType interactType)
+        {
+            return interactType switch
+            {
+                InteractType.Use => "E",
+                InteractType.Grab => "L Click",
+                InteractType.Pickup => "F",
+                _ => ""
+            };
         }
 
         private IInteractable CheckInteractables()
