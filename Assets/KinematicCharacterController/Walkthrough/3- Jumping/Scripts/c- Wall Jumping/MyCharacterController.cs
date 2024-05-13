@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using KinematicCharacterController;
-using System;
 
 namespace ProjectGateway
 {
@@ -19,6 +16,7 @@ namespace ProjectGateway
     {
         public KinematicCharacterMotor Motor;
         public bool IsHoldingProp => _holdingProp is not null;
+        public bool CanInteract => !_holdingProp && !myPlayer.drivingVehicle && !_movingFurniture;
 
         [Header("Stable Movement")]
         public float MaxStableMoveSpeed = 10f;
@@ -42,8 +40,16 @@ namespace ProjectGateway
         [Header("Misc")]
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
+        [SerializeField]
+        private MeshFilter furnitureHolderMeshFilter;
+        [SerializeField]
+        private MeshRenderer furnitureHolderMeshRenderer;
+        [SerializeField]
+        private FurniturePlacementMarker furniturePlacementMarker;
+        [SerializeField]
+        private MyPlayer myPlayer;
 
-
+        private const float FurniturePlacementRange = 4f;
         private Vector3 _moveInputVector;
         private Vector3 _lookInputVector;
         private bool _jumpRequested = false;
@@ -56,6 +62,7 @@ namespace ProjectGateway
         private bool _canWallJump = false;
         private Vector3 _wallJumpNormal;
         private Prop _holdingProp;
+        private Furniture _movingFurniture;
         private Camera _camera;
 
         private void Awake()
@@ -71,6 +78,12 @@ namespace ProjectGateway
 
         void Update()
         {
+            HandlePropGrabbing();
+            HandleFurnitureMoving();
+        }
+
+        private void HandlePropGrabbing()
+        {
             if (_holdingProp is not null)
             {
                 if (Input.GetMouseButtonUp(0))
@@ -82,14 +95,74 @@ namespace ProjectGateway
                     ReleaseProp(_holdingProp, true);
                 }
             }
+
             _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 1.2f));
         }
         
+        private void HandleFurnitureMoving()
+        {
+            if (_movingFurniture is not null)
+            {
+                if (Physics.Raycast(_camera.transform.position, _camera.transform.TransformDirection(Vector3.forward),
+                        out var hit, FurniturePlacementRange))
+                {
+                    var blocked = false;
+                    furniturePlacementMarker.transform.position = hit.point;
+                    furniturePlacementMarker.gameObject.SetActive(true);
+                    if (hit.normal != Vector3.up) blocked = true;
+                    if (!blocked)
+                    {
+                        SnapRotatedObjectToGround(furniturePlacementMarker.gameObject);
+                    }
+                    furniturePlacementMarker.isBlocked = blocked;
+                }
+                else
+                {
+                    furniturePlacementMarker.gameObject.SetActive(false);
+                }
+                if (Input.GetMouseButtonUp(0))
+                {
+                    PlaceFurniture(_movingFurniture);
+                }
+                if (Input.mouseScrollDelta.y != 0)
+                {
+                    furniturePlacementMarker.transform.rotation = 
+                        Quaternion.Euler(
+                            furniturePlacementMarker.transform.eulerAngles.x, 
+                            furniturePlacementMarker.transform.eulerAngles.y + (Time.deltaTime * 1000f * Input.mouseScrollDelta.y), 
+                            furniturePlacementMarker.transform.eulerAngles.z);
+                }
+            }
+        }
+        
+        private void SnapRotatedObjectToGround(GameObject objectToSnap)
+        {
+            Collider collider = objectToSnap.GetComponent<Collider>();
+            Vector3 lowestPoint = collider.bounds.min;
+            Vector3 highestPoint = collider.bounds.max;
+            RaycastHit hit;
+            var leeway = 0.02f;
+            if (Physics.Raycast(highestPoint + (Vector3.up * leeway), Vector3.down, out hit, Mathf.Infinity, ~LayerMask.NameToLayer("Ignore Raycast")))
+            {
+                Vector3 distanceToMove = new Vector3(0, hit.point.y - lowestPoint.y, 0);
+                Debug.Log(
+                    $"Moving object. Lowest Point: {lowestPoint.y}, DistanceToMove: {distanceToMove.y}, hit.point: {hit.point.y}, Object at: {objectToSnap.transform.position.y}");
+                objectToSnap.transform.position += distanceToMove;
+            }
+            /*
+            if (Physics.Raycast(lowestPoint + Vector3.up * 0.1f, Vector3.down, out hit))
+            {
+                float distanceToMoveDown = Vector3.Distance(lowestPoint, hit.point);
+                objectToSnap.transform.position -= Vector3.up * distanceToMoveDown;
+            }*/
+        }
+
         /// <summary>
         /// This is called every frame by MyPlayer in order to tell the character what its inputs are
         /// </summary>
         public void SetInputs(ref PlayerCharacterInputs inputs)
         {
+            if (myPlayer.drivingVehicle) return;
             // Clamp input
             Vector3 moveInputVector = Vector3.ClampMagnitude(new Vector3(inputs.MoveAxisRight, 0f, inputs.MoveAxisForward), 1f);
 
@@ -316,6 +389,36 @@ namespace ProjectGateway
             {
                 _holdingProp.Release(launch);
                 _holdingProp = null;
+            }
+        }
+
+        public bool MoveFurniture(Furniture furnitureToMove)
+        {
+            if (_movingFurniture) return false;
+            _movingFurniture = furnitureToMove;
+            furnitureHolderMeshRenderer.gameObject.SetActive(true);
+            var mesh = furnitureToMove.GetComponent<MeshFilter>().mesh;
+            furnitureHolderMeshFilter.mesh = mesh;
+            furnitureHolderMeshRenderer.materials = furnitureToMove.GetComponent<MeshRenderer>().materials;
+            furniturePlacementMarker.GetComponent<MeshFilter>().mesh = mesh;
+            furniturePlacementMarker.GetComponent<MeshCollider>().sharedMesh = mesh;
+            return true;
+
+        }
+
+        private void PlaceFurniture(Furniture furnitureToPlace)
+        {
+            if (_movingFurniture == furnitureToPlace && furniturePlacementMarker.IsFree)
+            {
+                if (Physics.Raycast(_camera.transform.position,
+                        _camera.transform.TransformDirection(Vector3.forward),
+                        out var hit, FurniturePlacementRange))
+                {
+                    _movingFurniture.Place(hit.point, furniturePlacementMarker.transform.rotation);
+                    _movingFurniture = null;
+                    furnitureHolderMeshRenderer.gameObject.SetActive(false);
+                    furniturePlacementMarker.gameObject.SetActive(false);
+                }
             }
         }
     }

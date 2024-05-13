@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace ProjectGateway
@@ -16,6 +17,10 @@ namespace ProjectGateway
         [SerializeField]
         private Image cursorImage;
 
+        [Header("Misc")] 
+        [SerializeField] 
+        private MyCharacterController characterController;
+
         private const float InteractRange = 2f;
 
         private void Awake()
@@ -25,6 +30,12 @@ namespace ProjectGateway
 
         private void Update()
         {
+            if (!characterController.CanInteract)
+            {
+                interactText.enabled = false;
+                cursorImage.enabled = false;
+                return;
+            }
             var interactable = CheckInteractables();
 
             interactText.enabled = interactable is not null;
