@@ -13,7 +13,9 @@ namespace ProjectGateway
         public Transform CameraFollowPoint;
         public MyCharacterController Character;
 
-        private Vehicle drivingVehicle;
+        public bool IsInVehicle => drivingVehicle is not null;
+        [HideInInspector]
+        public Vehicle drivingVehicle;
         
         private const string MouseXInput = "Mouse X";
         private const string MouseYInput = "Mouse Y";
