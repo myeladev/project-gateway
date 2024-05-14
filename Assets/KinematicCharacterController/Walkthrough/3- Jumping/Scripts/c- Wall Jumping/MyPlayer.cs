@@ -1,8 +1,6 @@
-using System;
 using Cinemachine;
 using UnityEngine;
 using KinematicCharacterController.Examples;
-using UnityEngine.Serialization;
 
 namespace ProjectGateway
 {
@@ -22,8 +20,9 @@ namespace ProjectGateway
         private const string MouseScrollInput = "Mouse ScrollWheel";
         private const string HorizontalInput = "Horizontal";
         private const string VerticalInput = "Vertical";
-        private const float HungerRate = 0.06f;
-        private const float SleepRate = 0.045f;
+        private const float HungerFallRate = 0.06f;
+        private const float SleepFallRate = 0.045f;
+        private const float SleepRecoveryRate = 0.2f;
 
         public static MyPlayer instance;
         [HideInInspector]
@@ -31,12 +30,14 @@ namespace ProjectGateway
 
         [HideInInspector] public float hunger;
         [HideInInspector] public float sleep;
+
+        public bool isSleeping;
         private void Awake()
         {
             instance = this;
             inventory = GetComponent<Inventory>();
             hunger = 60f;
-            sleep = 85f;
+            sleep = 0f;
         }
 
         private void Start()
@@ -58,14 +59,28 @@ namespace ProjectGateway
                 Cursor.lockState = CursorLockMode.Locked;
             }
 
-            if (drivingVehicle is not null && Input.GetKeyDown(KeyCode.Q))
+            // Handle exiting things
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                drivingVehicle.Exit();
-            }
+                drivingVehicle?.Exit();
 
-            hunger -= Time.deltaTime * HungerRate;
-            sleep -= Time.deltaTime * SleepRate;
+                if (isSleeping) Wake();
+            }
+                
+
+            hunger -= Time.deltaTime * HungerFallRate;
             hunger = Mathf.Clamp(hunger, 0, 100);
+
+            if (isSleeping)
+            {
+                Time.timeScale = 20f;
+                sleep += Time.deltaTime * SleepRecoveryRate;
+            }
+            else
+            {
+                Time.timeScale = 1f;
+                sleep -= Time.deltaTime * SleepFallRate;
+            }
             sleep = Mathf.Clamp(sleep, 0, 100);
 
             HandleCharacterInput();
@@ -128,6 +143,16 @@ namespace ProjectGateway
         {
             hunger += food.hungerRestoration;
             food.gameObject.SetActive(false);
+        }
+
+        public void Sleep(Bed bed)
+        {
+            isSleeping = true;
+        }
+
+        private void Wake()
+        {
+            isSleeping = false;
         }
     }
 }

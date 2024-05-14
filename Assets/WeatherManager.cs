@@ -107,5 +107,13 @@ namespace ProjectGateway
             sun.shadows = LightShadows.None;
             moon.shadows = LightShadows.Soft;
         }
+
+        public string GetFriendlyTimeString()
+        {
+            var hour = Mathf.FloorToInt(timeOfDay);
+            var minute = (timeOfDay % 1f) * 60f;
+
+            return $"{hour:00}:{minute:00}";
+        }
     }
 }

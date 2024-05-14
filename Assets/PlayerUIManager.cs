@@ -1,3 +1,4 @@
+using ProjectGateway.Code;
 using TMPro;
 using UnityEngine;
 
@@ -27,17 +28,10 @@ namespace ProjectGateway
         
         private void Update()
         {
-            UpdateBar(MyPlayer.instance.hunger, 100, hungerBackgroundBar, hungerFillBar);
-            UpdateBar(MyPlayer.instance.sleep, 100, sleepBackgroundBar, sleepFillBar);
-            UpdateBar(MyPlayer.instance.inventory.CurrentWeight, Inventory.CarryLimit, weightBackgroundBar, weightFillBar);
+            hungerFillBar.UpdateBar(MyPlayer.instance.hunger, 100, hungerBackgroundBar);
+            sleepFillBar.UpdateBar(MyPlayer.instance.sleep, 100, sleepBackgroundBar);
+            weightFillBar.UpdateBar(MyPlayer.instance.inventory.CurrentWeight, Inventory.CarryLimit, weightBackgroundBar);
             weightCapacityText.text = $"{MyPlayer.instance.inventory.CurrentWeight:N1} / {Inventory.CarryLimit:N0}";
-        }
-
-        private void UpdateBar(float numerator, float denominator, RectTransform backgroundBar, RectTransform fillBar)
-        {
-            var value = numerator / denominator;
-            var barSize = Mathf.Abs(backgroundBar.rect.width);
-            fillBar.offsetMax = new Vector2(-(barSize - (barSize * value)), 0);
         }
     }
 }
