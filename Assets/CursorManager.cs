@@ -44,7 +44,7 @@ namespace ProjectGateway
 
             if (interactable is not null)
             {
-                var interactStrings = interactable.GetInteractText().Select(m => $"[{ GetInputTextForInteractType(m.Key) }] {m.Value}");
+                var interactStrings = interactable.GetInteractText().OrderBy(m => m.Key).Select(m => $"[{ GetInputTextForInteractType(m.Key) }] {m.Value}");
                 interactText.text = string.Join(Environment.NewLine, interactStrings);
 
                 if (Input.GetMouseButtonDown(0)) interactable.Interact(InteractType.Grab);
