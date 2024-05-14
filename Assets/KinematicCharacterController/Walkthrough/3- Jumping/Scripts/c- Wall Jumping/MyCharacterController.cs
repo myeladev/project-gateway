@@ -110,10 +110,7 @@ namespace ProjectGateway
                     furniturePlacementMarker.transform.position = hit.point;
                     furniturePlacementMarker.gameObject.SetActive(true);
                     if (hit.normal != Vector3.up) blocked = true;
-                    if (!blocked)
-                    {
-                        SnapRotatedObjectToGround(furniturePlacementMarker.gameObject);
-                    }
+                    SnapRotatedObjectToGround(furniturePlacementMarker.gameObject);
                     furniturePlacementMarker.isBlocked = blocked;
                 }
                 else
@@ -138,16 +135,15 @@ namespace ProjectGateway
         private void SnapRotatedObjectToGround(GameObject objectToSnap)
         {
             Collider collider = objectToSnap.GetComponent<Collider>();
-            Vector3 lowestPoint = collider.bounds.min;
             Vector3 highestPoint = collider.bounds.max;
             RaycastHit hit;
             var leeway = 0.02f;
             if (Physics.Raycast(highestPoint + (Vector3.up * leeway), Vector3.down, out hit, Mathf.Infinity, ~LayerMask.NameToLayer("Ignore Raycast")))
             {
-                Vector3 distanceToMove = new Vector3(0, hit.point.y - lowestPoint.y, 0);
+                float newY = hit.point.y + (collider.bounds.size.y/2);
                 Debug.Log(
-                    $"Moving object. Lowest Point: {lowestPoint.y}, DistanceToMove: {distanceToMove.y}, hit.point: {hit.point.y}, Object at: {objectToSnap.transform.position.y}");
-                objectToSnap.transform.position += distanceToMove;
+                    $"Moving object. newLocation: {newY}, hit.point: {hit.point.y}, Object at: {objectToSnap.transform.position.y}");
+                objectToSnap.transform.position = new Vector3(objectToSnap.transform.position.x, newY, objectToSnap.transform.position.z);
             }
             /*
             if (Physics.Raycast(lowestPoint + Vector3.up * 0.1f, Vector3.down, out hit))
@@ -240,11 +236,11 @@ namespace ProjectGateway
                 {
                     targetMovementVelocity = _moveInputVector * MaxAirMoveSpeed;
 
-                    // Prevent climbing on un-stable slopes with air movement
+                    // Prevent climbing on unstable slopes with air movement
                     if (Motor.GroundingStatus.FoundAnyGround)
                     {
-                        Vector3 perpenticularObstructionNormal = Vector3.Cross(Vector3.Cross(Motor.CharacterUp, Motor.GroundingStatus.GroundNormal), Motor.CharacterUp).normalized;
-                        targetMovementVelocity = Vector3.ProjectOnPlane(targetMovementVelocity, perpenticularObstructionNormal);
+                        Vector3 perpendicularObstructionNormal = Vector3.Cross(Vector3.Cross(Motor.CharacterUp, Motor.GroundingStatus.GroundNormal), Motor.CharacterUp).normalized;
+                        targetMovementVelocity = Vector3.ProjectOnPlane(targetMovementVelocity, perpendicularObstructionNormal);
                     }
 
                     Vector3 velocityDiff = Vector3.ProjectOnPlane(targetMovementVelocity - currentVelocity, Gravity);
@@ -414,7 +410,7 @@ namespace ProjectGateway
                         _camera.transform.TransformDirection(Vector3.forward),
                         out var hit, FurniturePlacementRange))
                 {
-                    _movingFurniture.Place(hit.point, furniturePlacementMarker.transform.rotation);
+                    _movingFurniture.Place(furniturePlacementMarker.transform.position, furniturePlacementMarker.transform.rotation);
                     _movingFurniture = null;
                     furnitureHolderMeshRenderer.gameObject.SetActive(false);
                     furniturePlacementMarker.gameObject.SetActive(false);
