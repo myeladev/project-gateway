@@ -41,5 +41,10 @@ namespace ProjectGateway
             if(currentlyCollidingWith.Contains(other))
                 currentlyCollidingWith.Remove(other);
         }
+
+        public void FlushCollisions()
+        {
+            currentlyCollidingWith.Clear();
+        }
     }
 }

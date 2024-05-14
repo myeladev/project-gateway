@@ -20,7 +20,14 @@ namespace ProjectGateway
             switch (interactType)
             {
                 case InteractType.Use:
-                    MyPlayer.instance.Sleep(this);
+                    if (MyPlayer.instance.sleep <= 90f)
+                    {
+                        MyPlayer.instance.Sleep(this);
+                    }
+                    else
+                    {
+                        FeedbackMessageUIManager.instance.ShowMessage("You're not tired enough to sleep");
+                    }
                     break;
             }
         }
