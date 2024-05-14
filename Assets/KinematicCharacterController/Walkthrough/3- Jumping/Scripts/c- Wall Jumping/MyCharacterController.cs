@@ -117,6 +117,7 @@ namespace ProjectGateway
                 }
                 else
                 {
+                    furniturePlacementMarker.FlushCollisions();
                     furniturePlacementMarker.gameObject.SetActive(false);
                 }
                 if (Input.GetMouseButtonUp(0))
