@@ -50,6 +50,7 @@ namespace ProjectGateway
         private MyPlayer myPlayer;
 
         private const float FurniturePlacementRange = 4f;
+        private Collider _furniturePlacementMarkerCollider;
         private Vector3 _moveInputVector;
         private Vector3 _lookInputVector;
         private bool _jumpRequested = false;
@@ -68,6 +69,7 @@ namespace ProjectGateway
         private void Awake()
         {
             _camera = Camera.main;
+            _furniturePlacementMarkerCollider = furniturePlacementMarker.GetComponent<Collider>();
         }
 
         private void Start()
@@ -110,7 +112,7 @@ namespace ProjectGateway
                     furniturePlacementMarker.transform.position = hit.point;
                     furniturePlacementMarker.gameObject.SetActive(true);
                     if (hit.normal != Vector3.up) blocked = true;
-                    SnapRotatedObjectToGround(furniturePlacementMarker.gameObject);
+                    SnapRotatedObjectToGround(_furniturePlacementMarkerCollider);
                     furniturePlacementMarker.isBlocked = blocked;
                 }
                 else
@@ -132,25 +134,17 @@ namespace ProjectGateway
             }
         }
         
-        private void SnapRotatedObjectToGround(GameObject objectToSnap)
+        private void SnapRotatedObjectToGround(Collider objectToSnap)
         {
-            Collider collider = objectToSnap.GetComponent<Collider>();
+            Collider collider = objectToSnap;
             Vector3 highestPoint = collider.bounds.max;
             RaycastHit hit;
             var leeway = 0.02f;
             if (Physics.Raycast(highestPoint + (Vector3.up * leeway), Vector3.down, out hit, Mathf.Infinity, ~LayerMask.NameToLayer("Ignore Raycast")))
             {
                 float newY = hit.point.y + (collider.bounds.size.y/2);
-                Debug.Log(
-                    $"Moving object. newLocation: {newY}, hit.point: {hit.point.y}, Object at: {objectToSnap.transform.position.y}");
                 objectToSnap.transform.position = new Vector3(objectToSnap.transform.position.x, newY, objectToSnap.transform.position.z);
             }
-            /*
-            if (Physics.Raycast(lowestPoint + Vector3.up * 0.1f, Vector3.down, out hit))
-            {
-                float distanceToMoveDown = Vector3.Distance(lowestPoint, hit.point);
-                objectToSnap.transform.position -= Vector3.up * distanceToMoveDown;
-            }*/
         }
 
         /// <summary>
@@ -159,6 +153,7 @@ namespace ProjectGateway
         public void SetInputs(ref PlayerCharacterInputs inputs)
         {
             if (myPlayer.drivingVehicle) return;
+            if (myPlayer.isSleeping) return;
             // Clamp input
             Vector3 moveInputVector = Vector3.ClampMagnitude(new Vector3(inputs.MoveAxisRight, 0f, inputs.MoveAxisForward), 1f);
 
