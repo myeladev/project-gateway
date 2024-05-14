@@ -23,7 +23,12 @@ namespace ProjectGateway
             switch (interactType)
             {
                 case InteractType.Pickup:
-                    MyPlayer.instance.inventory.AttemptToAddItem(this);
+                    var success = MyPlayer.instance.inventory.AttemptToAddItem(this);
+
+                    if (!success)
+                    {
+                        FeedbackMessageUIManager.instance.ShowMessage("Not enough inventory space");
+                    }
                     break;
             }
         }

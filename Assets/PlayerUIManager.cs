@@ -28,7 +28,7 @@ namespace ProjectGateway
         
         private void Update()
         {
-            hungerFillBar.UpdateBar(MyPlayer.instance.hunger, 100, hungerBackgroundBar);
+            hungerFillBar.UpdateBar(Mathf.Clamp(MyPlayer.instance.hunger, 0, 100), 100, hungerBackgroundBar);
             sleepFillBar.UpdateBar(MyPlayer.instance.sleep, 100, sleepBackgroundBar);
             weightFillBar.UpdateBar(MyPlayer.instance.inventory.CurrentWeight, Inventory.CarryLimit, weightBackgroundBar);
             weightCapacityText.text = $"{MyPlayer.instance.inventory.CurrentWeight:N1} / {Inventory.CarryLimit:N0}";

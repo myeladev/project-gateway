@@ -140,11 +140,11 @@ namespace ProjectGateway
             Collider collider = objectToSnap;
             Vector3 highestPoint = collider.bounds.max;
             RaycastHit hit;
-            var leeway = 0.02f;
+            var leeway = 0.01f;
             if (Physics.Raycast(highestPoint + (Vector3.up * leeway), Vector3.down, out hit, Mathf.Infinity, ~LayerMask.NameToLayer("Ignore Raycast")))
             {
                 float newY = hit.point.y + (collider.bounds.size.y/2);
-                objectToSnap.transform.position = new Vector3(objectToSnap.transform.position.x, newY, objectToSnap.transform.position.z);
+                objectToSnap.transform.position = new Vector3(objectToSnap.transform.position.x, newY + leeway, objectToSnap.transform.position.z);
             }
         }
 
@@ -379,7 +379,7 @@ namespace ProjectGateway
         {
             if (_holdingProp == propToRelease)
             {
-                _holdingProp.Release(launch);
+                _holdingProp?.Release(launch);
                 _holdingProp = null;
             }
         }
@@ -400,16 +400,23 @@ namespace ProjectGateway
 
         private void PlaceFurniture(Furniture furnitureToPlace)
         {
-            if (_movingFurniture == furnitureToPlace && furniturePlacementMarker.IsFree)
+            if (_movingFurniture == furnitureToPlace)
             {
-                if (Physics.Raycast(_camera.transform.position,
-                        _camera.transform.TransformDirection(Vector3.forward),
-                        out var hit, FurniturePlacementRange))
+                if (furniturePlacementMarker.IsFree)
                 {
-                    _movingFurniture.Place(furniturePlacementMarker.transform.position, furniturePlacementMarker.transform.rotation);
-                    _movingFurniture = null;
-                    furnitureHolderMeshRenderer.gameObject.SetActive(false);
-                    furniturePlacementMarker.gameObject.SetActive(false);
+                    if (Physics.Raycast(_camera.transform.position,
+                            _camera.transform.TransformDirection(Vector3.forward),
+                            out var hit, FurniturePlacementRange))
+                    {
+                        _movingFurniture.Place(furniturePlacementMarker.transform.position, furniturePlacementMarker.transform.rotation);
+                        _movingFurniture = null;
+                        furnitureHolderMeshRenderer.gameObject.SetActive(false);
+                        furniturePlacementMarker.gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    FeedbackMessageUIManager.instance.ShowMessage("Object is blocked by something");
                 }
             }
         }

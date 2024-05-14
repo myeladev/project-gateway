@@ -69,7 +69,7 @@ namespace ProjectGateway
                 
 
             hunger -= Time.deltaTime * HungerFallRate;
-            hunger = Mathf.Clamp(hunger, 0, 100);
+            hunger = Mathf.Clamp(hunger, 0, 120);
 
             if (isSleeping)
             {
