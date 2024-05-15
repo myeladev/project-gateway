@@ -119,7 +119,7 @@ namespace ProjectGateway
             {
                 foreach (var wheel in wheels)
                 {
-                    wheel.wheelCollider.brakeTorque = (handbrake ? 1000 : 300) * brakeAcceleration * Time.deltaTime;
+                    wheel.wheelCollider.brakeTorque = 1000 * brakeAcceleration * Time.deltaTime;
                 }
 
                 carLights.OperateBackLights(true);
@@ -205,7 +205,11 @@ namespace ProjectGateway
         {
             var exitLocation = GetFreeExitLocation();
 
-            if (exitLocation is null) return;
+            if (exitLocation is null)
+            {
+                FeedbackMessageUIManager.instance.ShowMessage("Not enough space to exit vehicle");
+                return;
+            }
             hasControl = false;
             MyPlayer.instance.SetVehicle(null);
             carLights.OperateFrontLights(false);

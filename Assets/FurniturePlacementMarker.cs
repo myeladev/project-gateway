@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ProjectGateway
 {
@@ -10,7 +8,7 @@ namespace ProjectGateway
     {
         public bool IsFree => !currentlyCollidingWith.Any() && !isBlocked;
         [HideInInspector]
-        public bool isBlocked = false;
+        public bool isBlocked;
         
         [SerializeField]
         private List<Collider> currentlyCollidingWith = new();
