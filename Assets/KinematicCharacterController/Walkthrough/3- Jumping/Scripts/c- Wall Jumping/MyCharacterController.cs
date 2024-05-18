@@ -16,7 +16,7 @@ namespace ProjectGateway
     {
         public KinematicCharacterMotor Motor;
         public bool IsHoldingProp => _holdingProp is not null;
-        public bool CanInteract => !_holdingProp && !myPlayer.drivingVehicle && !_movingFurniture;
+        public bool CanInteract => !_holdingProp && !myPlayer.drivingVehicle && !_movingFurniture && !InformationUI.instance.IsViewingInformation;
 
         [Header("Stable Movement")]
         public float MaxStableMoveSpeed = 10f;
@@ -155,6 +155,7 @@ namespace ProjectGateway
         {
             if (myPlayer.drivingVehicle) return;
             if (myPlayer.isSleeping) return;
+            if (InformationUI.instance.IsViewingInformation) return;
             // Clamp input
             Vector3 moveInputVector = Vector3.ClampMagnitude(new Vector3(inputs.MoveAxisRight, 0f, inputs.MoveAxisForward), 1f);
 

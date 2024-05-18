@@ -99,7 +99,7 @@ namespace ProjectGateway
             Vector3 lookInputVector = new Vector3(mouseLookAxisRight, mouseLookAxisUp, 0f);
 
             // Prevent moving the camera while the cursor isn't locked
-            if (Cursor.lockState != CursorLockMode.Locked)
+            if (Cursor.lockState != CursorLockMode.Locked || InformationUI.instance.IsViewingInformation)
             {
                 lookInputVector = Vector3.zero;
             }
