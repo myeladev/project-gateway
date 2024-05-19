@@ -6,7 +6,7 @@ namespace ProjectGateway
 {
     public class Prop : MonoBehaviour, IInteractable
     {
-        public bool IsInteractable => true;
+        public bool IsInteractable => MyPlayer.instance.Character.CanInteract;
 
         public Dictionary<InteractType, string> GetInteractText()
         {

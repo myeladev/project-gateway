@@ -5,7 +5,7 @@ namespace ProjectGateway
 {
     public class Furniture : MonoBehaviour, IInteractable
     {
-        public bool IsInteractable => true;
+        public bool IsInteractable => MyPlayer.instance.Character.CanInteract;
 
         private MyCharacterController _player;
 
@@ -41,6 +41,7 @@ namespace ProjectGateway
             gameObject.SetActive(true);
             transform.position = position;
             transform.rotation = rotation;
+            GetComponent<Collider>().enabled = true;
         }
     }
 }
