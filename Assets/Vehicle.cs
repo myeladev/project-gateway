@@ -173,7 +173,7 @@ namespace ProjectGateway
             }
         }
 
-        public new bool IsInteractable => true;
+        public new bool IsInteractable => MyPlayer.instance.Character.CanInteract;
         public new Dictionary<InteractType, string> GetInteractText()
         {
             // Get the base prop interactions

@@ -1,5 +1,6 @@
 using UnityEngine;
 using KinematicCharacterController;
+using UnityEngine.Serialization;
 
 namespace ProjectGateway
 {
@@ -16,7 +17,7 @@ namespace ProjectGateway
     {
         public KinematicCharacterMotor Motor;
         public bool IsHoldingProp => _holdingProp is not null;
-        public bool CanInteract => !_holdingProp && !myPlayer.drivingVehicle && !_movingFurniture && !InformationUI.instance.IsViewingInformation;
+        public bool CanInteract => !_holdingProp && !myPlayer.drivingVehicle && !movingFurniture && !InformationUI.instance.IsViewingInformation;
 
         [Header("Stable Movement")]
         public float MaxStableMoveSpeed = 10f;
@@ -48,6 +49,9 @@ namespace ProjectGateway
         private FurniturePlacementMarker furniturePlacementMarker;
         [SerializeField]
         private MyPlayer myPlayer;
+        
+        [HideInInspector]
+        public Furniture movingFurniture;
 
         private const float FurniturePlacementRange = 4f;
         private Collider _furniturePlacementMarkerCollider;
@@ -63,7 +67,6 @@ namespace ProjectGateway
         private bool _canWallJump = false;
         private Vector3 _wallJumpNormal;
         private Prop _holdingProp;
-        private Furniture _movingFurniture;
         private Camera _camera;
 
         private void Awake()
@@ -103,7 +106,7 @@ namespace ProjectGateway
         
         private void HandleFurnitureMoving()
         {
-            if (_movingFurniture is not null)
+            if (movingFurniture is not null)
             {
                 if (Physics.Raycast(_camera.transform.position, _camera.transform.TransformDirection(Vector3.forward),
                         out var hit, FurniturePlacementRange))
@@ -122,7 +125,7 @@ namespace ProjectGateway
                 }
                 if (Input.GetMouseButtonUp(0))
                 {
-                    PlaceFurniture(_movingFurniture);
+                    PlaceFurniture(movingFurniture);
                 }
                 if (Input.mouseScrollDelta.y != 0)
                 {
@@ -387,8 +390,8 @@ namespace ProjectGateway
 
         public bool MoveFurniture(Furniture furnitureToMove)
         {
-            if (_movingFurniture) return false;
-            _movingFurniture = furnitureToMove;
+            if (movingFurniture) return false;
+            movingFurniture = furnitureToMove;
             furnitureHolderMeshRenderer.gameObject.SetActive(true);
             var mesh = furnitureToMove.GetComponent<MeshFilter>().mesh;
             furnitureHolderMeshFilter.mesh = mesh;
@@ -401,7 +404,7 @@ namespace ProjectGateway
 
         private void PlaceFurniture(Furniture furnitureToPlace)
         {
-            if (_movingFurniture == furnitureToPlace)
+            if (movingFurniture == furnitureToPlace)
             {
                 if (furniturePlacementMarker.IsFree)
                 {
@@ -409,10 +412,8 @@ namespace ProjectGateway
                             _camera.transform.TransformDirection(Vector3.forward),
                             out var hit, FurniturePlacementRange))
                     {
-                        _movingFurniture.Place(furniturePlacementMarker.transform.position, furniturePlacementMarker.transform.rotation);
-                        _movingFurniture = null;
-                        furnitureHolderMeshRenderer.gameObject.SetActive(false);
-                        furniturePlacementMarker.gameObject.SetActive(false);
+                        movingFurniture.Place(furniturePlacementMarker.transform.position, furniturePlacementMarker.transform.rotation);
+                        ReleaseHeldFurniture();
                     }
                 }
                 else
@@ -420,6 +421,13 @@ namespace ProjectGateway
                     FeedbackMessageUIManager.instance.ShowMessage("Object is blocked by something");
                 }
             }
+        }
+
+        public void ReleaseHeldFurniture()
+        {
+            movingFurniture = null;
+            furnitureHolderMeshRenderer.gameObject.SetActive(false);
+            furniturePlacementMarker.gameObject.SetActive(false);
         }
     }
 }

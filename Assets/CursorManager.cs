@@ -30,12 +30,13 @@ namespace ProjectGateway
 
         private void Update()
         {
+            /*
             if (!characterController.CanInteract)
             {
                 interactText.enabled = false;
                 cursorImage.enabled = false;
                 return;
-            }
+            }*/
             var interactable = CheckInteractables();
 
             interactText.enabled = interactable is not null;
