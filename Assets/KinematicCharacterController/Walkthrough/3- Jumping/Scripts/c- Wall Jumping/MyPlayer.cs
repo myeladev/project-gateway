@@ -30,8 +30,11 @@ namespace ProjectGateway
 
         [HideInInspector] public float hunger;
         [HideInInspector] public float sleep;
-
         public bool isSleeping;
+
+        [SerializeField] 
+        private Light flashlight;
+        
         private void Awake()
         {
             instance = this;
@@ -67,6 +70,11 @@ namespace ProjectGateway
                 if (isSleeping) Wake();
             }
                 
+            // Handle flashlight control
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                flashlight.enabled = !flashlight.enabled;
+            }
 
             hunger -= Time.deltaTime * HungerFallRate;
             hunger = Mathf.Clamp(hunger, 0, 120);
