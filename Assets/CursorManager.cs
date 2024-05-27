@@ -28,8 +28,10 @@ namespace ProjectGateway
             _camera = Camera.main;
         }
 
+
         private void Update()
         {
+            Cursor.lockState = UIManager.instance.IsInUI ? CursorLockMode.None : CursorLockMode.Locked;
             /*
             if (!characterController.CanInteract)
             {

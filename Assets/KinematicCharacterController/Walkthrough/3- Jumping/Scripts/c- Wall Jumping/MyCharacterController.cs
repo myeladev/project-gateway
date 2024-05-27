@@ -156,9 +156,15 @@ namespace ProjectGateway
         /// </summary>
         public void SetInputs(ref PlayerCharacterInputs inputs)
         {
-            if (myPlayer.drivingVehicle) return;
-            if (myPlayer.isSleeping) return;
-            if (InformationUI.instance.IsViewingInformation) return;
+            if (myPlayer.drivingVehicle 
+                || myPlayer.isSleeping 
+                || InformationUI.instance.IsViewingInformation 
+                || UIManager.instance.IsInUI)
+            {
+                _moveInputVector = Vector3.zero;
+                return;
+            }
+            
             // Clamp input
             Vector3 moveInputVector = Vector3.ClampMagnitude(new Vector3(inputs.MoveAxisRight, 0f, inputs.MoveAxisForward), 1f);
 

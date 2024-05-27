@@ -57,11 +57,6 @@ namespace ProjectGateway
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-
             // Handle exiting things
             if (Input.GetKeyDown(KeyCode.Q))
             {
