@@ -45,5 +45,7 @@ namespace ProjectGateway
 
             return itemToRemove.gameObject;
         }
+
+        public List<Item> GetItems() => _items;
     }
 }
