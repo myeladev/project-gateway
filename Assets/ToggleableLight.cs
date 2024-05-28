@@ -8,16 +8,16 @@ namespace ProjectGateway
         [SerializeField]
         private List<Light> lights = new();
         
-        public new Dictionary<InteractType, string> GetInteractText()
+        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
-            var interactText = base.GetInteractText();
+            var interactText = base.GetInteractText(context);
             interactText.Add(InteractType.Use, "Toggle");
             return interactText;
         }
 
-        public new void Interact(InteractType interactType)
+        public new void Interact(InteractType interactType, InteractContext context)
         {
-            base.Interact(interactType);
+            base.Interact(interactType, context);
             switch (interactType)
             {
                 case InteractType.Use:

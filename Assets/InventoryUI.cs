@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -17,9 +18,20 @@ namespace ProjectGateway
         [SerializeField]
         private TextMeshProUGUI itemDetailName;
         [SerializeField]
+        private TextMeshProUGUI itemContextActions;
+        [SerializeField]
         private ItemViewerModel itemViewerModel;
 
         private Item selectedItem;
+
+        void Update()
+        {
+            if (selectedItem && UIManager.instance.CurrentPanel == this)
+            {
+                if (Input.GetKeyDown(KeyCode.E)) selectedItem.Interact(InteractType.Use, InteractContext.Inventory);
+                if (Input.GetKeyDown(KeyCode.F)) selectedItem.Interact(InteractType.Pickup, InteractContext.Inventory);
+            }
+        }
         
         public override void Refresh()
         {
@@ -46,6 +58,8 @@ namespace ProjectGateway
         {
             selectedItem = item;
             itemDetailName.text = item.itemName;
+            var interactStrings = item.GetInteractText(InteractContext.Inventory).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}");
+            itemContextActions.text = string.Join(Environment.NewLine, interactStrings);
             
             itemViewerModel.SetItem(item.gameObject);
         }

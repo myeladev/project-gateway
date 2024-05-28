@@ -12,7 +12,7 @@ namespace ProjectGateway
         private void Awake()
         {
             _buttonLight = GetComponentInChildren<Light>();
-            _elevator = GetComponentInParent<Elevator>();
+            _elevator = targetStation.GetComponentInParent<Elevator>();
             
         }
 
@@ -29,12 +29,12 @@ namespace ProjectGateway
 
         public bool IsInteractable => MyPlayer.instance.Character.CanInteract || MyPlayer.instance.Character.movingFurniture;
         
-        public Dictionary<InteractType, string> GetInteractText()
+        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
             return new Dictionary<InteractType, string>(){{InteractType.Use, "Press"}};
         }
         
-        public void Interact(InteractType interactType)
+        public void Interact(InteractType interactType, InteractContext context)
         {
             switch (interactType)
             {

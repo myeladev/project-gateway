@@ -5,10 +5,10 @@ namespace ProjectGateway
     public class UIManager : MonoBehaviour
     {
         public static UIManager instance;
-        public bool IsInUI => _currentPanel;
-        private UIPanel _currentPanel;
+        public bool IsInUI => CurrentPanel;
+        public UIPanel CurrentPanel { get; private set; }
 
-        [SerializeField] private UIPanel inventoryUI;
+        public UIPanel inventoryUI;
 
         private void Awake()
         {
@@ -23,28 +23,28 @@ namespace ProjectGateway
 
         private void HandleUIPanels()
         {
-            inventoryUI.canvasGroup.alpha = _currentPanel == inventoryUI ? 1f : 0f;
+            inventoryUI.canvasGroup.alpha = CurrentPanel == inventoryUI ? 1f : 0f;
         }
 
         private void HandleUIInputs()
         {
-            if (_currentPanel)
+            if (CurrentPanel)
             {
                 if(Input.GetKeyDown(KeyCode.Escape))
                 {
-                    _currentPanel = null;
+                    CurrentPanel = null;
                 }
 
-                if(Input.GetKeyDown(KeyCode.Tab) && _currentPanel == inventoryUI)
+                if(Input.GetKeyDown(KeyCode.Tab) && CurrentPanel == inventoryUI)
                 {
-                    _currentPanel = null;
+                    CurrentPanel = null;
                 }
             }
             else
             {
                 if(Input.GetKeyDown(KeyCode.Tab))
                 {
-                    _currentPanel = inventoryUI;
+                    CurrentPanel = inventoryUI;
                     inventoryUI.Refresh();
                 }
             }
