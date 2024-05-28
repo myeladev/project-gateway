@@ -53,7 +53,7 @@ namespace ProjectGateway
         }
 
         public bool IsInteractable => MyPlayer.instance.Character.CanInteract || MyPlayer.instance.Character.movingFurniture;
-        public Dictionary<InteractType, string> GetInteractText()
+        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
             var interactKeys = new Dictionary<InteractType, string> { { InteractType.Use, $"Stow Furniture {_storedFurniture.Count}/{_furniturePositions.Count}" } };
 
@@ -65,7 +65,7 @@ namespace ProjectGateway
             return interactKeys;
         }
 
-        public void Interact(InteractType interactType)
+        public void Interact(InteractType interactType, InteractContext context)
         {
             switch (interactType)
             {

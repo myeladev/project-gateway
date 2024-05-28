@@ -6,9 +6,9 @@ namespace ProjectGateway
     {
         bool IsInteractable { get; }
 
-        Dictionary<InteractType, string> GetInteractText();
+        Dictionary<InteractType, string> GetInteractText(InteractContext context);
         
-        void Interact(InteractType interactType);
+        void Interact(InteractType interactType, InteractContext context);
     }
 
     public enum InteractType
@@ -27,5 +27,11 @@ namespace ProjectGateway
         /// For adding items to the inventory
         /// </summary>
         Pickup,
+    }
+
+    public enum InteractContext
+    {
+        Default,
+        Inventory
     }
 }

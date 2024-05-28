@@ -14,7 +14,7 @@ namespace ProjectGateway
             _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MyCharacterController>();
         }
 
-        public Dictionary<InteractType, string> GetInteractText()
+        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
             return 
                 new Dictionary<InteractType, string>
@@ -23,7 +23,7 @@ namespace ProjectGateway
                 };
         }
 
-        public void Interact(InteractType interactType)
+        public void Interact(InteractType interactType, InteractContext context)
         {
             switch (interactType)
             {

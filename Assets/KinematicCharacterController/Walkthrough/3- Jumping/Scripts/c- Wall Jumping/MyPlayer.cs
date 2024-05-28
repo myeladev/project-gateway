@@ -137,7 +137,7 @@ namespace ProjectGateway
             drivingVehicle = newVehicle;
 
             vehicleCamera.gameObject.SetActive(drivingVehicle is not null);
-            vehicleCamera.LookAt = drivingVehicle?.transform;
+            vehicleCamera.LookAt = drivingVehicle?.cameraAnchor;
             vehicleCamera.Follow = drivingVehicle?.transform;
             Character.gameObject.SetActive(drivingVehicle is null);
         }
@@ -145,7 +145,6 @@ namespace ProjectGateway
         public void EatFood(Food food)
         {
             hunger += food.hungerRestoration;
-            food.gameObject.SetActive(false);
         }
 
         public void Sleep(Bed bed)

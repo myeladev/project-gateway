@@ -9,19 +9,19 @@ namespace ProjectGateway
         [TextArea]
         private string informationText;
         
-        public new Dictionary<InteractType, string> GetInteractText()
+        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
             // Get the base prop interactions
-            var interactList = base.GetInteractText();
-            // Add the "pick up" interaction for items
+            var interactList = base.GetInteractText(context);
+            // Add the "read" interaction
             interactList.Add(InteractType.Use, "Read");
             // Return the modified list
             return interactList;
         }
         
-        public new void Interact(InteractType interactType)
+        public new void Interact(InteractType interactType, InteractContext context)
         {
-            base.Interact(interactType);
+            base.Interact(interactType, context);
             switch (interactType)
             {
                 case InteractType.Use:

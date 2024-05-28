@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8455536096713455008}
   - component: {fileID: 2375276713020195915}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Paper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 1781394874426372124}
   - component: {fileID: 7392797595138931207}
   - component: {fileID: 652811493644859188}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Clipboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

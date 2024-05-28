@@ -47,24 +47,13 @@ namespace ProjectGateway
 
             if (interactable is not null)
             {
-                var interactStrings = interactable.GetInteractText().OrderBy(m => m.Key).Select(m => $"[{ GetInputTextForInteractType(m.Key) }] {m.Value}");
+                var interactStrings = interactable.GetInteractText(InteractContext.Default).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}");
                 interactText.text = string.Join(Environment.NewLine, interactStrings);
 
-                if (Input.GetMouseButtonDown(0)) interactable.Interact(InteractType.Grab);
-                if (Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use);
-                if (Input.GetKeyDown(KeyCode.F)) interactable.Interact(InteractType.Pickup);
+                if (Input.GetMouseButtonDown(0)) interactable.Interact(InteractType.Grab, InteractContext.Default);
+                if (Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use, InteractContext.Default);
+                if (Input.GetKeyDown(KeyCode.F)) interactable.Interact(InteractType.Pickup, InteractContext.Default);
             }
-        }
-
-        private string GetInputTextForInteractType(InteractType interactType)
-        {
-            return interactType switch
-            {
-                InteractType.Use => "E",
-                InteractType.Grab => "L Click",
-                InteractType.Pickup => "F",
-                _ => ""
-            };
         }
 
         private IInteractable CheckInteractables()

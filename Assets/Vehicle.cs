@@ -38,6 +38,7 @@ namespace ProjectGateway
         public float maxSteerAngle = 30.0f;
 
         public Vector3 centerOfMass;
+        public Transform cameraAnchor;
 
         public List<Wheel> wheels;
         public List<ExitLocation> exitLocations;
@@ -174,18 +175,18 @@ namespace ProjectGateway
         }
 
         public new bool IsInteractable => MyPlayer.instance.Character.CanInteract;
-        public new Dictionary<InteractType, string> GetInteractText()
+        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
             // Get the base prop interactions
-            var interactList = base.GetInteractText();
+            var interactList = base.GetInteractText(context);
             // Add the "drive" interaction for items
             interactList.Add(InteractType.Use, "Drive");
             // Return the modified list
             return interactList;
         }
-        public new void Interact(InteractType interactType)
+        public new void Interact(InteractType interactType, InteractContext context)
         {
-            base.Interact(interactType);
+            base.Interact(interactType, context);
             switch (interactType)
             {
                 case InteractType.Use:

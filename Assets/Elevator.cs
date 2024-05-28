@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 namespace ProjectGateway
@@ -7,7 +8,7 @@ namespace ProjectGateway
     public class Elevator : MonoBehaviour
     {
         [SerializeField] 
-        private Transform carriage;
+        private ElevatorCarriageController carriage;
         
         [SerializeField] 
         private ElevatorDoor frontCarriageDoor;
@@ -25,11 +26,6 @@ namespace ProjectGateway
 
         private void Start()
         {
-            // Un-parent the stations
-            // This is done so that the scene in editor is neatly organised but the stations don't move
-            // with the carriage on runtime
-            transform.Find("Stations").parent = null;
-            
             if (buttons.Any())
             {
                 var closestStation = buttons.OrderBy(m => Vector3.Distance(m.transform.position, transform.position)).First().targetStation;
@@ -48,15 +44,15 @@ namespace ProjectGateway
                 {
                     currentStation = targetStations[0];
                     CloseDoors();
-                }
-
-                transform.position = Vector3.MoveTowards(transform.position, currentStation.transform.position, Time.deltaTime * elevatorSpeed);
-                if (Vector3.Distance(transform.position, currentStation.transform.position) < 0.1f)
-                {
-                    OnArriveAtStation(currentStation);
-                    targetStations.Remove(currentStation);
-                    currentStation = null;
-                    idleTimer = 5f;
+                    carriage.carriageDriver.DOMove(currentStation.transform.position, Vector3.Distance(carriage.carriageDriver.transform.position, currentStation.transform.position) * 0.5f)
+                        .SetEase(Ease.InOutCubic)
+                        .OnComplete(() =>
+                        {
+                            OnArriveAtStation(currentStation);
+                            targetStations.Remove(currentStation);
+                            currentStation = null;
+                            idleTimer = 5f;
+                        });
                 }
             }
         }
