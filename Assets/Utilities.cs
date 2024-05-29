@@ -1,4 +1,6 @@
-﻿namespace ProjectGateway
+﻿using UnityEngine;
+
+namespace ProjectGateway
 {
     public static class Utilities
     {
@@ -12,5 +14,7 @@
                 _ => ""
             };
         }
+
+        public static Vector3 InventoryPoolPosition => new Vector3(50, -100, 50);
     }
 }

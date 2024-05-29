@@ -18,6 +18,10 @@ namespace ProjectGateway
         [SerializeField]
         private TextMeshProUGUI itemDetailName;
         [SerializeField]
+        private TextMeshProUGUI itemDetailDescription;
+        [SerializeField]
+        private GameObject noItemsText;
+        [SerializeField]
         private TextMeshProUGUI itemContextActions;
         [SerializeField]
         private ItemViewerModel itemViewerModel;
@@ -28,13 +32,15 @@ namespace ProjectGateway
         {
             if (selectedItem && UIManager.instance.CurrentPanel == this)
             {
-                if (Input.GetKeyDown(KeyCode.E)) selectedItem.Interact(InteractType.Use, InteractContext.Inventory);
-                if (Input.GetKeyDown(KeyCode.F)) selectedItem.Interact(InteractType.Pickup, InteractContext.Inventory);
+                IInteractable interactable = selectedItem;
+                if (Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use, InteractContext.Inventory);
+                if (Input.GetKeyDown(KeyCode.F)) interactable.Interact(InteractType.Pickup, InteractContext.Inventory);
             }
         }
         
         public override void Refresh()
         {
+            SelectItem(null); 
             selectedItem = null;
             foreach(Transform child in itemListContentWindow.transform)
             {
@@ -52,16 +58,25 @@ namespace ProjectGateway
             {
                 itemListContentWindow.GetChild(0).GetComponent<Button>().onClick.Invoke();
             }
+            noItemsText.SetActive(!items.Any());
         }
 
         public void SelectItem(Item item)
         {
             selectedItem = item;
-            itemDetailName.text = item.itemName;
-            var interactStrings = item.GetInteractText(InteractContext.Inventory).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}");
-            itemContextActions.text = string.Join(Environment.NewLine, interactStrings);
-            
-            itemViewerModel.SetItem(item.gameObject);
+            itemDetailName.text = item?.itemName;
+            itemDetailDescription.text = item?.itemDescription;
+            var interactStrings = (item as IInteractable)?.GetInteractText(InteractContext.Inventory).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}").ToList();
+            itemContextActions.text = interactStrings?.Any() ?? false ? string.Join(Environment.NewLine, interactStrings) : "";
+
+            if (item)
+            {
+                itemViewerModel.SetItem(item.gameObject);
+            }
+            else
+            {
+                itemViewerModel.ClearItem();
+            }
         }
     }
 }

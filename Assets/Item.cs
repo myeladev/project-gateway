@@ -6,8 +6,17 @@ namespace ProjectGateway
     public class Item : Prop, IInteractable
     {
         public string itemName;
+        [TextArea]
+        public string itemDescription;
         public float weight;
-        
+        private Collider _collider;
+
+        protected new void Awake()
+        {
+            base.Awake();
+            _collider = GetComponent<Collider>();
+        }
+
         public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
             // Get the base prop interactions
@@ -26,12 +35,15 @@ namespace ProjectGateway
                 case InteractType.Pickup:
                     if (context == InteractContext.Inventory)
                     {
-                        gameObject.SetActive(true);
-                        transform.position = MyPlayer.instance.transform.position + (Vector3.up * 2f) + MyPlayer.instance.transform.forward;
-                        Rigidbody.velocity = Vector3.zero;
-                        
                         MyPlayer.instance.inventory.RemoveFromInventory(this);
                         UIManager.instance.inventoryUI.Refresh();
+                        
+                        Rigidbody.isKinematic = false;
+                        _collider.enabled = true;
+                        var targetPosition = Camera.main.transform.position + Camera.main.transform.forward * 2f;
+                        Debug.Log(targetPosition);
+                        transform.position = targetPosition;
+                        Rigidbody.velocity = Vector3.zero;
                     }
                     else
                     {
@@ -40,6 +52,12 @@ namespace ProjectGateway
                         if (!success)
                         {
                             FeedbackMessageUIManager.instance.ShowMessage("Not enough inventory space");
+                        }
+                        else
+                        {
+                            Rigidbody.isKinematic = true;
+                            _collider.enabled = false;
+                            transform.position = Utilities.InventoryPoolPosition;
                         }
                     }
                     break;

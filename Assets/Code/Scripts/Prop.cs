@@ -28,7 +28,7 @@ namespace ProjectGateway
         private Camera _camera;
         private const float GrabForce = 50f;
 
-        private void Awake()
+        protected void Awake()
         {
             _camera = Camera.main;
             Rigidbody = GetComponent<Rigidbody>();
