@@ -32,7 +32,6 @@ namespace ProjectGateway
 
         private void AddItemToInventory(Item itemToAdd)
         {
-            itemToAdd.gameObject.SetActive(false);
             _items.Add(itemToAdd);
         }
 
@@ -40,7 +39,6 @@ namespace ProjectGateway
         {
             _items.Remove(itemToRemove);
             
-            itemToRemove.gameObject.SetActive(true);
             itemToRemove.transform.position = _player.transform.position;
 
             return itemToRemove.gameObject;

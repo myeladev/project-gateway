@@ -28,6 +28,7 @@ namespace ProjectGateway
                         MyPlayer.instance.inventory.RemoveFromInventory(this);
                         UIManager.instance.inventoryUI.Refresh();
                     }
+                    Destroy(gameObject);
                     break;
             }
         }

@@ -1,33 +1,39 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProjectGateway
 {
     public class ItemViewerModel : MonoBehaviour
     {
-        private MeshRenderer _meshRenderer;
-        private MeshFilter _meshFilter;
-
-        private void Awake()
-        {
-            _meshRenderer = GetComponent<MeshRenderer>();
-            _meshFilter = GetComponent<MeshFilter>();
-        }
-
+        public GameObject currentItem;
+        
         // Update is called once per frame
         void Update()
         {
-            transform.Rotate(0f, -Time.deltaTime * 20f, 0f, Space.Self);
+            if (currentItem)
+            {
+                currentItem.transform.position = transform.position;
+                currentItem.transform.Rotate(0f, -Time.deltaTime * 20f, 0f, Space.Self);
+            }
         }
 
         public void SetItem(GameObject item)
         {
-            var meshRenderer = item.GetComponent<MeshRenderer>();
-            var meshFilter = item.GetComponent<MeshFilter>();
-            _meshRenderer.materials = meshRenderer.materials;
-            _meshFilter.mesh = meshFilter.mesh;
+            ClearItem();
+
+            currentItem = item;
+            currentItem.layer = LayerMask.NameToLayer("ItemViewer");
+            currentItem.transform.rotation = Quaternion.Euler(-30f, 0, 0);
+        }
+
+        public void ClearItem()
+        {
+            if (currentItem)
+            {
+                currentItem.transform.position = Utilities.InventoryPoolPosition;
+                currentItem.layer = LayerMask.NameToLayer("Prop");
+            }
+
+            currentItem = null;
         }
     }
 }
