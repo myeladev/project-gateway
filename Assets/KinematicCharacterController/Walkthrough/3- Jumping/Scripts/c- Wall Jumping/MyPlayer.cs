@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using KinematicCharacterController.Examples;
@@ -33,7 +34,7 @@ namespace ProjectGateway
         public bool isSleeping;
 
         [SerializeField] 
-        private Light flashlight;
+        private List<Light> flashlight = new();
         
         private void Awake()
         {
@@ -68,7 +69,10 @@ namespace ProjectGateway
             // Handle flashlight control
             if (Input.GetKeyDown(KeyCode.V))
             {
-                flashlight.enabled = !flashlight.enabled;
+                foreach (var fLight in flashlight)
+                {
+                    fLight.enabled = !fLight.enabled;
+                }
             }
 
             hunger -= Time.deltaTime * HungerFallRate;
