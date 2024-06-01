@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 5035125012021074887}
   - component: {fileID: 7869887350117065357}
   - component: {fileID: 6634592766165927449}
+  - component: {fileID: 5590439397985697242}
   m_Layer: 0
   m_Name: Streetsign0
   m_TagString: Untagged
@@ -256,3 +257,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5590439397985697242
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4275733517770246396}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 6fc088c974dc2f942b73043ed275649b, type: 3}
