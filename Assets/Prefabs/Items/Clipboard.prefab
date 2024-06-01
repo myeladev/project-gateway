@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8455536096713455008}
-  - component: {fileID: 2375276713020195915}
+  - component: {fileID: 7559595232159483558}
   m_Layer: 7
   m_Name: Paper
   m_TagString: Untagged
@@ -24,15 +24,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 276334786349874251}
-  m_LocalRotation: {x: -0.7362135, y: -0, z: -0, w: 0.6767494}
+  m_LocalRotation: {x: 0, y: -0.68406355, z: 0.7294224, w: 0}
   m_LocalPosition: {x: 0, y: 0.029, z: 0.009}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8209202651488998145}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -94.82, y: 0, z: 0}
---- !u!212 &2375276713020195915
+  m_LocalEulerAnglesHint: {x: 93.675995, y: -180, z: 0}
+--- !u!212 &7559595232159483558
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d4f385e2d02396d4b8d5319165196b15, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -184,6 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Clipboard
+  itemDescription: 
   weight: 1
   informationText: Oh no! Our science! It's brokeeeeen!
 --- !u!64 &7392797595138931207
