@@ -191,6 +191,35 @@ MonoBehaviour:
   - {fileID: 9043733925921662241}
   - {fileID: 8050040414687623718}
   - {fileID: -2070837848021680693}
+  - {fileID: 4026186585127278963}
+--- !u!114 &4026186585127278963
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7d29c1bfe666cd4fb08fe2665d094a4, type: 3}
+  m_Name: Sobel
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  outlineColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  outlineThickness:
+    m_OverrideState: 1
+    m_Value: 0.8
+  depthMultiplier:
+    m_OverrideState: 1
+    m_Value: 5
+  depthBias:
+    m_OverrideState: 1
+    m_Value: 0.5
 --- !u!114 &8050040414687623718
 MonoBehaviour:
   m_ObjectHideFlags: 3
