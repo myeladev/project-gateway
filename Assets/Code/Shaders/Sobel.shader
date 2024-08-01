@@ -108,7 +108,7 @@ Shader "Hidden/Shader/Sobel"
         float offsetV = _Thickness / _ScreenSize.y;
 
         // Run the depth sobel sampling
-        float sobelDepth = SobelSampleDepth(input.texcoord.xy*2, offsetU, offsetV);
+        float sobelDepth = SobelSampleDepth(input.texcoord.xy*3, offsetU, offsetV);
         sobelDepth = pow(abs(saturate(sobelDepth)) * _DepthMultiplier, _DepthBias);
         
         // Apply sobel effect
