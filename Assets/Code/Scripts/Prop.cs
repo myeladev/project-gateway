@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace ProjectGateway
+namespace ProjectGateway.Code.Scripts
 {
     public class Prop : MonoBehaviour, IInteractable
     {
@@ -27,6 +26,7 @@ namespace ProjectGateway
         private Quaternion _originalRotation;
         private Camera _camera;
         private const float GrabForce = 50f;
+        private readonly Vector3 _grabForceScale = new (1.3f, 0.5f, 1.3f);
 
         protected void Awake()
         {
@@ -44,10 +44,19 @@ namespace ProjectGateway
             if (targetPosition is not null)
             {
                 var distance = Vector3.Distance(transform.position, targetPosition.Value);
+                // If item is at the desired held position
                 if (distance > 0.1f)
                 {
-                    Rigidbody.AddForce((targetPosition.Value - transform.position) * GrabForce);
+                    // Scale the grab force to the set scale
+                    // This is to make grabbing horizontally easier and vertically harder
+                    // (Easier to slide an object than lift it)
+                    var forceToGrabWith = (targetPosition.Value - transform.position) * GrabForce;
+                    forceToGrabWith.x *= _grabForceScale.x;
+                    forceToGrabWith.y *= _grabForceScale.y;
+                    forceToGrabWith.z *= _grabForceScale.z;
+                    Rigidbody.AddForce(forceToGrabWith);
                 }
+                // Item is too far to be considered held
                 if(distance > 4f)
                 {
                     _player.ReleaseProp(this, false);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,19 @@ namespace ProjectGateway
 
         [SerializeField]
         private bool isOn;
+        
+        [SerializeField]
+        private AudioClip sfxOff;
+        [SerializeField]
+        private AudioClip sfxOn;
+        
+        private AudioSource _audio;
+
+        private void Awake()
+        {
+            _audio = GetComponent<AudioSource>();
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -49,6 +63,7 @@ namespace ProjectGateway
         public void Toggle()
         {
             isOn = !isOn;
+            _audio.PlayOneShot(isOn ? sfxOn : sfxOff);
             Refresh();
         }
     }

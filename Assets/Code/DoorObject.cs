@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
+using ProjectGateway.Code.Scripts;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace ProjectGateway
+namespace ProjectGateway.Code
 {
     public class DoorObject : Prop, IInteractable
     {

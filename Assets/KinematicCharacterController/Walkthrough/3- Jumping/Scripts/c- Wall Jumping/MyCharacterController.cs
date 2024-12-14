@@ -1,6 +1,6 @@
 using UnityEngine;
 using KinematicCharacterController;
-using UnityEngine.Serialization;
+using ProjectGateway.Code.Scripts;
 
 namespace ProjectGateway
 {

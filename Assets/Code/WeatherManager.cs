@@ -8,6 +8,9 @@ namespace ProjectGateway
         [Range(0, 24)]
         public float timeOfDay;
 
+        [SerializeField]
+        private float cycleSpeed;
+
         [Range(0, 1)]
         public float precipitation;
 
@@ -33,7 +36,7 @@ namespace ProjectGateway
 
         private void Update()
         {
-            timeOfDay += Time.deltaTime * (24f / dayLength);
+            timeOfDay += Time.deltaTime * (24f / dayLength) * cycleSpeed;
             if (timeOfDay > 24)
             {
                 timeOfDay = 0;
