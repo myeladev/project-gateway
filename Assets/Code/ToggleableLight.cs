@@ -1,12 +1,25 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-namespace ProjectGateway
+namespace ProjectGateway.Code
 {
     public class ToggleableLight : Furniture, IInteractable
     {
         [SerializeField]
         private List<Light> lights = new();
+        
+        [SerializeField]
+        private AudioClip sfxOff;
+        [SerializeField]
+        private AudioClip sfxOn;
+        
+        private AudioSource _audio;
+
+        private void Awake()
+        {
+            _audio = GetComponent<AudioSource>();
+        }
         
         public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
         {
@@ -25,6 +38,7 @@ namespace ProjectGateway
                     {
                         toggleLight.enabled = !toggleLight.enabled;
                     }
+                    _audio.PlayOneShot(lights.Max(m => m.enabled) ? sfxOn : sfxOff);
                     break;
             }
         }

@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using DG.Tweening;
+using ProjectGateway.Code;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -29,6 +31,7 @@ namespace ProjectGateway
         }
 
 
+        private IInteractable _interactable;
         private void Update()
         {
             Cursor.lockState = UIManager.instance.IsInUI ? CursorLockMode.None : CursorLockMode.Locked;
@@ -39,20 +42,38 @@ namespace ProjectGateway
                 cursorImage.enabled = false;
                 return;
             }*/
-            var interactable = CheckInteractables();
+            var oldInteractable = _interactable;
+            _interactable = CheckInteractables();
 
-            interactText.enabled = interactable is not null;
-            interactText.text = "";
-            cursorImage.enabled = interactable is not null;
-
-            if (interactable is not null)
+            var cursorTweenDuration = 0.1f;
+            // If the cursor has moved off of an interactable
+            if (oldInteractable is not null && _interactable is null)
             {
-                var interactStrings = interactable.GetInteractText(InteractContext.Default).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}");
+                cursorImage.transform.DOScale(new Vector3(1f, 1f, 1f), cursorTweenDuration)
+                    .SetEase(Ease.Linear);
+                cursorImage.DOFade(0.05f, cursorTweenDuration)
+                    .SetEase(Ease.Linear);
+            }
+            // If the cursor has moved over an interactable
+            else if (oldInteractable is null && _interactable is not null)
+            {
+                cursorImage.transform.DOScale(new Vector3(1.75f, 1.75f, 1f), cursorTweenDuration)
+                    .SetEase(Ease.Linear);
+                cursorImage.DOFade(0.6f, cursorTweenDuration)
+                    .SetEase(Ease.Linear);
+            }
+
+            interactText.enabled = _interactable is not null;
+            interactText.text = "";
+
+            if (_interactable is not null)
+            {
+                var interactStrings = _interactable.GetInteractText(InteractContext.Default).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}");
                 interactText.text = string.Join(Environment.NewLine, interactStrings);
 
-                if (Input.GetMouseButtonDown(0)) interactable.Interact(InteractType.Grab, InteractContext.Default);
-                if (Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use, InteractContext.Default);
-                if (Input.GetKeyDown(KeyCode.F)) interactable.Interact(InteractType.Pickup, InteractContext.Default);
+                if (Input.GetMouseButtonDown(0)) _interactable.Interact(InteractType.Grab, InteractContext.Default);
+                if (Input.GetKeyDown(KeyCode.E)) _interactable.Interact(InteractType.Use, InteractContext.Default);
+                if (Input.GetKeyDown(KeyCode.F)) _interactable.Interact(InteractType.Pickup, InteractContext.Default);
             }
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ProjectGateway.Code;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -13,11 +14,18 @@ namespace ProjectGateway
         private Vector3 _startingPosition;
         private Quaternion _startingRotation;
         private const float LatchDistance = 0.02f;
+        private AudioSource _audio;
+
+        [SerializeField]
+        private AudioClip sfxClosed;
+        [SerializeField]
+        private AudioClip sfxOpen;
 
         private void Awake()
         {
             _startingPosition = physicalDoor.transform.position;
             _startingRotation = physicalDoor.transform.rotation;
+            _audio = GetComponent<AudioSource>();
         }
 
         void Update()
@@ -54,12 +62,14 @@ namespace ProjectGateway
             if (!gracePeriod)
             {
                 Shut();
+                _audio.PlayOneShot(sfxClosed);
             }
         }
 
         private void Unlatch()
         {
             gracePeriod = false;
+            _audio.PlayOneShot(sfxOpen);
         }
     }
 }
