@@ -9,7 +9,7 @@ namespace ProjectGateway
 
         private MyCharacterController _player;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MyCharacterController>();
         }
