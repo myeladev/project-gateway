@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ProjectGateway
@@ -8,7 +9,12 @@ namespace ProjectGateway
     {
         [SerializeField]
         private List<Light> attachedLights;
+        [SerializeField]
+        private List<Renderer> attachedNeonObjects;
 
+        private List<Color> savedEmissionColors;
+        private List<float> savedEmissionIntensities;
+        
         [SerializeField]
         private bool isOn;
         
@@ -27,6 +33,8 @@ namespace ProjectGateway
         // Start is called before the first frame update
         void Start()
         {
+            savedEmissionColors = attachedNeonObjects.Select(m => m.material.GetColor("_EmissionColor")).ToList();
+            savedEmissionIntensities = savedEmissionColors.Select(m => m.maxColorComponent).ToList();
             Refresh();
         }
 
@@ -36,6 +44,25 @@ namespace ProjectGateway
             foreach (var attachedLight in attachedLights)
             {
                 attachedLight.enabled = isOn;
+            }
+
+            for (var index = 0; index < attachedNeonObjects.Count; index++)
+            {
+                var attachedNeonObject = attachedNeonObjects[index];
+                var savedEmissionColor = savedEmissionColors[index];
+                var savedEmissionIntensity = savedEmissionIntensities[index];
+                if (isOn)
+                {
+                    // Set emission to the desired color and intensity
+                    attachedNeonObject.material.SetColor("_EmissionColor", savedEmissionColor * savedEmissionIntensity);
+                    attachedNeonObject.material.EnableKeyword("_EMISSION");
+                }
+                else
+                {
+                    // Turn off emission by setting the color to black
+                    attachedNeonObject.material.SetColor("_EmissionColor", Color.black);
+                    attachedNeonObject.material.DisableKeyword("_EMISSION");
+                }
             }
         }
 
