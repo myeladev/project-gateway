@@ -50,7 +50,7 @@ namespace ProjectGateway.Code
                     {
                         FeedbackMessageUIManager.instance.ShowMessage("It's locked");    
                     }
-                    else
+                    else if(shut)
                     {
                         shut = false;
                         _door.Open();
