@@ -52,6 +52,7 @@ namespace ProjectGateway
         
         public void Open()
         {
+            _audio.PlayOneShot(sfxOpen);
             gracePeriod = true;
             physicalDoor.GetComponent<Rigidbody>().isKinematic = false;
             physicalDoor.GetComponent<DoorObject>().shut = false;
@@ -69,7 +70,6 @@ namespace ProjectGateway
         private void Unlatch()
         {
             gracePeriod = false;
-            _audio.PlayOneShot(sfxOpen);
         }
     }
 }
