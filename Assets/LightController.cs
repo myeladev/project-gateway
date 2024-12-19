@@ -13,11 +13,14 @@ namespace ProjectGateway
         [SerializeField]
         private List<Renderer> attachedNeonObjects;
 
-        public bool isOn;
+        public bool isOn = true;
 
         private void Awake()
         {
-            isOn = attachedLights.Max(m => m.isActiveAndEnabled);
+            if (attachedLights.Any())
+            {
+                isOn = attachedLights.Max(m => m.isActiveAndEnabled);
+            }
         }
 
         void Start()
