@@ -30,7 +30,6 @@ namespace ProjectGateway.Code
             Refresh();
         }
 
-        // Update is called once per frame
         void Refresh()
         {
             foreach (var attachedLight in attachedLights)
