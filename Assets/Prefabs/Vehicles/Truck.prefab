@@ -494,7 +494,7 @@ MonoBehaviour:
   maxAcceleration: 90
   brakeAcceleration: 140
   turnSensitivity: 1
-  maxSteerAngle: 30
+  maxSteerAngle: 35
   centerOfMass: {x: 0, y: -2, z: 0}
   cameraAnchor: {fileID: 0}
   wheels:
@@ -678,7 +678,7 @@ Transform:
   m_GameObject: {fileID: 6602755025770574782}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.5999995, y: -1.044, z: -0.10000031}
+  m_LocalPosition: {x: -1.7499992, y: -1.044, z: -0.10000033}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1412,7 +1412,7 @@ Transform:
   m_GameObject: {fileID: 6602755026886197059}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.6, y: -1.044, z: -0.10000026}
+  m_LocalPosition: {x: 1.75, y: -1.044, z: -0.10000026}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
