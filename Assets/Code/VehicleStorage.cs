@@ -53,26 +53,26 @@ namespace ProjectGateway
         }
 
         public bool IsInteractable => MyPlayer.instance.Character.CanInteract || MyPlayer.instance.Character.movingFurniture;
-        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public List<string> GetInteractOptions(InteractContext context)
         {
-            var interactKeys = new Dictionary<InteractType, string> { { InteractType.Use, $"Stow Furniture {_storedFurniture.Count}/{_furniturePositions.Count}" } };
+            var interactKeys = new List<string> { $"Stow Furniture" };
 
             if (_storedFurniture.Any())
             {
-                interactKeys.Add(InteractType.Pickup, "Remove Furniture");
+                interactKeys.Add("Remove Furniture");
             }
 
             return interactKeys;
         }
 
-        public void Interact(InteractType interactType, InteractContext context)
+        public void Interact(string option, InteractContext context)
         {
-            switch (interactType)
+            switch (option)
             {
-                case InteractType.Use:
+                case "Stow Furniture":
                     StowFurniture(MyPlayer.instance.Character.movingFurniture);
                     break;
-                case InteractType.Pickup:
+                case "Remove Furniture":
                     var furnitureToMove = GetFurnitureToRemove();
                     if (furnitureToMove)
                     {

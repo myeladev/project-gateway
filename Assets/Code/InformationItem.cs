@@ -9,22 +9,22 @@ namespace ProjectGateway
         [TextArea]
         private string informationText;
         
-        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public new List<string> GetInteractOptions(InteractContext context)
         {
             // Get the base prop interactions
-            var interactList = base.GetInteractText(context);
+            var interactList = base.GetInteractOptions(context);
             // Add the "read" interaction
-            interactList.Add(InteractType.Use, "Read");
+            interactList.Add("Read");
             // Return the modified list
             return interactList;
         }
         
-        public new void Interact(InteractType interactType, InteractContext context)
+        public new void Interact(string option, InteractContext context)
         {
-            base.Interact(interactType, context);
-            switch (interactType)
+            base.Interact(option, context);
+            switch (option)
             {
-                case InteractType.Use:
+                case "Read":
                     InformationUI.instance.ShowMessage(informationText);
                     break;
             }

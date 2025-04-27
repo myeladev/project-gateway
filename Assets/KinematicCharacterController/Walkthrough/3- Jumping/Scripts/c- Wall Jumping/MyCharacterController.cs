@@ -1,6 +1,8 @@
 using UnityEngine;
 using KinematicCharacterController;
+using ProjectGateway.Code;
 using ProjectGateway.Code.Scripts;
+using UnityEngine.Serialization;
 
 namespace ProjectGateway
 {
@@ -11,6 +13,7 @@ namespace ProjectGateway
         public Quaternion CameraRotation;
         public bool JumpDown;
         public bool Sprinting;
+        public bool Crouching;
     }
 
     public class MyCharacterController : MonoBehaviour, ICharacterController
@@ -60,13 +63,14 @@ namespace ProjectGateway
         private bool _jumpRequested = false;
         private bool _jumpConsumed = false;
         private bool _jumpedThisFrame = false;
-        private bool _sprinting = false;
+        private MovementState _movementState = MovementState.Idle;
         private float _timeSinceJumpRequested = Mathf.Infinity;
         private float _timeSinceLastAbleToJump = 0f;
         private bool _doubleJumpConsumed = false;
         private bool _canWallJump = false;
         private Vector3 _wallJumpNormal;
         private Prop _holdingProp;
+        private Item _holdingItem;
         private Camera _camera;
 
         private void Awake()
@@ -103,18 +107,20 @@ namespace ProjectGateway
 
             _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 1.2f));
         }
-        
+
+        private float holdingFurnitureDelay = 0f;
         private void HandleFurnitureMoving()
         {
+            holdingFurnitureDelay -= Time.deltaTime;
             if (movingFurniture is not null)
             {
                 if (Physics.Raycast(_camera.transform.position, _camera.transform.TransformDirection(Vector3.forward),
-                        out var hit, FurniturePlacementRange))
+                        out var hit, FurniturePlacementRange, furnitureLayerMask))
                 {
                     var blocked = false;
                     furniturePlacementMarker.transform.position = hit.point;
                     furniturePlacementMarker.gameObject.SetActive(true);
-                    if (hit.normal != Vector3.up) blocked = true;
+                    //if (hit.normal != Vector3.up) blocked = true;
                     SnapRotatedObjectToGround(_furniturePlacementMarkerCollider);
                     furniturePlacementMarker.isBlocked = blocked;
                 }
@@ -123,7 +129,7 @@ namespace ProjectGateway
                     furniturePlacementMarker.FlushCollisions();
                     furniturePlacementMarker.gameObject.SetActive(false);
                 }
-                if (Input.GetMouseButtonUp(0))
+                if (Input.GetMouseButtonDown(0) && holdingFurnitureDelay < 0f)
                 {
                     PlaceFurniture(movingFurniture);
                 }
@@ -137,14 +143,16 @@ namespace ProjectGateway
                 }
             }
         }
-        
+
+        public LayerMask furnitureLayerMask;
+
         private void SnapRotatedObjectToGround(Collider objectToSnap)
         {
             Collider collider = objectToSnap;
             Vector3 highestPoint = collider.bounds.max;
             RaycastHit hit;
             var leeway = 0.01f;
-            if (Physics.Raycast(highestPoint + (Vector3.up * leeway), Vector3.down, out hit, Mathf.Infinity, ~LayerMask.NameToLayer("Ignore Raycast")))
+            if (Physics.Raycast(highestPoint + (Vector3.up * leeway), Vector3.down, out hit, Mathf.Infinity, furnitureLayerMask))
             {
                 float newY = hit.point.y + (collider.bounds.size.y/2);
                 objectToSnap.transform.position = new Vector3(objectToSnap.transform.position.x, newY + leeway, objectToSnap.transform.position.z);
@@ -158,6 +166,7 @@ namespace ProjectGateway
         {
             if (myPlayer.drivingVehicle 
                 || myPlayer.isSleeping 
+                || myPlayer.isSitting
                 || InformationUI.instance.IsViewingInformation 
                 || UIManager.instance.IsInUI)
             {
@@ -176,10 +185,31 @@ namespace ProjectGateway
             }
             Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
 
+            if (myPlayer.isSitting)
+            {
+                _movementState = MovementState.Sit;
+            }
+            
             // Move and look inputs
             _moveInputVector = cameraPlanarRotation * moveInputVector;
             _lookInputVector = cameraPlanarDirection;
-            _sprinting = inputs.Sprinting;
+            if (inputs.Crouching && (_movementState == MovementState.Idle || _movementState == MovementState.Sprint || _movementState == MovementState.Walk))
+            {
+                _movementState = MovementState.Crouch;
+            }
+            else if (_movementState == MovementState.Crouch && !inputs.Crouching)
+            {
+                _movementState = MovementState.Idle;
+            }
+            
+            if (inputs.Sprinting && (_movementState == MovementState.Idle || _movementState == MovementState.Crouch || _movementState == MovementState.Walk))
+            {
+                _movementState = MovementState.Sprint;
+            }
+            else if (_movementState == MovementState.Sprint && !inputs.Sprinting)
+            {
+                _movementState = MovementState.Idle;
+            }
 
             // Jumping input
             if (inputs.JumpDown)
@@ -230,7 +260,8 @@ namespace ProjectGateway
                 // Calculate target velocity
                 Vector3 inputRight = Vector3.Cross(_moveInputVector, Motor.CharacterUp);
                 Vector3 reorientedInput = Vector3.Cross(Motor.GroundingStatus.GroundNormal, inputRight).normalized * _moveInputVector.magnitude;
-                targetMovementVelocity = reorientedInput * (_sprinting ? MaxStableSprintSpeed : MaxStableMoveSpeed);
+                targetMovementVelocity = reorientedInput * (_movementState == MovementState.Sprint ? MaxStableSprintSpeed : 
+                                                            _movementState == MovementState.Crouch ? MaxStableMoveSpeed*.65f : MaxStableMoveSpeed);
 
                 // Smooth movement Velocity
                 currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1 - Mathf.Exp(-StableMovementSharpness * deltaTime));
@@ -396,14 +427,16 @@ namespace ProjectGateway
 
         public bool MoveFurniture(Furniture furnitureToMove)
         {
-            if (movingFurniture) return false;
+            if (movingFurniture || holdingFurnitureDelay > 0f) return false;
             movingFurniture = furnitureToMove;
             furnitureHolderMeshRenderer.gameObject.SetActive(true);
             var mesh = furnitureToMove.GetComponent<MeshFilter>().mesh;
             furnitureHolderMeshFilter.mesh = mesh;
             furnitureHolderMeshRenderer.materials = furnitureToMove.GetComponent<MeshRenderer>().materials;
             furniturePlacementMarker.GetComponent<MeshFilter>().mesh = mesh;
+            furniturePlacementMarker.transform.localScale = furnitureToMove.transform.localScale;
             furniturePlacementMarker.GetComponent<MeshCollider>().sharedMesh = mesh;
+            holdingFurnitureDelay = 0.25f;
             return true;
 
         }
@@ -416,7 +449,7 @@ namespace ProjectGateway
                 {
                     if (Physics.Raycast(_camera.transform.position,
                             _camera.transform.TransformDirection(Vector3.forward),
-                            out var hit, FurniturePlacementRange))
+                            out var hit, FurniturePlacementRange, furnitureLayerMask))
                     {
                         movingFurniture.Place(furniturePlacementMarker.transform.position, furniturePlacementMarker.transform.rotation);
                         ReleaseHeldFurniture();
@@ -431,9 +464,12 @@ namespace ProjectGateway
 
         public void ReleaseHeldFurniture()
         {
+            holdingFurnitureDelay = 0.25f;
             movingFurniture = null;
             furnitureHolderMeshRenderer.gameObject.SetActive(false);
             furniturePlacementMarker.gameObject.SetActive(false);
         }
+
+        public bool CanClean() => _holdingItem?.canClean ?? false;
     }
 }

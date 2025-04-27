@@ -8,7 +8,7 @@ namespace ProjectGateway
         [HideInInspector]
         public CanvasGroup canvasGroup;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
         }

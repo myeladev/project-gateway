@@ -34,7 +34,7 @@ namespace ProjectGateway
         private IInteractable _interactable;
         private void Update()
         {
-            Cursor.lockState = UIManager.instance.IsInUI ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.lockState = UIManager.instance.IsInUI ? CursorLockMode.None : OptionsUI.Instance.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
             /*
             if (!characterController.CanInteract)
             {
@@ -66,14 +66,30 @@ namespace ProjectGateway
             interactText.enabled = _interactable is not null;
             interactText.text = "";
 
+            if (_interactable is Furniture furniture && furniture.seatingAnchor == MyPlayer.instance.currentSeatingAnchor)
+            {
+                return;
+            }
+
             if (_interactable is not null)
             {
-                var interactStrings = _interactable.GetInteractText(InteractContext.Default).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}");
-                interactText.text = string.Join(Environment.NewLine, interactStrings);
+                var interactStrings = _interactable.GetInteractOptions(InteractContext.Default);
 
-                if (Input.GetMouseButtonDown(0)) _interactable.Interact(InteractType.Grab, InteractContext.Default);
-                if (Input.GetKeyDown(KeyCode.E)) _interactable.Interact(InteractType.Use, InteractContext.Default);
-                if (Input.GetKeyDown(KeyCode.F)) _interactable.Interact(InteractType.Pickup, InteractContext.Default);
+                if (!OptionsUI.Instance.IsViewingOptions)
+                {
+                    interactText.text = $"[L Click] {interactStrings[0]}";
+                    if (interactStrings.Count > 1)
+                    {
+                        interactText.text += Environment.NewLine + $"[R Click] Options...";
+                    }
+                }
+                else
+                {
+                    interactText.text = "";
+                }
+
+                if (Input.GetMouseButtonDown(0) && !OptionsUI.Instance.IsViewingOptions) _interactable.Interact(interactStrings[0], InteractContext.Default);
+                if (Input.GetMouseButtonDown(1)) ShowInteractOptions(_interactable);
             }
         }
 
@@ -88,6 +104,12 @@ namespace ProjectGateway
             }
 
             return null;
+        }
+
+        [SerializeField] private OptionsUI optionsPanel;
+        private void ShowInteractOptions(IInteractable interactable)
+        {
+            optionsPanel.Open(interactable);
         }
     }
 

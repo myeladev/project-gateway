@@ -25,27 +25,27 @@ namespace ProjectGateway.Code
             }
         }
         
-        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public new List<string> GetInteractOptions(InteractContext context)
         {
             // Get the base prop interactions
-            var interactList = new Dictionary<InteractType, string>();
+            var interactList = new List<string>();
             if (shut)
             {
-                interactList.Add(InteractType.Use, "Open");
+                interactList.Add("Open");
             }
             else
             {
-                interactList.Add(InteractType.Grab, "Grab");
+                interactList.Add("Grab");
             }
             // Return the modified list
             return interactList;
         }
         
-        public new void Interact(InteractType interactType, InteractContext context)
+        public new void Interact(string option, InteractContext context)
         {
-            switch (interactType)
+            switch (option)
             {
-                case InteractType.Use:
+                case "Open":
                     if (locked)
                     {
                         FeedbackMessageUIManager.instance.ShowMessage("It's locked");    
@@ -56,10 +56,10 @@ namespace ProjectGateway.Code
                         _door.Open();
                     }
                     break;
-                case InteractType.Grab:
+                case "Grab":
                     if (!shut && !locked)
                     {
-                        base.Interact(interactType, context);
+                        base.Interact(option, context);
                     }
                     break;
             }

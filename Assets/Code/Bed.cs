@@ -4,22 +4,22 @@ namespace ProjectGateway
 {
     public class Bed : Furniture, IInteractable
     {
-        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public new List<string> GetInteractOptions(InteractContext context)
         {
             // Get the base prop interactions
-            var interactList = base.GetInteractText(context);
+            var interactList = base.GetInteractOptions(context);
             // Add the "pick up" interaction for items
-            interactList.Add(InteractType.Use, "Sleep");
+            interactList.Add("Sleep");
             // Return the modified list
             return interactList;
         }
         
-        public new void Interact(InteractType interactType, InteractContext context)
+        public new void Interact(string option, InteractContext context)
         {
-            base.Interact(interactType, context);
-            switch (interactType)
+            base.Interact(option, context);
+            switch (option)
             {
-                case InteractType.Use:
+                case "Sleep":
                     if (MyPlayer.instance.sleep <= 90f)
                     {
                         MyPlayer.instance.Sleep(this);

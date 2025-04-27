@@ -39,21 +39,21 @@ namespace ProjectGateway.Code
         }
 
         public bool IsInteractable => true;
-        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public List<string> GetInteractOptions(InteractContext context)
         {
             return context == InteractContext.Default ? 
-                new Dictionary<InteractType, string>
+                new List<string>
                 {
-                    { InteractType.Use, "Toggle Lights" },
+                    "Toggle Lights",
                 }
-                : new Dictionary<InteractType, string>();
+                : new List<string>();
         }
 
-        public void Interact(InteractType interactType, InteractContext context)
+        public void Interact(string option, InteractContext context)
         {
-            switch (interactType)
+            switch (option)
             {
-                case InteractType.Use:
+                case "Toggle Lights":
                     Toggle();
                     break;
             }

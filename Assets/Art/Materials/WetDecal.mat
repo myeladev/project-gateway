@@ -161,7 +161,7 @@ Material:
     - _CullMode: 2
     - _CullModeForward: 2
     - _Cutoff: 0.5
-    - _DecalBlend: 0.875
+    - _DecalBlend: 1
     - _DecalColorMask0: 15
     - _DecalColorMask1: 0
     - _DecalColorMask2: 11
@@ -211,8 +211,8 @@ Material:
     - _MaskBlendSrc: 1
     - _MaterialID: 1
     - _Metallic: 0
-    - _MetallicRemapMax: 1
-    - _MetallicRemapMin: 0
+    - _MetallicRemapMax: 0.9999999
+    - _MetallicRemapMin: 0.9999999
     - _NormalBlendSrc: 0
     - _NormalMapSpace: 0
     - _NormalScale: 1
@@ -287,6 +287,7 @@ Material:
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &6872968935110374106
 MonoBehaviour:
   m_ObjectHideFlags: 11
