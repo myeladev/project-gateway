@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ProjectGateway
 {
@@ -9,29 +10,33 @@ namespace ProjectGateway
 
         private MyCharacterController _player;
 
+        public Transform seatingAnchor;
+
         protected virtual void Awake()
         {
             _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MyCharacterController>();
         }
 
-        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public List<string> GetInteractOptions(InteractContext context)
         {
-            return 
-                new Dictionary<InteractType, string>
-                {
-                    { InteractType.Pickup, "Move" },
-                };
+            var list = new List<string>();
+            list.Add("Move");
+            if(seatingAnchor) list.Add("Sit");
+            return list;
         }
 
-        public void Interact(InteractType interactType, InteractContext context)
+        public void Interact(string option, InteractContext context)
         {
-            switch (interactType)
+            switch (option)
             {
-                case InteractType.Pickup:
+                case "Move":
                     if (_player.MoveFurniture(this))
                     {
                         gameObject.SetActive(false);
                     }
+                    break;
+                case "Sit":
+                    MyPlayer.instance.Sit(seatingAnchor);
                     break;
             }
         }

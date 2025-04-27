@@ -29,16 +29,16 @@ namespace ProjectGateway
 
         public bool IsInteractable => MyPlayer.instance.Character.CanInteract || MyPlayer.instance.Character.movingFurniture;
         
-        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public List<string> GetInteractOptions(InteractContext context)
         {
-            return new Dictionary<InteractType, string>(){{InteractType.Use, "Press"}};
+            return new List<string>(){"Press"};
         }
         
-        public void Interact(InteractType interactType, InteractContext context)
+        public void Interact(string option, InteractContext context)
         {
-            switch (interactType)
+            switch (option)
             {
-                case InteractType.Use:
+                case "Press":
                     _elevator.PressElevatorButton(this);
                     break;
             }

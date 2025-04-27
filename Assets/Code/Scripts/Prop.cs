@@ -7,14 +7,14 @@ namespace ProjectGateway.Code.Scripts
     {
         public bool IsInteractable => MyPlayer.instance.Character.CanInteract;
 
-        public Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public List<string> GetInteractOptions(InteractContext context)
         {
             return context == InteractContext.Default ? 
-                new Dictionary<InteractType, string>
+                new List<string>
                 {
-                    { InteractType.Grab, "Grab" },
+                    "Grab",
                 }
-                : new Dictionary<InteractType, string>();
+                : new List<string>();
         }
 
         private Vector3? targetPosition;
@@ -33,8 +33,8 @@ namespace ProjectGateway.Code.Scripts
             _camera = Camera.main;
             Rigidbody = GetComponent<Rigidbody>();
             _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MyCharacterController>();
-            _originalDragValue = Rigidbody.drag;
-            _originalAngularDragValue = Rigidbody.angularDrag;
+            _originalDragValue = Rigidbody.linearDamping;
+            _originalAngularDragValue = Rigidbody.angularDamping;
             _originalPosition = transform.position;
             _originalRotation = transform.rotation;
         }
@@ -69,20 +69,20 @@ namespace ProjectGateway.Code.Scripts
                 // Reset it
                 transform.position = _originalPosition;
                 transform.rotation = _originalRotation;
-                Rigidbody.velocity = Vector3.zero;
+                Rigidbody.linearVelocity = Vector3.zero;
             }
         }
 
-        public void Interact(InteractType interactType, InteractContext context)
+        public void Interact(string option, InteractContext context)
         {
-            switch (interactType)
+            switch (option)
             {
-                case InteractType.Grab:
+                case "Grab":
                     _player.GrabProp(this);
                     gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
                     Rigidbody.useGravity = false;
-                    Rigidbody.drag = 10f;
-                    Rigidbody.angularDrag = 10f;
+                    Rigidbody.linearDamping = 10f;
+                    Rigidbody.angularDamping = 10f;
                     break;
             }
         }
@@ -92,8 +92,8 @@ namespace ProjectGateway.Code.Scripts
         {
             gameObject.layer = LayerMask.NameToLayer("Prop");
             Rigidbody.useGravity = true;
-            Rigidbody.drag = _originalDragValue;
-            Rigidbody.angularDrag = _originalAngularDragValue;
+            Rigidbody.linearDamping = _originalDragValue;
+            Rigidbody.angularDamping = _originalAngularDragValue;
             SetTarget(null);
             if (launch)
             {

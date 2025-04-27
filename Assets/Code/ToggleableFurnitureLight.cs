@@ -22,19 +22,19 @@ namespace ProjectGateway.Code
             _audio = GetComponent<AudioSource>();
         }
         
-        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public new List<string> GetInteractOptions(InteractContext context)
         {
-            var interactText = base.GetInteractText(context);
-            interactText.Add(InteractType.Use, "Toggle");
+            var interactText = base.GetInteractOptions(context);
+            interactText.Add("Toggle");
             return interactText;
         }
 
-        public new void Interact(InteractType interactType, InteractContext context)
+        public new void Interact(string option, InteractContext context)
         {
-            base.Interact(interactType, context);
-            switch (interactType)
+            base.Interact(option, context);
+            switch (option)
             {
-                case InteractType.Use:
+                case "Toggle":
                     foreach (var toggleLight in lights)
                     {
                         toggleLight.enabled = !toggleLight.enabled;

@@ -9,12 +9,15 @@ namespace ProjectGateway
     {
         public CharacterCamera OrbitCamera;
         public CinemachineVirtualCamera vehicleCamera;
+        public CinemachineVirtualCamera sittingCamera;
         public Transform CameraFollowPoint;
         public MyCharacterController Character;
 
         public bool IsInVehicle => drivingVehicle is not null;
         [HideInInspector]
         public Vehicle drivingVehicle;
+
+        public Transform currentSeatingAnchor;
         
         private const string MouseXInput = "Mouse X";
         private const string MouseYInput = "Mouse Y";
@@ -32,6 +35,7 @@ namespace ProjectGateway
         [HideInInspector] public float hunger;
         [HideInInspector] public float sleep;
         public bool isSleeping;
+        public bool isSitting;
 
         [SerializeField] 
         private List<Light> flashlight = new();
@@ -62,12 +66,13 @@ namespace ProjectGateway
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 drivingVehicle?.Exit();
+                if(currentSeatingAnchor) Sit(null);
 
                 if (isSleeping) Wake();
             }
                 
             // Handle flashlight control
-            if (Input.GetKeyDown(KeyCode.V))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 foreach (var fLight in flashlight)
                 {
@@ -131,6 +136,7 @@ namespace ProjectGateway
             characterInputs.CameraRotation = OrbitCamera.Transform.rotation;
             characterInputs.JumpDown = Input.GetKeyDown(KeyCode.Space);
             characterInputs.Sprinting = Input.GetKey(KeyCode.LeftShift);
+            characterInputs.Crouching = Input.GetKey(KeyCode.LeftControl);
 
             // Apply inputs to character
             Character.SetInputs(ref characterInputs);
@@ -159,6 +165,15 @@ namespace ProjectGateway
         private void Wake()
         {
             isSleeping = false;
+        }
+        
+        public void Sit(Transform seatingAnchor)
+        {
+            currentSeatingAnchor = seatingAnchor;
+            sittingCamera.gameObject.SetActive(currentSeatingAnchor is not null);
+            sittingCamera.Follow = seatingAnchor?.transform;
+            sittingCamera.transform.parent = seatingAnchor;
+            Character.gameObject.SetActive(currentSeatingAnchor is null);
         }
     }
 }

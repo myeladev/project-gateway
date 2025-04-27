@@ -163,7 +163,7 @@ namespace ProjectGateway
             {
                 //var dirtParticleMainSettings = wheel.smokeParticle.main;
 
-                if (Input.GetKey(KeyCode.Space) && wheel.axel == Axel.Rear && wheel.wheelCollider.isGrounded && carRb.velocity.magnitude >= 10.0f)
+                if (Input.GetKey(KeyCode.Space) && wheel.axel == Axel.Rear && wheel.wheelCollider.isGrounded && carRb.linearVelocity.magnitude >= 10.0f)
                 {
                     wheel.wheelEffectObj.GetComponentInChildren<TrailRenderer>().emitting = true;
                     wheel.smokeParticle.Emit(1);
@@ -176,21 +176,21 @@ namespace ProjectGateway
         }
 
         public new bool IsInteractable => MyPlayer.instance.Character.CanInteract;
-        public new Dictionary<InteractType, string> GetInteractText(InteractContext context)
+        public new List<string> GetInteractOptions(InteractContext context)
         {
             // Get the base prop interactions
-            var interactList = base.GetInteractText(context);
+            var interactList = base.GetInteractOptions(context);
             // Add the "drive" interaction for items
-            interactList.Add(InteractType.Use, "Drive");
+            interactList.Add("Drive");
             // Return the modified list
             return interactList;
         }
-        public new void Interact(InteractType interactType, InteractContext context)
+        public new void Interact(string option, InteractContext context)
         {
-            base.Interact(interactType, context);
-            switch (interactType)
+            base.Interact(option, context);
+            switch (option)
             {
-                case InteractType.Use:
+                case "Drive":
                     Drive();
                     break;
             }

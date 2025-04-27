@@ -34,8 +34,8 @@ namespace ProjectGateway
             if (selectedItem && UIManager.instance.CurrentPanel == this)
             {
                 IInteractable interactable = selectedItem;
-                if (Input.GetKeyDown(KeyCode.E)) interactable.Interact(InteractType.Use, InteractContext.Inventory);
-                if (Input.GetKeyDown(KeyCode.F)) interactable.Interact(InteractType.Pickup, InteractContext.Inventory);
+                if (Input.GetKeyDown(KeyCode.E)) interactable.Interact("Use", InteractContext.Inventory);
+                if (Input.GetKeyDown(KeyCode.F)) interactable.Interact("Drop", InteractContext.Inventory);
             }
         }
         
@@ -67,7 +67,7 @@ namespace ProjectGateway
             selectedItem = item;
             itemDetailName.text = item?.itemName;
             itemDetailDescription.text = item?.itemDescription;
-            var interactStrings = (item as IInteractable)?.GetInteractText(InteractContext.Inventory).OrderBy(m => m.Key).Select(m => $"[{ Utilities.GetInputTextForInteractType(m.Key) }] {m.Value}").ToList();
+            var interactStrings = (item as IInteractable)?.GetInteractOptions(InteractContext.Inventory).ToList();
             itemContextActions.text = interactStrings?.Any() ?? false ? string.Join(Environment.NewLine, interactStrings) : "";
 
             if (item)
