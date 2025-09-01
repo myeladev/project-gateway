@@ -28,7 +28,7 @@ namespace ProjectGateway
             Vector3 target = ray.origin + ray.direction * (grabDistance > 0 ? grabDistance : 5f);
             anchorRb.MovePosition(target);
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !OptionsUI.Instance.IsViewingOptions)
             {
                 if (Physics.Raycast(ray, out var hit, 1000f) && hit.rigidbody)
                 {
