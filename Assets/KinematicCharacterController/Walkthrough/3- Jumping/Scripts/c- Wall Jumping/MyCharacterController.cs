@@ -87,25 +87,7 @@ namespace ProjectGateway
 
         void Update()
         {
-            //HandlePropGrabbing();
             HandleFurnitureMoving();
-        }
-
-        private void HandlePropGrabbing()
-        {
-            if (_holdingProp is not null)
-            {
-                if (Input.GetMouseButtonUp(0))
-                {
-                    ReleaseProp(_holdingProp, false);
-                }
-                if (Input.GetMouseButtonUp(1))
-                {
-                    ReleaseProp(_holdingProp, true);
-                }
-            }
-
-            _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 2.5f));
         }
 
         private float holdingFurnitureDelay = 0f;
@@ -409,20 +391,6 @@ namespace ProjectGateway
 
         public void OnDiscreteCollisionDetected(Collider hitCollider)
         {
-        }
-
-        public void GrabProp(Prop propToHold)
-        {
-            _holdingProp = propToHold;
-        }
-
-        public void ReleaseProp(Prop propToRelease, bool launch)
-        {
-            if (_holdingProp == propToRelease)
-            {
-                _holdingProp?.Release(launch);
-                _holdingProp = null;
-            }
         }
 
         public bool MoveFurniture(Furniture furnitureToMove)
