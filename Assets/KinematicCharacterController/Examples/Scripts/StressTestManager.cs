@@ -38,7 +38,7 @@ namespace KinematicCharacterController.Examples
         private void UpdateOnImages()
         {
             RenderOn.enabled = Camera.cullingMask == -1;
-            SimOn.enabled = Physics.autoSimulation;
+            SimOn.enabled = Physics.simulationMode == SimulationMode.Update;
             InterpOn.enabled = KinematicCharacterSystem.Settings.Interpolate;
         }
 
@@ -60,12 +60,6 @@ namespace KinematicCharacterController.Examples
             {
                 Camera.cullingMask = -1;
             }
-            UpdateOnImages();
-        }
-
-        public void TogglePhysicsSim()
-        {
-            Physics.autoSimulation = !Physics.autoSimulation;
             UpdateOnImages();
         }
 

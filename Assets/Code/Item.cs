@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using ProjectGateway.Code;
+using System.Linq;
 using ProjectGateway.Code.Scripts;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace ProjectGateway
+namespace ProjectGateway.Code
 {
     public class Item : Prop, IInteractable
     {
@@ -12,13 +11,13 @@ namespace ProjectGateway
         [TextArea]
         public string itemDescription;
         public float weight;
-        private Collider _collider;
+        private List<Collider> _colliders;
         public bool canClean;
 
         protected new void Awake()
         {
             base.Awake();
-            _collider = GetComponent<Collider>();
+            _colliders = GetComponentsInChildren<Collider>().ToList();
         }
 
         public new List<string> GetInteractOptions(InteractContext context)
@@ -26,7 +25,7 @@ namespace ProjectGateway
             // Get the base prop interactions
             var interactList = base.GetInteractOptions(context);
             // Add the "pick up" interaction for items
-            interactList.Add(context == InteractContext.Inventory ? "Drop" : "Pick up");
+            interactList.Add(context == InteractContext.Inventory ? "Drop" : "Pickup");
             // Return the modified list
             return interactList;
         }
@@ -36,18 +35,18 @@ namespace ProjectGateway
             base.Interact(option, context);
             switch (option)
             {
-                case "Pickup":
+                case "Drop":
                     MyPlayer.instance.inventory.RemoveFromInventory(this);
                     UIManager.instance.inventoryUI.Refresh();
                     
                     Rigidbody.isKinematic = false;
-                    _collider.enabled = true;
+                    _colliders.ForEach(m => m.enabled = true);
                     var targetPosition = Camera.main.transform.position + Camera.main.transform.forward * 2f;
                     Debug.Log(targetPosition);
                     transform.position = targetPosition;
                     Rigidbody.linearVelocity = Vector3.zero;
                         break;
-                case "Drop":
+                case "Pickup":
                     var success = MyPlayer.instance.inventory.AttemptToAddItem(this);
 
                     if (!success)
@@ -57,7 +56,7 @@ namespace ProjectGateway
                     else
                     {
                         Rigidbody.isKinematic = true;
-                        _collider.enabled = false;
+                        _colliders.ForEach(m => m.enabled = false);
                         transform.position = Utilities.InventoryPoolPosition;
                     }
                     break;

@@ -87,7 +87,7 @@ namespace ProjectGateway
 
         void Update()
         {
-            HandlePropGrabbing();
+            //HandlePropGrabbing();
             HandleFurnitureMoving();
         }
 
@@ -105,7 +105,7 @@ namespace ProjectGateway
                 }
             }
 
-            _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 1.2f));
+            _holdingProp?.SetTarget(_camera.transform.position + (_camera.transform.TransformDirection(Vector3.forward) * 2.5f));
         }
 
         private float holdingFurnitureDelay = 0f;
@@ -154,7 +154,7 @@ namespace ProjectGateway
             var leeway = 0.01f;
             if (Physics.Raycast(highestPoint + (Vector3.up * leeway), Vector3.down, out hit, Mathf.Infinity, furnitureLayerMask))
             {
-                float newY = hit.point.y + (collider.bounds.size.y/2);
+                float newY = hit.point.y;
                 objectToSnap.transform.position = new Vector3(objectToSnap.transform.position.x, newY + leeway, objectToSnap.transform.position.z);
             }
         }

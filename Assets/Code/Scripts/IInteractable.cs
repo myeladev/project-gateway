@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProjectGateway
+namespace ProjectGateway.Code.Scripts
 {
     public interface IInteractable
     {

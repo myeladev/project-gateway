@@ -9,6 +9,7 @@ namespace ProjectGateway
         public UIPanel CurrentPanel { get; private set; }
 
         public UIPanel inventoryUI;
+        public UIPanel optionsUI;
 
         private void Awake()
         {

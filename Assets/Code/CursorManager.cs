@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using DG.Tweening;
 using ProjectGateway.Code;
+using ProjectGateway.Code.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -23,7 +24,7 @@ namespace ProjectGateway
         [SerializeField] 
         private MyCharacterController characterController;
 
-        private const float InteractRange = 2f;
+        private const float InteractRange = 3f;
 
         private void Awake()
         {
