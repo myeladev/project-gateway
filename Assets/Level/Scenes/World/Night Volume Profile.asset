@@ -159,10 +159,10 @@ MonoBehaviour:
     m_Value: 1000
   baseHeight:
     m_OverrideState: 1
-    m_Value: 15
+    m_Value: 76.22
   maximumHeight:
     m_OverrideState: 1
-    m_Value: 150
+    m_Value: 100
   meanFreePath:
     m_OverrideState: 1
     m_Value: 200
@@ -229,7 +229,7 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.15
+    m_Value: 0.144
   scatter:
     m_OverrideState: 1
     m_Value: 0.7
@@ -422,7 +422,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 4
   cloudType:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
   skyAmbientMode:
     m_OverrideState: 1
@@ -441,7 +441,7 @@ MonoBehaviour:
     m_Value: {x: 0, y: -6378.1025, z: 0}
   windOrientation:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 168
   windSpeed:
     m_OverrideState: 1
     m_Value: 100
@@ -558,7 +558,7 @@ MonoBehaviour:
     m_Value: {x: 0, y: 0, z: 0}
   spaceEmissionTexture:
     m_OverrideState: 1
-    m_Value: {fileID: 8900000, guid: eb4604e0a32020747bd2015914bc326b, type: 3}
+    m_Value: {fileID: 8900000, guid: 30f8f570631b5d14f81bdd5e7f5d29a0, type: 3}
   spaceEmissionMultiplier:
     m_OverrideState: 1
     m_Value: 1.5
