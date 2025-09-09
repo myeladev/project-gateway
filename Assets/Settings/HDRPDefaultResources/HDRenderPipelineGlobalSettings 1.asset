@@ -28,8 +28,7 @@ MonoBehaviour:
       m_CustomPostProcessTypesAsString: []
     m_AfterPostProcessCustomPostProcesses:
       m_InjectionPoint: 2
-      m_CustomPostProcessTypesAsString:
-      - Sobel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      m_CustomPostProcessTypesAsString: []
   beforeTransparentCustomPostProcesses: []
   beforePostProcessCustomPostProcesses: []
   afterPostProcessBlursCustomPostProcesses: []
@@ -429,7 +428,8 @@ MonoBehaviour:
         m_AfterPostProcessCustomPostProcesses:
           m_InjectionPoint: 2
           m_CustomPostProcessTypesAsString:
-          - Sobel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          - ProjectGateway.Shaders.Sobel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
     - rid: 5017142466711912455
       type: {class: DiffusionProfileDefaultSettings, ns: UnityEngine.Rendering.HighDefinition,
         asm: Unity.RenderPipelines.HighDefinition.Runtime}

@@ -149,9 +149,16 @@ namespace ProjectGateway
         /// </summary>
         public void SetInputs(ref PlayerCharacterInputs inputs)
         {
+            if (myPlayer.IsSitting)
+            {
+                _movementState = MovementState.Sit;
+                
+                Motor.SetPosition(myPlayer.currentSeatingAnchor.position);
+            }
+            
             if (myPlayer.drivingVehicle 
                 || myPlayer.isSleeping 
-                || myPlayer.isSitting
+                || myPlayer.IsSitting
                 || InformationUI.instance.IsViewingInformation 
                 || UIManager.Instance.IsInUI)
             {
@@ -170,11 +177,6 @@ namespace ProjectGateway
             }
             Quaternion cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Motor.CharacterUp);
 
-            if (myPlayer.isSitting)
-            {
-                _movementState = MovementState.Sit;
-            }
-            
             // Move and look inputs
             _moveInputVector = cameraPlanarRotation * moveInputVector;
             _lookInputVector = cameraPlanarDirection;

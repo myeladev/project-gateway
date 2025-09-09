@@ -13,13 +13,14 @@ namespace ProjectGateway
     {
         public CharacterCamera OrbitCamera;
         public CinemachineVirtualCamera vehicleCamera;
-        public CinemachineVirtualCamera sittingCamera;
         public Transform CameraFollowPoint;
         public MyCharacterController Character;
 
         public bool IsInVehicle => drivingVehicle is not null;
         [HideInInspector]
         public Vehicle drivingVehicle;
+        
+        public Transform flashlightTransform;
 
         public Transform currentSeatingAnchor;
         
@@ -39,7 +40,7 @@ namespace ProjectGateway
         [HideInInspector] public float hunger;
         [HideInInspector] public float sleep;
         public bool isSleeping;
-        public bool isSitting;
+        public bool IsSitting => currentSeatingAnchor;
 
         [SerializeField] 
         private List<Light> flashlight = new();
@@ -82,6 +83,12 @@ namespace ProjectGateway
                 {
                     fLight.enabled = !fLight.enabled;
                 }
+            }
+
+            if(flashlightTransform != null)
+            {
+                flashlightTransform.position = Vector3.Lerp(flashlightTransform.position, CameraFollowPoint.position - (CameraFollowPoint.up * 0.25f), Time.deltaTime * 30f);
+                flashlightTransform.rotation = Quaternion.Lerp(flashlightTransform.rotation, Camera.main.transform.rotation, Time.deltaTime * 10f);
             }
 
             hunger -= Time.deltaTime * HungerFallRate;
@@ -174,10 +181,6 @@ namespace ProjectGateway
         public void Sit(Transform seatingAnchor)
         {
             currentSeatingAnchor = seatingAnchor;
-            sittingCamera.gameObject.SetActive(currentSeatingAnchor is not null);
-            sittingCamera.Follow = seatingAnchor?.transform;
-            sittingCamera.transform.parent = seatingAnchor;
-            Character.gameObject.SetActive(currentSeatingAnchor is null);
         }
     }
 }
