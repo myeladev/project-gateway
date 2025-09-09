@@ -2,6 +2,10 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using KinematicCharacterController.Examples;
+using ProjectGateway.Objects.Furniture;
+using ProjectGateway.Objects.Items;
+using ProjectGateway.Objects.Vehicles;
+using ProjectGateway.UI;
 
 namespace ProjectGateway
 {

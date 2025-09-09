@@ -1,7 +1,10 @@
 using UnityEngine;
 using KinematicCharacterController;
-using ProjectGateway.Code;
-using ProjectGateway.Code.Scripts;
+using ProjectGateway.Common;
+using ProjectGateway.Logic;
+using ProjectGateway.Objects.Furniture;
+using ProjectGateway.Objects.Items;
+using ProjectGateway.UI;
 using UnityEngine.Serialization;
 
 namespace ProjectGateway
@@ -150,7 +153,7 @@ namespace ProjectGateway
                 || myPlayer.isSleeping 
                 || myPlayer.isSitting
                 || InformationUI.instance.IsViewingInformation 
-                || UIManager.instance.IsInUI)
+                || UIManager.Instance.IsInUI)
             {
                 _moveInputVector = Vector3.zero;
                 return;
