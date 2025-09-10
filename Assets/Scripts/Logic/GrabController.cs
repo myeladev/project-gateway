@@ -1,3 +1,4 @@
+using System;
 using ProjectGateway.UI;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace ProjectGateway.Logic
         public float maxDistance = 0.05f;
 
         Rigidbody anchorRb; // kinematic proxy that follows the mouse
-        SpringJoint joint;
+        ConfigurableJoint joint;
         float grabDistance;
 
         void Awake()
@@ -22,20 +23,29 @@ namespace ProjectGateway.Logic
             anchorRb.interpolation = RigidbodyInterpolation.Interpolate;
         }
 
+        private void FixedUpdate()
+        {
+            var ray = new Ray(cam.transform.position, cam.transform.forward);
+            var target = ray.origin + ray.direction * grabDistance;
+
+            // Smooth towards target to avoid huge teleports
+            var maxSpeed = 12f; // m/s
+            var desired = target - anchorRb.position;
+            var step = Vector3.ClampMagnitude(desired, maxSpeed * Time.fixedDeltaTime);
+            anchorRb.MovePosition(anchorRb.position + step);
+        }
+
         void Update()
         {
-            // Place the anchor at the mouse ray distance (or a plane if you prefer)
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            Vector3 target = ray.origin + ray.direction * (grabDistance > 0 ? grabDistance : 5f);
-            anchorRb.MovePosition(target);
-
+            var ray = new Ray(cam.transform.position, cam.transform.forward);
             if (Input.GetMouseButtonDown(0) && !OptionsUI.Instance.IsViewingOptions)
             {
                 if (Physics.Raycast(ray, out var hit, 1000f) && hit.rigidbody)
                 {
                     grabDistance = hit.distance;
+                    anchorRb.position = hit.point;
 
-                    joint = hit.rigidbody.gameObject.AddComponent<SpringJoint>();
+                    joint = hit.rigidbody.gameObject.AddComponent<ConfigurableJoint>();
                     joint.autoConfigureConnectedAnchor = false;
                     joint.connectedBody = anchorRb;
 
@@ -43,9 +53,19 @@ namespace ProjectGateway.Logic
                     joint.anchor = hit.rigidbody.transform.InverseTransformPoint(hit.point);
                     joint.connectedAnchor = Vector3.zero;
 
-                    joint.spring = spring;
-                    joint.damper = damper;
-                    joint.maxDistance = maxDistance;
+                    var jointDrive = new JointDrive() { positionSpring = spring, positionDamper = damper, maximumForce = (float)6e4 };
+                    joint.xDrive = jointDrive;
+                    joint.yDrive = jointDrive;
+                    joint.zDrive = jointDrive;
+                    joint.angularXDrive = jointDrive;
+                    joint.angularYZDrive = jointDrive;
+                    joint.xMotion = ConfigurableJointMotion.Limited;
+                    joint.yMotion = ConfigurableJointMotion.Limited;
+                    joint.zMotion = ConfigurableJointMotion.Limited;
+                    joint.linearLimit = new SoftJointLimit() { limit = 0.03f };
+                    joint.projectionMode = JointProjectionMode.PositionAndRotation;
+                    
+                    joint.breakForce = 50000;
 
                     // extra stability
                     //hit.rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
