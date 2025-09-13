@@ -77,7 +77,7 @@ namespace ProjectGateway
             }
                 
             // Handle flashlight control
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F) && !UIManager.Instance.IsInUI)
             {
                 foreach (var fLight in flashlight)
                 {

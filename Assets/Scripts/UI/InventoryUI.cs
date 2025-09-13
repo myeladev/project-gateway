@@ -58,7 +58,9 @@ namespace ProjectGateway.UI
             
             if (items.Any())
             {
-                itemListContentWindow.GetChild(0).GetComponent<Button>().onClick.Invoke();
+                // TODO: Change this to a local index variable, so that we keep position in the list when dropping items
+                // We can reset the index to 0 when the UI is reopened
+                SelectItem(items.First());
             }
             noItemsText.SetActive(!items.Any());
         }

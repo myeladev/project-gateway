@@ -149,6 +149,7 @@ namespace ProjectGateway
         /// </summary>
         public void SetInputs(ref PlayerCharacterInputs inputs)
         {
+            _movementState = MovementState.Idle;
             if (myPlayer.IsSitting)
             {
                 _movementState = MovementState.Sit;

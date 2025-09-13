@@ -33,7 +33,7 @@ namespace ProjectGateway.UI
         private IInteractable _interactable;
         private void Update()
         {
-            Cursor.lockState = UIManager.Instance.IsInUI ? CursorLockMode.None : OptionsUI.Instance.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.lockState = UIManager.Instance.IsInUI ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
             /*
             if (!characterController.CanInteract)
             {
@@ -74,7 +74,7 @@ namespace ProjectGateway.UI
             {
                 var interactStrings = _interactable.GetInteractOptions(InteractContext.Default);
 
-                if (!OptionsUI.Instance.IsViewingOptions)
+                if (!optionsPanel.IsViewingOptions)
                 {
                     interactText.text = $"[L Click] {interactStrings[0]}";
                     if (interactStrings.Count > 1)
@@ -87,8 +87,11 @@ namespace ProjectGateway.UI
                     interactText.text = "";
                 }
 
-                if (Input.GetMouseButtonDown(0) && !OptionsUI.Instance.IsViewingOptions) _interactable.Interact(interactStrings[0], InteractContext.Default);
-                if (Input.GetMouseButtonDown(1)) ShowInteractOptions(_interactable);
+                if (Input.GetMouseButtonDown(0) && !optionsPanel.IsViewingOptions) _interactable.Interact(interactStrings[0], InteractContext.Default);
+                if (Input.GetMouseButtonDown(1))
+                {
+                    ShowInteractOptions(optionsPanel.IsViewingOptions ? null : _interactable);
+                }
             }
         }
 

@@ -41,13 +41,12 @@ namespace ProjectGateway.Objects.Items
                     MyPlayer.instance.inventory.RemoveFromInventory(this);
                     UIManager.Instance.inventoryUI.Refresh();
                     
-                    Rigidbody.isKinematic = false;
-                    _colliders.ForEach(m => m.enabled = true);
                     var targetPosition = Camera.main.transform.position + Camera.main.transform.forward * 2f;
-                    Debug.Log(targetPosition);
                     transform.position = targetPosition;
+                    _colliders.ForEach(m => m.enabled = true);
+                    Rigidbody.isKinematic = false;
                     Rigidbody.linearVelocity = Vector3.zero;
-                        break;
+                    break;
                 case "Pickup":
                     var success = MyPlayer.instance.inventory.AttemptToAddItem(this);
 

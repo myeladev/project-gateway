@@ -22,16 +22,18 @@ namespace ProjectGateway.UI
         public override void Refresh()
         {
             ClearOptions();
-            
-            var interactOptions = _interactable.GetInteractOptions(InteractContext.Default);
 
-            foreach (var option in interactOptions)
+            if (_interactable is not null)
             {
-                var newButton = Instantiate(interactOptionPrefab.gameObject, transform).GetComponent<InteractOption>();
-                newButton.SetOption(option);
-                _options.Add(newButton);
+                var interactOptions = _interactable.GetInteractOptions(InteractContext.Default);
+
+                foreach (var option in interactOptions)
+                {
+                    var newButton = Instantiate(interactOptionPrefab.gameObject, transform).GetComponent<InteractOption>();
+                    newButton.SetOption(option);
+                    _options.Add(newButton);
+                }
             }
-            
         }
 
         private void ClearOptions()
@@ -47,7 +49,7 @@ namespace ProjectGateway.UI
         public void Open(IInteractable interactable)
         {
             _interactable = interactable;
-            canvasGroup.alpha = 1;
+            canvasGroup.alpha = interactable is not null ? 1 : 0;
             Refresh();
         }
 
