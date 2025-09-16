@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ProjectGateway.DataPersistence;
 using ProjectGateway.Logic;
+using ProjectGateway.SaveData;
 using UnityEngine;
 
 namespace ProjectGateway.Objects.Items
 {
-    public class Prop : MonoBehaviour, IInteractable
+    public class Prop : MonoBehaviour, IInteractable, IDataPersistence
     {
         public bool IsInteractable => MyPlayer.instance.Character.CanInteract;
 
@@ -52,5 +56,34 @@ namespace ProjectGateway.Objects.Items
                     break;
             }
         }
+
+        public void LoadData(GameData data)
+        {
+            PropSaveData saveData = data.props.FirstOrDefault(m => GetComponent<SaveAgent>().id == m.id);
+            if (saveData == null) return;
+
+            transform.SetPositionAndRotation(
+                new Vector3(saveData.position[0], saveData.position[1], saveData.position[2]),
+                Quaternion.Euler(saveData.rotation[0], saveData.rotation[1], saveData.rotation[2])
+            );
+        }
+
+        public void SaveData(ref GameData data)
+        {
+            data.props.Add(new PropSaveData
+            {
+                id = GetComponent<SaveAgent>().id,
+                position = new[] { transform.position.x, transform.position.y, transform.position.z },
+                rotation = new[] { transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z },
+            });
+        }
+    }
+    
+    [Serializable]
+    public class PropSaveData
+    {
+        public string id;
+        public float[] position;
+        public float[] rotation;
     }
 }

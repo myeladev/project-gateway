@@ -49,6 +49,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -98,6 +101,7 @@ GameObject:
   - component: {fileID: 1781394874426372124}
   - component: {fileID: 7392797595138931207}
   - component: {fileID: 652811493644859188}
+  - component: {fileID: -3386890903481630404}
   m_Layer: 7
   m_Name: Clipboard
   m_TagString: Untagged
@@ -146,6 +150,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -186,6 +193,7 @@ MonoBehaviour:
   itemName: Clipboard
   itemDescription: 
   weight: 1
+  canClean: 0
   informationText: Oh no! Our science! It's brokeeeeen!
 --- !u!64 &7392797595138931207
 MeshCollider:
@@ -236,3 +244,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-3386890903481630404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106439853998620730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7520b54a4ac1c428977764046864eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 

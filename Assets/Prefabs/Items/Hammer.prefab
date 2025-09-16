@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9217523398099210882}
   - component: {fileID: -3877364450042646014}
   - component: {fileID: 4696430156971419940}
+  - component: {fileID: 6532627662889977144}
   m_Layer: 7
   m_Name: Hammer
   m_TagString: Untagged
@@ -132,6 +133,19 @@ MonoBehaviour:
   itemDescription: Used for smashing things
   weight: 2
   canClean: 0
+--- !u!114 &6532627662889977144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807417963300205210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7520b54a4ac1c428977764046864eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 
 --- !u!1 &6975451676898841470
 GameObject:
   m_ObjectHideFlags: 0

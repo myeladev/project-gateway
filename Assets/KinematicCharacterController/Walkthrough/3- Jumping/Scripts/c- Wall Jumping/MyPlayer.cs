@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using KinematicCharacterController.Examples;
+using ProjectGateway.DataPersistence;
 using ProjectGateway.Objects.Furniture;
 using ProjectGateway.Objects.Items;
 using ProjectGateway.Objects.Vehicles;
@@ -9,7 +11,7 @@ using ProjectGateway.UI;
 
 namespace ProjectGateway
 {
-    public class MyPlayer : MonoBehaviour
+    public class MyPlayer : MonoBehaviour, IDataPersistence
     {
         public CharacterCamera OrbitCamera;
         public CinemachineVirtualCamera vehicleCamera;
@@ -182,5 +184,44 @@ namespace ProjectGateway
         {
             currentSeatingAnchor = seatingAnchor;
         }
+
+
+        public void LoadData(GameData data)
+        {
+            if(data.player == null) return;
+            hunger = data.player.hunger;
+            sleep = data.player.sleep;
+            
+            if (data.player.position != null && 
+                (data.player.position[0] != 0 || data.player.position[1] != 0 || data.player.position[2] != 0))
+            {
+                Character.Motor.SetPosition(new Vector3(data.player.position[0], data.player.position[1], data.player.position[2]));
+                
+                // TODO: This isn't working, fix it
+                Quaternion rotation =  Quaternion.Euler(new Vector3(data.player.rotation[0], data.player.rotation[1], data.player.rotation[2]));
+                Camera.main.transform.rotation = rotation;
+            }
+            Sit(null);
+        }
+
+        public void SaveData(ref GameData data)
+        {
+            data.player = new PlayerSaveData
+            {
+                hunger = hunger,
+                sleep = sleep,
+                position = new[] { Character.transform.position.x, Character.transform.position.y, Character.transform.position.z },
+                rotation = new[] { Character.transform.eulerAngles.x, Character.transform.eulerAngles.y, Character.transform.eulerAngles.z },
+            };
+        }
+    }
+
+    [Serializable]
+    public class PlayerSaveData
+    {
+        public float hunger;
+        public float sleep;
+        public float[] position;
+        public float[] rotation;
     }
 }
