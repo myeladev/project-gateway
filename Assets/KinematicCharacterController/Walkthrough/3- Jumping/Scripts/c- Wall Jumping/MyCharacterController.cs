@@ -102,16 +102,13 @@ namespace ProjectGateway
                 if (Physics.Raycast(_camera.transform.position, _camera.transform.TransformDirection(Vector3.forward),
                         out var hit, FurniturePlacementRange, furnitureLayerMask))
                 {
-                    var blocked = false;
                     furniturePlacementMarker.transform.position = hit.point;
                     furniturePlacementMarker.gameObject.SetActive(true);
                     //if (hit.normal != Vector3.up) blocked = true;
                     SnapRotatedObjectToGround(_furniturePlacementMarkerCollider);
-                    furniturePlacementMarker.isBlocked = blocked;
                 }
                 else
                 {
-                    furniturePlacementMarker.FlushCollisions();
                     furniturePlacementMarker.gameObject.SetActive(false);
                 }
                 if (Input.GetMouseButtonDown(0) && holdingFurnitureDelay < 0f)
