@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using ProjectGateway.Common;
 using UnityEngine;
 
 namespace ProjectGateway.DataPersistence
@@ -17,7 +18,6 @@ namespace ProjectGateway.DataPersistence
             File.WriteAllText(Path.Combine(path, "save.json"), json);
         }
 
-        // Feed records back to existing instances by instanceId (guid)
         public GameData LoadProfileData(string profileName)
         {
             string path = Path.Combine(SaveDataPath, profileName, "save.json");
@@ -27,6 +27,40 @@ namespace ProjectGateway.DataPersistence
             GameData gameData = JsonUtility.FromJson<GameData>(json);
 
             return gameData;
+        }
+        
+        public void SaveProfileMetaData(string profileName, GameMetaData metaData)
+        {
+            var json = JsonUtility.ToJson(metaData, true);
+         
+            string path = Path.Combine(SaveDataPath, profileName);
+            Directory.CreateDirectory(path);         
+
+            File.WriteAllText(Path.Combine(path, "metadata.json"), json);
+        }
+
+        public GameMetaData LoadProfileMetaData(string profileName)
+        {
+            string path = Path.Combine(SaveDataPath, profileName, "metadata.json");
+            if (!File.Exists(path)) return new GameMetaData();
+
+            var json = File.ReadAllText(path);
+            GameMetaData metaData = JsonUtility.FromJson<GameMetaData>(json);
+
+            return metaData;
+        }
+
+        public void SaveProfileThumbnail(string profileName, Texture2D thumbnail)
+        {
+            var byteArray = thumbnail.EncodeToPNG();
+            var path = Path.Combine(SaveDataPath, profileName, "thumbnail.json");
+            File.WriteAllBytes(path, byteArray);
+        }
+
+        public Texture2D LoadProfileThumbnail(string profileName)
+        {
+            var path = Path.Combine(SaveDataPath, profileName, "thumbnail.json");
+            return Utilities.ReadImageFromFile(path);
         }
     }
 }

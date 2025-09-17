@@ -15,12 +15,6 @@ namespace ProjectGateway.DataPersistence
             fileManager = new DiskFileManager();
         }
 
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.F1)) SaveProfile("test");
-            if(Input.GetKeyDown(KeyCode.F2)) LoadProfile("test");
-        }
-
         // Collect all SaveAgents and write one file
         public void SaveProfile(string profileName)
         {

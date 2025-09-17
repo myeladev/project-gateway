@@ -57,8 +57,6 @@ namespace ProjectGateway
 
         private void Start()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-
             // Tell camera to follow transform
             OrbitCamera.SetFollowTransform(CameraFollowPoint);
 
