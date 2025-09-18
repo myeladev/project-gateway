@@ -39,8 +39,13 @@ namespace ProjectGateway.UI
                 if (Input.GetKeyDown(KeyCode.F)) interactable.Interact("Drop", InteractContext.Inventory);
             }
         }
+
+        public override void OnShow()
+        {
+            Refresh();
+        }
         
-        public override void Refresh()
+        public void Refresh()
         {
             SelectItem(null); 
             selectedItem = null;
@@ -63,6 +68,11 @@ namespace ProjectGateway.UI
                 SelectItem(items.First());
             }
             noItemsText.SetActive(!items.Any());
+        }
+
+        protected override void OnHide()
+        {
+            
         }
 
         public void SelectItem(Item item)

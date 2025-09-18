@@ -14,12 +14,17 @@ namespace ProjectGateway.UI
             base.Awake();
             Instance = this;
         }
-        
+
+        public override void OnShow()
+        {
+            Refresh();
+        }
+
         [SerializeField]
         private InteractOption interactOptionPrefab;
         private List<InteractOption> _options = new List<InteractOption>();
         private IInteractable _interactable;
-        public override void Refresh()
+        public void Refresh()
         {
             ClearOptions();
 
@@ -56,10 +61,10 @@ namespace ProjectGateway.UI
         public void ChooseOption(string option)
         {
             _interactable.Interact(option, InteractContext.Default);
-            Close();
+            Hide();
         }
 
-        public void Close()
+        protected override void OnHide()
         {
             ClearOptions();
             _interactable = null;
