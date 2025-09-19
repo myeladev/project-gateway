@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
+using ProjectGateway.DataPersistence;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,13 +12,15 @@ namespace ProjectGateway.Core
     public class SceneLoader : MonoBehaviour
     {
         public static SceneLoader Instance { get; private set; }
-        public event Action OnSceneLoadStart;
-        public event Action OnSceneLoadComplete;
         [SerializeField]
         private List<GameObject> gameplayObjects;
+        
+        public CanvasGroup loadingScreen;
+        public Scene? ActiveWorldScene;
+        private const float FadeDuration = 0.5f;
 
         // List of scene names where the player should be disabled
-        private readonly string[] nonGameplayScenes = { "MainMenu", "PersistentScene", "LoadingScreen" };
+        private readonly string[] nonGameplayScenes = { "MainMenu", "PersistentScene" };
 
         private void Awake()
         {
@@ -32,80 +36,156 @@ namespace ProjectGateway.Core
 
         private void Start()
         {
-            LoadScene("MainMenu");
+            StartCoroutine(LoadMainMenu());
         }
 
-        public void LoadScene(string sceneName)
+        private IEnumerator FadeLoadingScreen(float targetAlpha)
         {
-            StartCoroutine(LoadSceneRoutine(sceneName));
-        }
+            loadingScreen.gameObject.SetActive(true);
+            float startAlpha = loadingScreen.alpha;
+            float elapsedTime = 0;
 
-        private IEnumerator LoadSceneRoutine(string newScene) 
-        {
-            OnSceneLoadStart?.Invoke(); // Notify UI that loading has started
-
-            // Load the loading screen if it's not already active
-            if (!SceneManager.GetSceneByName("LoadingScreen").isLoaded)
+            while (elapsedTime < FadeDuration)
             {
-                yield return SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
+                elapsedTime += Time.deltaTime;
+                loadingScreen.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / FadeDuration);
+                yield return null;
             }
 
-            // Get the active scene (to unload it later)
-            Scene activeScene = SceneManager.GetActiveScene();
-
-            // Load the new scene asynchronously
-            AsyncOperation loadOperation = SceneManager.LoadSceneAsync(newScene, LoadSceneMode.Additive);
-            if (loadOperation is not null)
+            loadingScreen.alpha = targetAlpha;
+            if (Mathf.Approximately(targetAlpha, 0f))
             {
-                loadOperation.allowSceneActivation = false;
+                loadingScreen.gameObject.SetActive(false);
+            }
+        }
+
+        public void LoadScenesForProfile(string profileName)
+        {
+            StartCoroutine(LoadWorldSceneForSave(profileName));
+        }
+
+        private IEnumerator LoadMainMenu(GameData mainMenuGameData = null) 
+        {
+            yield return StartCoroutine(FadeLoadingScreen(1f));
+            
+            if (ActiveWorldScene is not null)
+            {
+                SceneManager.UnloadSceneAsync(ActiveWorldScene.Value);
+            }
+            
+            // Load the new scene asynchronously
+            AsyncOperation worldLoadOperation = SceneManager.LoadSceneAsync("World", LoadSceneMode.Additive);
+            AsyncOperation mainMenuLoadOperation = SceneManager.LoadSceneAsync("MainMenu", LoadSceneMode.Additive);
+            if (worldLoadOperation is not null)
+            {
+                worldLoadOperation.allowSceneActivation = false;
             }
             else
             {
-                Debug.LogError($"Scene {newScene} failed to load.");
+                Debug.LogError($"World scene failed to load.");
                 throw new NullReferenceException("loadOperation was null, scene failed to load.");
             }
-
+            
+            if (mainMenuLoadOperation is not null)
+            {
+                mainMenuLoadOperation.allowSceneActivation = false;
+            }
+            else
+            {
+                Debug.LogError($"Main Menu scene failed to load.");
+                throw new NullReferenceException("loadOperation was null, scene failed to load.");
+            }
+            
             // Wait until the scene is fully loaded
-            while (loadOperation.progress < 0.9f)
+            while (worldLoadOperation.progress < 0.9f && mainMenuLoadOperation.progress < 0.9f)
             {
                 yield return null;
             }
 
             // Artificial delay
             yield return new WaitForSeconds(1f);
-
-            // Check if the current scene is in the list of non-gameplay scenes
-            bool newSceneIsGameplayScene = nonGameplayScenes.All(s => s != newScene);
             
-            gameplayObjects.ForEach(m => m.SetActive(newSceneIsGameplayScene));
+            // Activate the new scenes
+            worldLoadOperation.allowSceneActivation = true;
+            mainMenuLoadOperation.completed += (operation) =>
+            {
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainMenu"));
+            };
 
-            // Activate the new scene
-            loadOperation.allowSceneActivation = true;
+            mainMenuLoadOperation.allowSceneActivation = true;
+            mainMenuLoadOperation.completed += (operation) =>
+            {
+                ActiveWorldScene = SceneManager.GetSceneByName("World");
+            };
+            
+            gameplayObjects.ForEach(m => m.SetActive(false));
+            
 
+            yield return new WaitForSeconds(0.1f);
+            
+            DataPersistenceManager.Instance.LoadRecentProfile();
+            
+            
+            yield return new WaitForSeconds(0.1f);
+            yield return StartCoroutine(FadeLoadingScreen(0f));
+        }
+        
+        private IEnumerator LoadWorldSceneForSave(string profileName)
+        {
+            yield return StartCoroutine(FadeLoadingScreen(1f));
             // Unload the old scene if it's not the persistent scene
-            if (activeScene.name != "PersistentScene")
+            if (ActiveWorldScene is not null)
             {
-                SceneManager.UnloadSceneAsync(activeScene);
+                SceneManager.UnloadSceneAsync(ActiveWorldScene.Value);
             }
+            
+            // Load the new scene asynchronously
+            AsyncOperation worldLoadOperation = SceneManager.LoadSceneAsync("World", LoadSceneMode.Additive);
+            AsyncOperation mainMenuLoadOperation = SceneManager.LoadSceneAsync("MainMenu", LoadSceneMode.Additive);
+            if (worldLoadOperation is not null)
+            {
+                worldLoadOperation.allowSceneActivation = false;
+            }
+            else
+            {
+                Debug.LogError($"World scene failed to load.");
+                throw new NullReferenceException("loadOperation was null, scene failed to load.");
+            }
+            
+            if (mainMenuLoadOperation is not null)
+            {
+                mainMenuLoadOperation.allowSceneActivation = false;
+            }
+            else
+            {
+                Debug.LogError($"World scene failed to load.");
+                throw new NullReferenceException("loadOperation was null, scene failed to load.");
+            }
+
+            // Wait until the scene is fully loaded
+            while (worldLoadOperation.progress < 0.9f && mainMenuLoadOperation.progress < 0.9f)
+            {
+                yield return null;
+            }
+
+            // Artificial delay
+            yield return new WaitForSeconds(1f);
+            
+            gameplayObjects.ForEach(m => m.SetActive(false));
+            
+            // Activate the new scene
+            worldLoadOperation.allowSceneActivation = true;
+
             
             
             yield return new WaitForSeconds(0.1f);
             
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(newScene));
+            ActiveWorldScene = SceneManager.GetSceneByName("World");
+            SceneManager.SetActiveScene(ActiveWorldScene.Value);
+            DataPersistenceManager.Instance.LoadProfile(profileName);
             
             yield return new WaitForSeconds(0.1f);
-            
-            // Rescan the AI if it's a gameplay level
-            if (newSceneIsGameplayScene)
-            {
-                //AstarPath.active.Scan();
-            }
-            
-            OnSceneLoadComplete?.Invoke(); // Notify UI that loading is done
-            // Remove the loading screen
-            SceneManager.UnloadSceneAsync("LoadingScreen");
-            
-            Debug.Log("Active Scene: " + SceneManager.GetActiveScene().name);
+            yield return StartCoroutine(FadeLoadingScreen(0f));
         }
     }
 }

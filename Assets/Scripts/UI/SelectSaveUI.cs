@@ -1,7 +1,4 @@
-using ProjectGateway.UI;
-using UnityEngine;
-
-namespace ProjectGateway
+namespace ProjectGateway.UI
 {
     public class SelectSaveUI : UIPanel
     {
@@ -11,6 +8,10 @@ namespace ProjectGateway
         }
 
         protected override void OnHide()
+        {
+            
+        }
+        protected override void OnHidden()
         {
             
         }

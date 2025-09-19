@@ -66,6 +66,11 @@ namespace ProjectGateway.UI
 
         protected override void OnHide()
         {
+            
+        }
+        
+        protected override void OnHidden()
+        {
             ClearOptions();
             _interactable = null;
             canvasGroup.alpha = 0;

@@ -1,8 +1,7 @@
 using ProjectGateway.DataPersistence;
-using ProjectGateway.UI;
 using UnityEngine;
 
-namespace ProjectGateway
+namespace ProjectGateway.UI
 {
     public class PauseUI : UIPanel
     {
@@ -36,6 +35,11 @@ namespace ProjectGateway
         }
 
         protected override void OnHide()
+        {
+            
+        }
+
+        protected override void OnHidden()
         {
             
         }

@@ -190,7 +190,7 @@ namespace ProjectGateway
             hunger = data.player.hunger;
             sleep = data.player.sleep;
             
-            if (data.player.position != null && 
+            if (data.player.position.Length == 3 && 
                 (data.player.position[0] != 0 || data.player.position[1] != 0 || data.player.position[2] != 0))
             {
                 Character.Motor.SetPosition(new Vector3(data.player.position[0], data.player.position[1], data.player.position[2]));

@@ -18,7 +18,7 @@ namespace ProjectGateway.Objects.Furniture
 
         protected virtual void Awake()
         {
-            _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MyCharacterController>();
+            _player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<MyCharacterController>();
         }
 
         public List<string> GetInteractOptions(InteractContext context)

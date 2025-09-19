@@ -30,7 +30,7 @@ namespace ProjectGateway.Objects.Items
         protected void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
-            _player = GameObject.FindGameObjectWithTag("Player").GetComponent<MyCharacterController>();
+            _player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<MyCharacterController>();
             _originalPosition = transform.position;
             _originalRotation = transform.rotation;
         }

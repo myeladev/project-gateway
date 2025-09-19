@@ -74,6 +74,10 @@ namespace ProjectGateway.UI
         {
             
         }
+        protected override void OnHidden()
+        {
+            
+        }
 
         public void SelectItem(Item item)
         {

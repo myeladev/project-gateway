@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace ProjectGateway.DataPersistence
 {
@@ -10,5 +11,6 @@ namespace ProjectGateway.DataPersistence
         public GameMetaData LoadProfileMetaData(string profileName);
         public void SaveProfileThumbnail(string profileName, Texture2D metaData);
         public Texture2D LoadProfileThumbnail(string profileName);
+        List<GameMetaData> GetAllProfileMetaData();
     }
 }

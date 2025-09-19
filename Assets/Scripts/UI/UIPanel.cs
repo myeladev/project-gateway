@@ -34,16 +34,18 @@ namespace ProjectGateway.UI
 
         public void Hide()
         {
+            OnHide();
             Sequence hideSequence = DOTween.Sequence();
             hideSequence.Join(canvasGroup.DOFade(0f, 0.5f));
             hideSequence.Join(transform.DOLocalMoveY(startPos.y + 20f, 0.5f));
             hideSequence.OnComplete(() => {
                 gameObject.SetActive(false);
                 transform.localPosition = startPos;
-                OnHide();
+                OnHidden();
             });
         }
 
         protected abstract void OnHide();
+        protected abstract void OnHidden();
     }
 }

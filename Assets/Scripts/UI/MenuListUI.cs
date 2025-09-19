@@ -34,8 +34,12 @@ namespace ProjectGateway.UI
             hideSequence.OnComplete(() => {
                 gameTitle.gameObject.SetActive(false);
                 gameTitle.transform.localPosition = gameTitleStartPos;
-                OnHide();
             });
+        }
+
+        protected override void OnHidden()
+        {
+            
         }
     }
 }

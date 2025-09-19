@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using ProjectGateway.Common;
 using UnityEngine;
 
@@ -61,6 +62,27 @@ namespace ProjectGateway.DataPersistence
         {
             var path = Path.Combine(SaveDataPath, profileName, "thumbnail.json");
             return Utilities.ReadImageFromFile(path);
+        }
+
+        public List<GameMetaData> GetAllProfileMetaData()
+        {
+            var metaDataList = new List<GameMetaData>();
+
+            if (!Directory.Exists(SaveDataPath))
+            {
+                Directory.CreateDirectory(SaveDataPath);
+                return metaDataList;
+            }
+
+            var profileDirectories = Directory.GetDirectories(SaveDataPath);
+            foreach (var profileDir in profileDirectories)
+            {
+                var profileName = new DirectoryInfo(profileDir).Name;
+                var metaData = LoadProfileMetaData(profileName);
+                metaDataList.Add(metaData);
+            }
+
+            return metaDataList;
         }
     }
 }

@@ -74,5 +74,52 @@ namespace ProjectGateway.DataPersistence
             // TODO: spawned objects
             // If not found: this is a spawned/missing object → instantiate via your PrefabRegistry, then Restore(rec)
         }
+
+        public void LoadRecentProfile()
+        {
+            var profiles = fileManager.GetAllProfileMetaData();
+            GameMetaData mostRecent = null;
+            DateTime mostRecentDate = DateTime.MinValue;
+
+            foreach (var profile in profiles)
+            {
+                if(profile is null || string.IsNullOrEmpty(profile.lastSavedDate)) continue;
+                var savedDate = DateTime.Parse(profile.lastSavedDate, CultureInfo.InvariantCulture);
+                if (savedDate > mostRecentDate)
+                {
+                    mostRecentDate = savedDate;
+                    mostRecent = profile;
+                }
+            }
+            
+            if (mostRecent != null)
+            {
+                LoadProfile(mostRecent.profileName);
+            }
+            else
+            { 
+                var newSave = CreateNewProfile("Placeholder");
+                LoadProfile("Placeholder");
+            }
+        }
+
+        private GameData CreateNewProfile(string profileName)
+        {
+            var metaData = new GameMetaData
+            {
+                profileName = profileName,
+                createdDate = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+                lastSavedDate = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+                gameVersion = Application.version
+            };
+
+            currentGameMetaData = metaData;
+            var gameData = new GameData();
+
+            fileManager.SaveProfileMetaData(profileName, metaData);
+            fileManager.SaveProfileData(profileName, gameData);
+
+            return gameData;
+        }
     }
 }

@@ -1,6 +1,4 @@
-using ProjectGateway.UI;
-
-namespace ProjectGateway
+namespace ProjectGateway.UI
 {
     public class SettingsUI : UIPanel
     {
@@ -10,6 +8,11 @@ namespace ProjectGateway
 
         protected override void OnHide()
         {
+        }
+
+        protected override void OnHidden()
+        {
+            
         }
     }
 }
