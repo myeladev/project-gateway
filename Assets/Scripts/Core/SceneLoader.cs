@@ -16,11 +16,12 @@ namespace ProjectGateway.Core
         private List<GameObject> gameplayObjects;
         
         public CanvasGroup loadingScreen;
-        public Scene? ActiveWorldScene;
+        private Scene? _activeWorldScene;
+        private Scene? _activeMainMenuScene;
         private const float FadeDuration = 0.5f;
 
-        // List of scene names where the player should be disabled
-        private readonly string[] nonGameplayScenes = { "MainMenu", "PersistentScene" };
+        public bool IsInMainMenu => _gameState == GameState.MainMenu;
+        private GameState _gameState = GameState.MainMenu;
 
         private void Awake()
         {
@@ -36,7 +37,8 @@ namespace ProjectGateway.Core
 
         private void Start()
         {
-            StartCoroutine(LoadMainMenu());
+            LoadMainMenu();
+            gameplayObjects.ForEach(m => m.SetActive(false));
         }
 
         private IEnumerator FadeLoadingScreen(float targetAlpha)
@@ -59,18 +61,20 @@ namespace ProjectGateway.Core
             }
         }
 
-        public void LoadScenesForProfile(string profileName)
+        public void LoadMainMenu()
         {
-            StartCoroutine(LoadWorldSceneForSave(profileName));
+            StartCoroutine(_loadMainMenu());
         }
-
-        private IEnumerator LoadMainMenu(GameData mainMenuGameData = null) 
+        
+        private IEnumerator _loadMainMenu() 
         {
             yield return StartCoroutine(FadeLoadingScreen(1f));
+            _gameState = GameState.MainMenu;
             
-            if (ActiveWorldScene is not null)
+            if (_activeWorldScene is not null)
             {
-                SceneManager.UnloadSceneAsync(ActiveWorldScene.Value);
+                SceneManager.UnloadSceneAsync(_activeWorldScene.Value);
+                _activeWorldScene = null;
             }
             
             // Load the new scene asynchronously
@@ -109,13 +113,14 @@ namespace ProjectGateway.Core
             worldLoadOperation.allowSceneActivation = true;
             mainMenuLoadOperation.completed += (operation) =>
             {
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainMenu"));
+                _activeMainMenuScene = SceneManager.GetSceneByName("MainMenu");
+                SceneManager.SetActiveScene(_activeMainMenuScene.Value);
             };
 
             mainMenuLoadOperation.allowSceneActivation = true;
             mainMenuLoadOperation.completed += (operation) =>
             {
-                ActiveWorldScene = SceneManager.GetSceneByName("World");
+                _activeWorldScene = SceneManager.GetSceneByName("World");
             };
             
             gameplayObjects.ForEach(m => m.SetActive(false));
@@ -130,18 +135,30 @@ namespace ProjectGateway.Core
             yield return StartCoroutine(FadeLoadingScreen(0f));
         }
         
+        public void LoadScenesForProfile(string profileName)
+        {
+            StartCoroutine(LoadWorldSceneForSave(profileName));
+        }
+        
         private IEnumerator LoadWorldSceneForSave(string profileName)
         {
             yield return StartCoroutine(FadeLoadingScreen(1f));
+            _gameState = GameState.World;
             // Unload the old scene if it's not the persistent scene
-            if (ActiveWorldScene is not null)
+            if (_activeWorldScene is not null)
             {
-                SceneManager.UnloadSceneAsync(ActiveWorldScene.Value);
+                SceneManager.UnloadSceneAsync(_activeWorldScene.Value);
+                _activeWorldScene = null;
+            }
+            // Unload the old mainmenu scene if it's not the persistent scene
+            if (_activeMainMenuScene is not null)
+            {
+                SceneManager.UnloadSceneAsync(_activeMainMenuScene.Value);
+                _activeMainMenuScene = null;
             }
             
             // Load the new scene asynchronously
             AsyncOperation worldLoadOperation = SceneManager.LoadSceneAsync("World", LoadSceneMode.Additive);
-            AsyncOperation mainMenuLoadOperation = SceneManager.LoadSceneAsync("MainMenu", LoadSceneMode.Additive);
             if (worldLoadOperation is not null)
             {
                 worldLoadOperation.allowSceneActivation = false;
@@ -152,18 +169,8 @@ namespace ProjectGateway.Core
                 throw new NullReferenceException("loadOperation was null, scene failed to load.");
             }
             
-            if (mainMenuLoadOperation is not null)
-            {
-                mainMenuLoadOperation.allowSceneActivation = false;
-            }
-            else
-            {
-                Debug.LogError($"World scene failed to load.");
-                throw new NullReferenceException("loadOperation was null, scene failed to load.");
-            }
-
             // Wait until the scene is fully loaded
-            while (worldLoadOperation.progress < 0.9f && mainMenuLoadOperation.progress < 0.9f)
+            while (worldLoadOperation.progress < 0.9f)
             {
                 yield return null;
             }
@@ -171,21 +178,25 @@ namespace ProjectGateway.Core
             // Artificial delay
             yield return new WaitForSeconds(1f);
             
-            gameplayObjects.ForEach(m => m.SetActive(false));
+            gameplayObjects.ForEach(m => m.SetActive(true));
             
             // Activate the new scene
             worldLoadOperation.allowSceneActivation = true;
-
-            
             
             yield return new WaitForSeconds(0.1f);
             
-            ActiveWorldScene = SceneManager.GetSceneByName("World");
-            SceneManager.SetActiveScene(ActiveWorldScene.Value);
+            _activeWorldScene = SceneManager.GetSceneByName("World");
+            SceneManager.SetActiveScene(_activeWorldScene.Value);
             DataPersistenceManager.Instance.LoadProfile(profileName);
             
             yield return new WaitForSeconds(0.1f);
             yield return StartCoroutine(FadeLoadingScreen(0f));
         }
+    }
+
+    public enum GameState
+    {
+        MainMenu,
+        World
     }
 }

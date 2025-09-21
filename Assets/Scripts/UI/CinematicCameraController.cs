@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
+using ProjectGateway.Core;
 using UnityEngine;
 
 namespace ProjectGateway.UI
@@ -23,14 +24,22 @@ namespace ProjectGateway.UI
 
         private void Update()
         {
-            if (Mathf.Approximately(cameras[index].GetCinemachineComponent<CinemachineTrackedDolly>().m_PathPosition,
-                    1f))
+            if (SceneLoader.Instance.IsInMainMenu)
             {
-                cameras[index].gameObject.SetActive(false);
-                index++;
-                index %= cameras.Count;
-                cameras[index].gameObject.SetActive(true);
-                Camera.main.transform.position = cameras[index].transform.position;
+                if(!cameras[index].isActiveAndEnabled) cameras[index].gameObject.SetActive(true);
+                if (Mathf.Approximately(cameras[index].GetCinemachineComponent<CinemachineTrackedDolly>().m_PathPosition,
+                        1f))
+                {
+                    cameras[index].gameObject.SetActive(false);
+                    index++;
+                    index %= cameras.Count;
+                    cameras[index].gameObject.SetActive(true);
+                    Camera.main.transform.position = cameras[index].transform.position;
+                }
+            }
+            else
+            {
+                cameras.ForEach(c => c.gameObject.SetActive(false));
             }
         }
     }

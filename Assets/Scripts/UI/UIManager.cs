@@ -85,5 +85,15 @@ namespace ProjectGateway.UI
                 CurrentPanel = panel;
             }
         }
+
+        public void HidePanel<T>()
+        {
+            var panel = GetPanel<T>();
+            if (panel)
+            {
+                panel.Hide();
+                CurrentPanel = null;
+            }
+        }
     }
 }

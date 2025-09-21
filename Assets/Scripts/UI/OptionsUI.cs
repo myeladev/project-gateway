@@ -4,20 +4,14 @@ using UnityEngine;
 
 namespace ProjectGateway.UI
 {
-    public class OptionsUI : UIPanel
+    public class OptionsUI : MonoBehaviour
     {
         public static OptionsUI Instance;
-        public bool IsViewingOptions => Mathf.Approximately(canvasGroup.alpha, 1);
+        public bool IsViewingOptions => true;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
             Instance = this;
-        }
-
-        public override void OnShow()
-        {
-            Refresh();
         }
 
         [SerializeField]
@@ -50,30 +44,18 @@ namespace ProjectGateway.UI
 
             _options.Clear();
         }
-
+        
         public void Open(IInteractable interactable)
         {
             _interactable = interactable;
-            canvasGroup.alpha = interactable is not null ? 1 : 0;
             Refresh();
         }
 
         public void ChooseOption(string option)
         {
             _interactable.Interact(option, InteractContext.Default);
-            Hide();
-        }
-
-        protected override void OnHide()
-        {
-            
-        }
-        
-        protected override void OnHidden()
-        {
-            ClearOptions();
             _interactable = null;
-            canvasGroup.alpha = 0;
+            gameObject.SetActive(false);
         }
     }
 }

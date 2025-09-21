@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using KinematicCharacterController.Examples;
+using ProjectGateway.Core;
 using ProjectGateway.DataPersistence;
 using ProjectGateway.Objects.Furniture;
 using ProjectGateway.Objects.Items;
@@ -122,7 +123,7 @@ namespace ProjectGateway
             Vector3 lookInputVector = new Vector3(mouseLookAxisRight, mouseLookAxisUp, 0f);
 
             // Prevent moving the camera while the cursor isn't locked
-            if (Cursor.lockState != CursorLockMode.Locked || InformationUI.instance.IsViewingInformation)
+            if (Cursor.lockState != CursorLockMode.Locked)
             {
                 lookInputVector = Vector3.zero;
             }
@@ -186,6 +187,7 @@ namespace ProjectGateway
 
         public void LoadData(GameData data)
         {
+            if (SceneLoader.Instance.IsInMainMenu) return;
             if(data.player == null) return;
             hunger = data.player.hunger;
             sleep = data.player.sleep;

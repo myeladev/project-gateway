@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using ProjectGateway.Common;
 using ProjectGateway.SaveData;
 using ProjectGateway.UI;
@@ -103,7 +104,7 @@ namespace ProjectGateway.DataPersistence
             }
         }
 
-        private GameData CreateNewProfile(string profileName)
+        public GameData CreateNewProfile(string profileName)
         {
             var metaData = new GameMetaData
             {
@@ -120,6 +121,24 @@ namespace ProjectGateway.DataPersistence
             fileManager.SaveProfileData(profileName, gameData);
 
             return gameData;
+        }
+
+        public List<(GameMetaData, Texture)> LoadProfileList()
+        {
+            var profiles = fileManager.GetAllProfileMetaData();
+            var result = new List<(GameMetaData metadata, Texture thumbnail)>();
+
+            foreach (var profile in profiles)
+            {
+                if (profile != null 
+                && profile.profileName != "Placeholder")
+                {
+                    var thumbnail = fileManager.LoadProfileThumbnail(profile.profileName);
+                    result.Add((profile, thumbnail));
+                }
+            }
+
+            return result.OrderByDescending(m => m.metadata.lastSavedDate).ToList();
         }
     }
 }

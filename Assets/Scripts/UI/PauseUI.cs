@@ -1,3 +1,4 @@
+using ProjectGateway.Core;
 using ProjectGateway.DataPersistence;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace ProjectGateway.UI
         private SettingsUI settingsUI;
         public void ClickResume()
         {
-            Hide();
+            UIManager.Instance.HidePanel<PauseUI>();
         }
         
         public void ClickSave()
@@ -26,7 +27,7 @@ namespace ProjectGateway.UI
         
         public void ClickLeave()
         {
-            
+            SceneLoader.Instance.LoadMainMenu();
         }
 
         public override void OnShow()

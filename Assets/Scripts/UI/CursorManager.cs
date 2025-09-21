@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using ProjectGateway.Core;
 using ProjectGateway.Logic;
 using ProjectGateway.Objects.Furniture;
 using TMPro;
@@ -33,14 +34,15 @@ namespace ProjectGateway.UI
         private IInteractable _interactable;
         private void Update()
         {
-            //Cursor.lockState = UIManager.Instance.IsInUI ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
-            /*
+            if(SceneLoader.Instance.IsInMainMenu) return;
+            Cursor.lockState = UIManager.Instance.IsInUI ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
+            
             if (!characterController.CanInteract)
             {
                 interactText.enabled = false;
                 cursorImage.enabled = false;
                 return;
-            }*/
+            }
             var oldInteractable = _interactable;
             _interactable = CheckInteractables();
 
@@ -111,6 +113,7 @@ namespace ProjectGateway.UI
         [SerializeField] private OptionsUI optionsPanel;
         private void ShowInteractOptions(IInteractable interactable)
         {
+            optionsPanel.gameObject.SetActive(true);  
             optionsPanel.Open(interactable);
         }
     }

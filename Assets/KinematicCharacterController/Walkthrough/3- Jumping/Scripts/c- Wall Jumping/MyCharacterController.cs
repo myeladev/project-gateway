@@ -23,7 +23,7 @@ namespace ProjectGateway
     {
         public KinematicCharacterMotor Motor;
         public bool IsHoldingProp => _holdingProp is not null;
-        public bool CanInteract => !_holdingProp && !myPlayer.drivingVehicle && !movingFurniture && !InformationUI.instance.IsViewingInformation;
+        public bool CanInteract => !_holdingProp && !myPlayer.drivingVehicle && !movingFurniture;
 
         [Header("Stable Movement")]
         public float MaxStableMoveSpeed = 10f;

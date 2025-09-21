@@ -9,12 +9,18 @@ namespace ProjectGateway.UI
         [HideInInspector]
         public CanvasGroup canvasGroup;
         private Vector3 startPos;
+        public bool isVisibleOnStart;
         public KeyCode hotKey;
 
         protected virtual void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
             startPos = transform.localPosition;
+            if (!isVisibleOnStart)
+            {
+                canvasGroup.alpha = 0f;
+                transform.position = startPos + new Vector3(0f, 20f, 0f);
+            }
         }
 
         public void Show()

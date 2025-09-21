@@ -7,11 +7,11 @@ namespace ProjectGateway.UI
         [SerializeField]
         private MenuListUI menuListUI;
         [SerializeField]
-        private SelectSaveUI selectSaveUI;
+        private SaveSelectMenuUI saveSelectMenuUI;
         public void ClickEnter()
         {
-            selectSaveUI.gameObject.SetActive(true);
-            selectSaveUI.Show();
+            saveSelectMenuUI.gameObject.SetActive(true);
+            saveSelectMenuUI.Show();
             menuListUI.Hide();
         }
         
@@ -29,6 +29,13 @@ namespace ProjectGateway.UI
         public void ClickLeave()
         {
             Application.Quit();
+        }
+
+        public void BackToMainMenuFromSelectSave()
+        {
+            menuListUI.gameObject.SetActive(true);
+            menuListUI.Show();
+            saveSelectMenuUI.Hide();
         }
     }
 }

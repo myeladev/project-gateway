@@ -54,13 +54,13 @@ namespace ProjectGateway.DataPersistence
         public void SaveProfileThumbnail(string profileName, Texture2D thumbnail)
         {
             var byteArray = thumbnail.EncodeToPNG();
-            var path = Path.Combine(SaveDataPath, profileName, "thumbnail.json");
+            var path = Path.Combine(SaveDataPath, profileName, "thumbnail.png");
             File.WriteAllBytes(path, byteArray);
         }
 
         public Texture2D LoadProfileThumbnail(string profileName)
         {
-            var path = Path.Combine(SaveDataPath, profileName, "thumbnail.json");
+            var path = Path.Combine(SaveDataPath, profileName, "thumbnail.png");
             return Utilities.ReadImageFromFile(path);
         }
 
