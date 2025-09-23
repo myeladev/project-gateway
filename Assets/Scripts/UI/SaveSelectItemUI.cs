@@ -42,7 +42,7 @@ namespace ProjectGateway.UI
 
         public void LoadSave()
         {
-            SceneLoader.Instance.LoadScenesForProfile(_metaData.profileName);
+            SceneManager.Instance.LoadScenesForProfile(_metaData.profileName);
         }
         
         public void DeleteSave()

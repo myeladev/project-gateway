@@ -187,7 +187,7 @@ namespace ProjectGateway
 
         public void LoadData(GameData data)
         {
-            if (SceneLoader.Instance.IsInMainMenu) return;
+            if (SceneManager.Instance.IsInMainMenu) return;
             if(data.player == null) return;
             hunger = data.player.hunger;
             sleep = data.player.sleep;

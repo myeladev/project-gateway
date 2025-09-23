@@ -1,3 +1,5 @@
+using ProjectGateway.Core;
+
 namespace ProjectGateway.UI
 {
     public class SettingsUI : UIPanel

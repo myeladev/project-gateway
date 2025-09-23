@@ -30,6 +30,12 @@ namespace ProjectGateway.UI
 
         private Item selectedItem;
 
+        public static InventoryUI Instance;
+        protected override void Awake()
+        {
+            base.Awake();
+            Instance = this;
+        }
         void Update()
         {
             if (selectedItem && UIManager.Instance.CurrentPanel == this)

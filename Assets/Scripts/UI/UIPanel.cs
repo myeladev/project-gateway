@@ -4,23 +4,20 @@ using DG.Tweening;
 namespace ProjectGateway.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
+    [DisallowMultipleComponent]
     public abstract class UIPanel : MonoBehaviour
     {
         [HideInInspector]
         public CanvasGroup canvasGroup;
         private Vector3 startPos;
-        public bool isVisibleOnStart;
         public KeyCode hotKey;
+        public bool exitOnNewPanelPush;
 
         protected virtual void Awake()
         {
             canvasGroup = GetComponent<CanvasGroup>();
             startPos = transform.localPosition;
-            if (!isVisibleOnStart)
-            {
-                canvasGroup.alpha = 0f;
-                transform.position = startPos + new Vector3(0f, 20f, 0f);
-            }
+            gameObject.SetActive(false);
         }
 
         public void Show()
@@ -32,7 +29,8 @@ namespace ProjectGateway.UI
             showSequence.Join(transform.DOLocalMoveY(startPos.y, 0.5f));
             showSequence.OnComplete(() =>
             {
-                transform.localPosition = startPos;
+                canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
             });
         }
 
@@ -45,8 +43,8 @@ namespace ProjectGateway.UI
             hideSequence.Join(canvasGroup.DOFade(0f, 0.5f));
             hideSequence.Join(transform.DOLocalMoveY(startPos.y + 20f, 0.5f));
             hideSequence.OnComplete(() => {
-                gameObject.SetActive(false);
-                transform.localPosition = startPos;
+                canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
                 OnHidden();
             });
         }

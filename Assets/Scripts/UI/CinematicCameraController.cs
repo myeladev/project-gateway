@@ -24,7 +24,7 @@ namespace ProjectGateway.UI
 
         private void Update()
         {
-            if (SceneLoader.Instance.IsInMainMenu)
+            if (SceneManager.Instance.IsInMainMenu)
             {
                 if(!cameras[index].isActiveAndEnabled) cameras[index].gameObject.SetActive(true);
                 if (Mathf.Approximately(cameras[index].GetCinemachineComponent<CinemachineTrackedDolly>().m_PathPosition,

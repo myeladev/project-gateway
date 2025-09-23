@@ -34,7 +34,7 @@ namespace ProjectGateway.UI
         private IInteractable _interactable;
         private void Update()
         {
-            if(SceneLoader.Instance.IsInMainMenu) return;
+            if(SceneManager.Instance.IsInMainMenu) return;
             Cursor.lockState = UIManager.Instance.IsInUI ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
             
             if (!characterController.CanInteract)

@@ -39,7 +39,7 @@ namespace ProjectGateway.Objects.Items
             {
                 case "Drop":
                     MyPlayer.instance.inventory.RemoveFromInventory(this);
-                    UIManager.Instance.inventoryUI.Refresh();
+                    InventoryUI.Instance.Refresh();
                     
                     var targetPosition = Camera.main.transform.position + Camera.main.transform.forward * 2f;
                     transform.position = targetPosition;

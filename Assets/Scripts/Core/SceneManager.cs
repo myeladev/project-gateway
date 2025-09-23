@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
 using ProjectGateway.DataPersistence;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace ProjectGateway.Core
 {
-    public class SceneLoader : MonoBehaviour
+    public class SceneManager : MonoBehaviour
     {
-        public static SceneLoader Instance { get; private set; }
+        public static SceneManager Instance { get; private set; }
         [SerializeField]
         private List<GameObject> gameplayObjects;
         
         public CanvasGroup loadingScreen;
         private Scene? _activeWorldScene;
-        private Scene? _activeMainMenuScene;
         private const float FadeDuration = 0.5f;
 
         public bool IsInMainMenu => _gameState == GameState.MainMenu;
@@ -73,13 +70,13 @@ namespace ProjectGateway.Core
             
             if (_activeWorldScene is not null)
             {
-                SceneManager.UnloadSceneAsync(_activeWorldScene.Value);
+                UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(_activeWorldScene.Value);
                 _activeWorldScene = null;
             }
             
             // Load the new scene asynchronously
-            AsyncOperation worldLoadOperation = SceneManager.LoadSceneAsync("World", LoadSceneMode.Additive);
-            AsyncOperation mainMenuLoadOperation = SceneManager.LoadSceneAsync("MainMenu", LoadSceneMode.Additive);
+            AsyncOperation worldLoadOperation =
+                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("World", LoadSceneMode.Additive);
             if (worldLoadOperation is not null)
             {
                 worldLoadOperation.allowSceneActivation = false;
@@ -90,18 +87,8 @@ namespace ProjectGateway.Core
                 throw new NullReferenceException("loadOperation was null, scene failed to load.");
             }
             
-            if (mainMenuLoadOperation is not null)
-            {
-                mainMenuLoadOperation.allowSceneActivation = false;
-            }
-            else
-            {
-                Debug.LogError($"Main Menu scene failed to load.");
-                throw new NullReferenceException("loadOperation was null, scene failed to load.");
-            }
-            
             // Wait until the scene is fully loaded
-            while (worldLoadOperation.progress < 0.9f && mainMenuLoadOperation.progress < 0.9f)
+            while (worldLoadOperation.progress < 0.9f)
             {
                 yield return null;
             }
@@ -111,16 +98,9 @@ namespace ProjectGateway.Core
             
             // Activate the new scenes
             worldLoadOperation.allowSceneActivation = true;
-            mainMenuLoadOperation.completed += (operation) =>
+            worldLoadOperation.completed += (operation) =>
             {
-                _activeMainMenuScene = SceneManager.GetSceneByName("MainMenu");
-                SceneManager.SetActiveScene(_activeMainMenuScene.Value);
-            };
-
-            mainMenuLoadOperation.allowSceneActivation = true;
-            mainMenuLoadOperation.completed += (operation) =>
-            {
-                _activeWorldScene = SceneManager.GetSceneByName("World");
+                _activeWorldScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName("World");
             };
             
             gameplayObjects.ForEach(m => m.SetActive(false));
@@ -147,18 +127,12 @@ namespace ProjectGateway.Core
             // Unload the old scene if it's not the persistent scene
             if (_activeWorldScene is not null)
             {
-                SceneManager.UnloadSceneAsync(_activeWorldScene.Value);
+                UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(_activeWorldScene.Value);
                 _activeWorldScene = null;
-            }
-            // Unload the old mainmenu scene if it's not the persistent scene
-            if (_activeMainMenuScene is not null)
-            {
-                SceneManager.UnloadSceneAsync(_activeMainMenuScene.Value);
-                _activeMainMenuScene = null;
             }
             
             // Load the new scene asynchronously
-            AsyncOperation worldLoadOperation = SceneManager.LoadSceneAsync("World", LoadSceneMode.Additive);
+            AsyncOperation worldLoadOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("World", LoadSceneMode.Additive);
             if (worldLoadOperation is not null)
             {
                 worldLoadOperation.allowSceneActivation = false;
@@ -185,8 +159,8 @@ namespace ProjectGateway.Core
             
             yield return new WaitForSeconds(0.1f);
             
-            _activeWorldScene = SceneManager.GetSceneByName("World");
-            SceneManager.SetActiveScene(_activeWorldScene.Value);
+            _activeWorldScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName("World");
+            UnityEngine.SceneManagement.SceneManager.SetActiveScene(_activeWorldScene.Value);
             DataPersistenceManager.Instance.LoadProfile(profileName);
             
             yield return new WaitForSeconds(0.1f);

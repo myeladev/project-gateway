@@ -28,7 +28,7 @@ namespace ProjectGateway.Objects.Items
                     if (context == InteractContext.Inventory)
                     {
                         MyPlayer.instance.inventory.RemoveFromInventory(this);
-                        UIManager.Instance.inventoryUI.Refresh();
+                        InventoryUI.Instance.Refresh();
                     }
                     Destroy(gameObject);
                     break;
