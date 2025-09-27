@@ -113,7 +113,6 @@ namespace ProjectGateway.UI
         [SerializeField] private OptionsUI optionsPanel;
         private void ShowInteractOptions(IInteractable interactable)
         {
-            optionsPanel.gameObject.SetActive(true);  
             optionsPanel.Open(interactable);
         }
     }

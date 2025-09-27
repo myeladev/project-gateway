@@ -12,6 +12,8 @@ namespace ProjectGateway.Core
         public static SceneManager Instance { get; private set; }
         [SerializeField]
         private List<GameObject> gameplayObjects;
+        [SerializeField]
+        private List<GameObject> mainMenuObjects;
         
         public CanvasGroup loadingScreen;
         private Scene? _activeWorldScene;
@@ -104,6 +106,7 @@ namespace ProjectGateway.Core
             };
             
             gameplayObjects.ForEach(m => m.SetActive(false));
+            mainMenuObjects.ForEach(m => m.SetActive(true));
             
 
             yield return new WaitForSeconds(0.1f);
@@ -153,6 +156,7 @@ namespace ProjectGateway.Core
             yield return new WaitForSeconds(1f);
             
             gameplayObjects.ForEach(m => m.SetActive(true));
+            mainMenuObjects.ForEach(m => m.SetActive(false));
             
             // Activate the new scene
             worldLoadOperation.allowSceneActivation = true;

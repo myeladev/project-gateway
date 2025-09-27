@@ -7,11 +7,14 @@ namespace ProjectGateway.UI
     public class OptionsUI : MonoBehaviour
     {
         public static OptionsUI Instance;
-        public bool IsViewingOptions => true;
+        public bool IsViewingOptions => Mathf.Approximately(canvasGroup.alpha, 1);
+        private CanvasGroup canvasGroup;
 
         protected void Awake()
         {
             Instance = this;
+            canvasGroup = GetComponent<CanvasGroup>();
+            Close();
         }
 
         [SerializeField]
@@ -33,6 +36,10 @@ namespace ProjectGateway.UI
                     _options.Add(newButton);
                 }
             }
+            else
+            {
+                Close();
+            }
         }
 
         private void ClearOptions()
@@ -48,14 +55,23 @@ namespace ProjectGateway.UI
         public void Open(IInteractable interactable)
         {
             _interactable = interactable;
+            canvasGroup.alpha = 1;
+            canvasGroup.interactable = true;
             Refresh();
         }
 
         public void ChooseOption(string option)
         {
             _interactable.Interact(option, InteractContext.Default);
-            _interactable = null;
+            Close();
             gameObject.SetActive(false);
+        }
+
+        private void Close()
+        {
+            _interactable = null;
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
         }
     }
 }

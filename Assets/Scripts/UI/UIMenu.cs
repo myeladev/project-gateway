@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ProjectGateway.Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,20 +15,21 @@ namespace ProjectGateway.UI
         private UIPanel initialPanel;
         [SerializeField]
         private GameObject firstFocusItem;
-        private Canvas _rootCanvas;
+        [SerializeField]
+        private Canvas rootCanvas;
         
-        private Stack<UIPanel> _panelStack = new ();
+        protected readonly Stack<UIPanel> PanelStack = new ();
 
-        private void Awake()
+        protected virtual void Awake()
         {
-            _rootCanvas = GetComponent<Canvas>();
+            
         }
 
-        private void OnCancel()
+        protected virtual void OnCancel()
         {
-            if (_rootCanvas.enabled && _rootCanvas.gameObject.activeInHierarchy)
+            if (rootCanvas.enabled && rootCanvas.gameObject.activeInHierarchy)
             {
-                if (_panelStack.Any())
+                if (PanelStack.Any())
                 {
                     PopPanel();
                 }
@@ -49,9 +51,9 @@ namespace ProjectGateway.UI
 
         public void PushPanel(UIPanel panel)
         {
-            if (_panelStack.Any())
+            if (PanelStack.Any())
             {
-                UIPanel currentPanel = _panelStack.Peek();
+                UIPanel currentPanel = PanelStack.Peek();
 
                 if (currentPanel.exitOnNewPanelPush)
                 {
@@ -61,31 +63,34 @@ namespace ProjectGateway.UI
             
             panel.gameObject.SetActive(true);
             panel.Show();
-            _panelStack.Push(panel);
-            
-            _panelStack.Push(panel);
+            PanelStack.Push(panel);
         }
         
         public void PopPanel()
         {
-            if (_panelStack.Any())
+            if (PanelStack.Any())
             {
-                UIPanel currentPanel = _panelStack.Pop();
+                UIPanel currentPanel = PanelStack.Pop();
                 currentPanel.Hide();
             }
         }
 
         public void PopAllPanels()
         {
-            while (_panelStack.Any())
+            while (PanelStack.Any())
             {
                 PopPanel();
             }
         }
+
+        public bool IsAnyPanelActive()
+        {
+            return PanelStack.Any();
+        }
         
         public bool IsPanelActive(UIPanel panel)
         {
-            return _panelStack.Any(p => p == panel);
+            return PanelStack.Any(p => p == panel);
         }
     }
 }

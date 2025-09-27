@@ -10,7 +10,6 @@ namespace ProjectGateway.UI
         [HideInInspector]
         public CanvasGroup canvasGroup;
         private Vector3 startPos;
-        public KeyCode hotKey;
         public bool exitOnNewPanelPush;
 
         protected virtual void Awake()

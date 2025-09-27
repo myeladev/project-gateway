@@ -42,6 +42,7 @@ namespace ProjectGateway.UI
 
         public void LoadSave()
         {
+            MainMenuUI.Instance.PopAllPanels();
             SceneManager.Instance.LoadScenesForProfile(_metaData.profileName);
         }
         
