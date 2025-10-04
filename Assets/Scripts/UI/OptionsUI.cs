@@ -23,8 +23,6 @@ namespace ProjectGateway.UI
         private IInteractable _interactable;
         public void Refresh()
         {
-            ClearOptions();
-
             if (_interactable is not null)
             {
                 var interactOptions = _interactable.GetInteractOptions(InteractContext.Default);
@@ -64,7 +62,6 @@ namespace ProjectGateway.UI
         {
             _interactable.Interact(option, InteractContext.Default);
             Close();
-            gameObject.SetActive(false);
         }
 
         private void Close()
@@ -72,6 +69,7 @@ namespace ProjectGateway.UI
             _interactable = null;
             canvasGroup.alpha = 0;
             canvasGroup.interactable = false;
+            ClearOptions();
         }
     }
 }

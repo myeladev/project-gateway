@@ -1,3 +1,4 @@
+using ProjectGateway.Core;
 using UnityEngine;
 
 namespace ProjectGateway.Logic
@@ -10,14 +11,15 @@ namespace ProjectGateway.Logic
         // Start is called before the first frame update
         void Awake()
         {
-            offset = transform.position;
+            offset = transform.localPosition;
         }
 
         // Update is called once per frame
         void Update()
         {
-            var targetPosition =
-                player.IsInVehicle ? player.drivingVehicle.transform.position : player.Character.transform.position;
+            var targetPosition = player.Character.transform.position;
+            if(player.IsInVehicle) targetPosition = player.drivingVehicle.transform.position;
+            if(SceneManager.Instance.IsInMainMenu) targetPosition = Camera.main.transform.position;
             transform.position = targetPosition + offset;
         }
     }
