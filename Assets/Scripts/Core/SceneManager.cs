@@ -112,7 +112,7 @@ namespace ProjectGateway.Core
             yield return new WaitForSeconds(0.1f);
             
             DataPersistenceManager.Instance.LoadRecentProfile();
-            
+            Cursor.lockState = CursorLockMode.None;
             
             yield return new WaitForSeconds(0.1f);
             yield return StartCoroutine(FadeLoadingScreen(0f));

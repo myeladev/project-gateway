@@ -35,7 +35,7 @@ namespace ProjectGateway.UI
         private void Update()
         {
             if(SceneManager.Instance.IsInMainMenu) return;
-            Cursor.lockState = UIManager.Instance.IsInUI ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.lockState = GameplayUI.Instance.IsAnyPanelActive() ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
             
             if (!characterController.CanInteract)
             {

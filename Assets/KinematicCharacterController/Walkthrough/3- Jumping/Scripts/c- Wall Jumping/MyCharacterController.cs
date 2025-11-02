@@ -157,7 +157,7 @@ namespace ProjectGateway
             if (myPlayer.drivingVehicle 
                 || myPlayer.isSleeping 
                 || myPlayer.IsSitting
-                || UIManager.Instance.IsInUI)
+                || GameplayUI.Instance.IsAnyPanelActive())
             {
                 _moveInputVector = Vector3.zero;
                 return;

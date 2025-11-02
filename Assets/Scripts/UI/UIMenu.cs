@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using ProjectGateway.Core;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -27,9 +26,10 @@ namespace ProjectGateway.UI
 
         protected virtual void OnCancel()
         {
+            Debug.Log(rootCanvas.enabled + " - " + rootCanvas.gameObject.activeInHierarchy, gameObject);
             if (rootCanvas.enabled && rootCanvas.gameObject.activeInHierarchy)
             {
-                if (PanelStack.Any())
+                if (PanelStack.Any() && PanelStack.Peek() != initialPanel)
                 {
                     PopPanel();
                 }
@@ -37,6 +37,13 @@ namespace ProjectGateway.UI
         }
 
         private void Start()
+        {
+            Initialise();
+        }
+        
+        private void OnEnable() => Initialise();
+
+        private void Initialise()
         {
             if (initialPanel)
             {

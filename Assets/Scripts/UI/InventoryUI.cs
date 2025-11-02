@@ -38,7 +38,7 @@ namespace ProjectGateway.UI
         }
         void Update()
         {
-            if (selectedItem && UIManager.Instance.CurrentPanel == this)
+            if (selectedItem && GameplayUI.Instance.IsPanelActive(this))
             {
                 IInteractable interactable = selectedItem;
                 if (Input.GetKeyDown(KeyCode.E)) interactable.Interact("Use", InteractContext.Inventory);
