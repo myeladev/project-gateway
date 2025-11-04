@@ -1,6 +1,7 @@
 using UnityEngine;
 using KinematicCharacterController;
 using ProjectGateway.Common;
+using ProjectGateway.Core;
 using ProjectGateway.Logic;
 using ProjectGateway.Objects.Furniture;
 using ProjectGateway.Objects.Items;
@@ -157,7 +158,7 @@ namespace ProjectGateway
             if (myPlayer.drivingVehicle 
                 || myPlayer.isSleeping 
                 || myPlayer.IsSitting
-                || GameplayUI.Instance.IsAnyPanelActive())
+                || (SceneManager.Instance.GameState == GameState.World && GameplayUI.Instance.IsAnyPanelActive()))
             {
                 _moveInputVector = Vector3.zero;
                 return;

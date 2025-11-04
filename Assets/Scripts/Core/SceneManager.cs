@@ -21,6 +21,7 @@ namespace ProjectGateway.Core
 
         public bool IsInMainMenu => _gameState == GameState.MainMenu;
         private GameState _gameState = GameState.MainMenu;
+        public GameState GameState => _gameState;
 
         private void Awake()
         {
