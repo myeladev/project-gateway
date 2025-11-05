@@ -192,7 +192,7 @@ namespace ProjectGateway
             hunger = data.player.hunger;
             sleep = data.player.sleep;
             
-            if (data.player.position.Length == 3 && 
+            if (data.player.position?.Length == 3 && 
                 (data.player.position[0] != 0 || data.player.position[1] != 0 || data.player.position[2] != 0))
             {
                 Character.Motor.SetPosition(new Vector3(data.player.position[0], data.player.position[1], data.player.position[2]));
@@ -201,6 +201,12 @@ namespace ProjectGateway
                 Quaternion rotation =  Quaternion.Euler(new Vector3(data.player.rotation[0], data.player.rotation[1], data.player.rotation[2]));
                 Camera.main.transform.rotation = rotation;
             }
+            else
+            {
+                var playerSpawn = GameObject.FindGameObjectWithTag("PlayerSpawn");
+                Character.Motor.SetPosition(playerSpawn.transform.position);
+            }
+            
             Sit(null);
         }
 
