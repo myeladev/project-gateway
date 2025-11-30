@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6648923876945822124}
   - component: {fileID: 6259726836130111825}
   m_Layer: 5
-  m_Name: Text - Game Type
+  m_Name: Text - Game Version
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 116.19, y: 39.5}
+  m_AnchoredPosition: {x: 220, y: 39.5}
   m_SizeDelta: {x: 250, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6648923876945822124
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Ambient
+  m_text: v0.1.0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 68219aa589a78b34da52c3377f922a5b, type: 2}
   m_sharedMaterial: {fileID: -3083884670488033449, guid: 68219aa589a78b34da52c3377f922a5b,
@@ -93,8 +93,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -178,7 +178,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 100}
+  m_SizeDelta: {x: 0, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3523456398064079245
 CanvasRenderer:
@@ -232,7 +232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveName: {fileID: 6619955939646794632}
   saveDate: {fileID: 6680911447815511247}
-  gameType: {fileID: 6259726836130111825}
+  gameVersion: {fileID: 6259726836130111825}
   saveImage: {fileID: 3461261183516047039}
 --- !u!114 &5211913461390149551
 MonoBehaviour:
@@ -324,8 +324,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 115, y: -12.8}
-  m_SizeDelta: {x: 250, y: 44.3}
+  m_AnchoredPosition: {x: 220, y: -12}
+  m_SizeDelta: {x: 148, y: 44.3}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &5696140569189346263
 CanvasRenderer:
@@ -355,7 +355,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: My stupid long title name for my dumb save
+  m_text: My stupid long title name for my dumb save wwwwwwwwwwwwwwwwwwwwwwwwww
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 68219aa589a78b34da52c3377f922a5b, type: 2}
   m_sharedMaterial: {fileID: -3083884670488033449, guid: 68219aa589a78b34da52c3377f922a5b,
@@ -462,7 +462,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 5, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &618303419264255545
 CanvasRenderer:
@@ -533,7 +533,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -11.6, y: 39.5}
+  m_AnchoredPosition: {x: -13.4, y: 39.5}
   m_SizeDelta: {x: 250, y: 30}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &6672089941468537952
@@ -592,8 +592,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

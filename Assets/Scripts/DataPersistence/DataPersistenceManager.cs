@@ -104,14 +104,15 @@ namespace ProjectGateway.DataPersistence
             }
         }
 
-        public GameData CreateNewProfile(string profileName)
+        public GameData CreateNewProfile(string profileName, bool ambientMode = false)
         {
             var metaData = new GameMetaData
             {
                 profileName = profileName,
                 createdDate = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
                 lastSavedDate = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
-                gameVersion = Application.version
+                gameVersion = Application.version,
+                ambientMode = ambientMode
             };
 
             currentGameMetaData = metaData;

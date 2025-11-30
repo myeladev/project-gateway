@@ -42,12 +42,5 @@ namespace ProjectGateway.UI
         {
             
         }
-
-        public void ClickCreateNewSave()
-        {
-            DataPersistenceManager.Instance.CreateNewProfile("New Profile " + DateTime.Now.ToString("HH mm ss dd MM "));
-            
-            OnShow();
-        }
     }
 }

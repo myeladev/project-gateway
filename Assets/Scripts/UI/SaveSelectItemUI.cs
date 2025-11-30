@@ -12,7 +12,7 @@ namespace ProjectGateway.UI
     {
         [SerializeField] private TextMeshProUGUI saveName;
         [SerializeField] private TextMeshProUGUI saveDate;
-        [SerializeField] private TextMeshProUGUI gameType;
+        [SerializeField] private TextMeshProUGUI gameVersion;
         [SerializeField] private RawImage saveImage;
 
         private GameMetaData _metaData;
@@ -37,6 +37,11 @@ namespace ProjectGateway.UI
             var savedDate = DateTime.Parse(metaData.lastSavedDate, CultureInfo.InvariantCulture);
             saveDate.text = FormatSaveDate(savedDate);
             saveImage.texture = image;
+            gameVersion.text = $"v{metaData.gameVersion}";
+            if (metaData.gameVersion != Application.version)
+            {
+                gameVersion.color = Color.red;
+            }
             if (image is null) saveImage.texture = Texture2D.blackTexture;
         }
 
