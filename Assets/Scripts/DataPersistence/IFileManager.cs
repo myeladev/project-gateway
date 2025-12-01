@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectGateway.DataPersistence
+namespace ProjectDaydream.DataPersistence
 {
     public interface IFileManager
     {

@@ -1,12 +1,12 @@
 using System;
 using System.Globalization;
-using ProjectGateway.Core;
-using ProjectGateway.DataPersistence;
+using ProjectDaydream.Core;
+using ProjectDaydream.DataPersistence;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class SaveSelectItemUI : MonoBehaviour
     {

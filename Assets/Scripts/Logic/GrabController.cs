@@ -1,8 +1,9 @@
 using System;
-using ProjectGateway.UI;
+using ProjectDaydream.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace ProjectGateway.Logic
+namespace ProjectDaydream.Logic
 {
     public class GrabController : MonoBehaviour
     {
@@ -11,61 +12,68 @@ namespace ProjectGateway.Logic
         public float damper = 60f;
         public float maxDistance = 0.05f;
 
-        Rigidbody anchorRb; // kinematic proxy that follows the mouse
-        ConfigurableJoint joint;
-        float grabDistance;
+        private Rigidbody _anchorRb; // kinematic proxy that follows the mouse
+        private ConfigurableJoint _joint;
+        private float _grabDistance;
+
+        private InputAction _grabAction;
 
         void Awake()
         {
             var go = new GameObject("GrabAnchor");
-            anchorRb = go.AddComponent<Rigidbody>();
-            anchorRb.isKinematic = true;
-            anchorRb.interpolation = RigidbodyInterpolation.Interpolate;
+            _anchorRb = go.AddComponent<Rigidbody>();
+            _anchorRb.isKinematic = true;
+            _anchorRb.interpolation = RigidbodyInterpolation.Interpolate;
+        }
+
+        private void Start()
+        {
+            _grabAction = InputSystem.actions.FindAction("Grab");
         }
 
         private void FixedUpdate()
         {
             var ray = new Ray(cam.transform.position, cam.transform.forward);
-            var target = ray.origin + ray.direction * grabDistance;
+            var target = ray.origin + ray.direction * _grabDistance;
 
             // Smooth towards target to avoid huge teleports
             var maxSpeed = 12f; // m/s
-            var desired = target - anchorRb.position;
+            var desired = target - _anchorRb.position;
             var step = Vector3.ClampMagnitude(desired, maxSpeed * Time.fixedDeltaTime);
-            anchorRb.MovePosition(anchorRb.position + step);
+            _anchorRb.MovePosition(_anchorRb.position + step);
         }
 
         void Update()
         {
             var ray = new Ray(cam.transform.position, cam.transform.forward);
-            if (Input.GetMouseButtonDown(0) && !OptionsUI.Instance.IsViewingOptions)
+            if (_grabAction.WasPerformedThisFrame() && !OptionsUI.Instance.IsViewingOptions)
             {
                 if (Physics.Raycast(ray, out var hit, 1000f) && hit.rigidbody)
                 {
-                    grabDistance = hit.distance;
-                    anchorRb.position = hit.point;
+                    _grabDistance = hit.distance;
+                    _anchorRb.position = hit.point;
 
-                    joint = hit.rigidbody.gameObject.AddComponent<ConfigurableJoint>();
-                    joint.autoConfigureConnectedAnchor = false;
-                    joint.connectedBody = anchorRb;
+                    _joint = hit.rigidbody.gameObject.AddComponent<ConfigurableJoint>();
+                    _joint.autoConfigureConnectedAnchor = false;
+                    _joint.connectedBody = _anchorRb;
 
                     // anchor on the object at the hit point (in object local space)
-                    joint.anchor = hit.rigidbody.transform.InverseTransformPoint(hit.point);
-                    joint.connectedAnchor = Vector3.zero;
+                    _joint.anchor = hit.rigidbody.transform.InverseTransformPoint(hit.point);
+                    _joint.connectedAnchor = Vector3.zero;
 
                     var jointDrive = new JointDrive() { positionSpring = spring, positionDamper = damper, maximumForce = (float)6e4 };
-                    joint.xDrive = jointDrive;
-                    joint.yDrive = jointDrive;
-                    joint.zDrive = jointDrive;
-                    joint.angularXDrive = jointDrive;
-                    joint.angularYZDrive = jointDrive;
-                    joint.xMotion = ConfigurableJointMotion.Limited;
-                    joint.yMotion = ConfigurableJointMotion.Limited;
-                    joint.zMotion = ConfigurableJointMotion.Limited;
-                    joint.linearLimit = new SoftJointLimit() { limit = 0.03f };
-                    joint.projectionMode = JointProjectionMode.PositionAndRotation;
+                    _joint.xDrive = jointDrive;
+                    _joint.yDrive = jointDrive;
+                    _joint.zDrive = jointDrive;
+                    _joint.angularXDrive = jointDrive;
+                    _joint.angularYZDrive = jointDrive;
+                    _joint.xMotion = ConfigurableJointMotion.Limited;
+                    _joint.yMotion = ConfigurableJointMotion.Limited;
+                    _joint.zMotion = ConfigurableJointMotion.Limited;
+                    _joint.linearLimit = new SoftJointLimit() { limit = 0.03f };
+                    _joint.projectionMode = JointProjectionMode.PositionAndRotation;
                     
-                    joint.breakForce = 50000;
+                    _joint.breakForce = 50000;
 
                     // extra stability
                     //hit.rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -73,14 +81,14 @@ namespace ProjectGateway.Logic
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (_grabAction.WasReleasedThisFrame())
             {
-                if (joint)
+                if (_joint)
                 {
-                    Destroy(joint);
-                    joint = null;
+                    Destroy(_joint);
+                    _joint = null;
                 }
-                grabDistance = 0;
+                _grabDistance = 0;
             }
         }
     }

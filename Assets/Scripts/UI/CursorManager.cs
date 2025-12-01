@@ -1,13 +1,15 @@
 using System;
 using DG.Tweening;
-using ProjectGateway.Core;
-using ProjectGateway.Logic;
-using ProjectGateway.Objects.Furniture;
+using ProjectDaydream.Core;
+using ProjectDaydream.Logic;
+using ProjectDaydream.Objects.Furniture;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using CharacterController = ProjectDaydream.Logic.CharacterController;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class CursorManager : MonoBehaviour
     {
@@ -21,15 +23,22 @@ namespace ProjectGateway.UI
 
         [Header("Misc")] 
         [SerializeField] 
-        private MyCharacterController characterController;
+        private CharacterController characterController;
 
         private const float InteractRange = 3f;
+        private InputAction _interactAction;
+        private InputAction _inspectAction;
 
         private void Awake()
         {
             _camera = Camera.main;
         }
-
+        
+        private void Start()
+        {
+            _interactAction = InputSystem.actions.FindAction("Interact");
+            _inspectAction = InputSystem.actions.FindAction("Inspect");
+        }
 
         private IInteractable _interactable;
         private void Update()
@@ -37,7 +46,7 @@ namespace ProjectGateway.UI
             if(SceneManager.Instance.IsInMainMenu) return;
             Cursor.lockState = GameplayUI.Instance.IsAnyPanelActive() ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
             
-            if (!characterController.CanInteract)
+            if (!InteractController.Instance.CanInteract)
             {
                 interactText.enabled = false;
                 cursorImage.enabled = false;
@@ -67,7 +76,7 @@ namespace ProjectGateway.UI
             interactText.enabled = _interactable is not null;
             interactText.text = "";
 
-            if (_interactable is Furniture furniture && furniture.seatingAnchor == MyPlayer.instance.currentSeatingAnchor)
+            if (_interactable is Furniture furniture && furniture.seatingAnchor == PlayerController.Instance.character.ActiveSeatingAnchor)
             {
                 return;
             }
@@ -89,8 +98,8 @@ namespace ProjectGateway.UI
                     interactText.text = "";
                 }
 
-                if (Input.GetMouseButtonDown(0) && !optionsPanel.IsViewingOptions) _interactable.Interact(interactStrings[0], InteractContext.Default);
-                if (Input.GetMouseButtonDown(1))
+                if (_interactAction.WasPressedThisFrame() && !optionsPanel.IsViewingOptions) _interactable.Interact(interactStrings[0], InteractContext.Default);
+                if (_inspectAction.WasPressedThisFrame())
                 {
                     ShowInteractOptions(optionsPanel.IsViewingOptions ? null : _interactable);
                 }

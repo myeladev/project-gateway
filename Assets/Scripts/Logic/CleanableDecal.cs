@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 
-namespace ProjectGateway.Logic
+namespace ProjectDaydream.Logic
 {
     [RequireComponent(typeof(DecalProjector))]
     public class CleanableDecal : MonoBehaviour, IInteractable
@@ -35,7 +35,7 @@ namespace ProjectGateway.Logic
             }
         }
 
-        public bool IsInteractable => MyPlayer.instance.Character.CanClean()
+        public bool IsInteractable => true // TODO: PlayerController.Instance.character.CanClean()
                                     && projector.fadeFactor > 0;
         public List<string> GetInteractOptions(InteractContext context)
         {

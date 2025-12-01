@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using KinematicCharacterController;
 using UnityEngine;
 
-namespace KinematicCharacterController
+namespace ProjectDaydream.KinematicCharacterController.Core
 {
     public enum RigidbodyInteractionType
     {
@@ -175,7 +176,7 @@ namespace KinematicCharacterController
         /// </summary>
         [SerializeField]
         [Tooltip("Height of the Character Capsule")]
-        public float CapsuleHeight = 2f;
+        private float CapsuleHeight = 2f;
         /// <summary>
         /// Local y position of the character's capsule center
         /// </summary>

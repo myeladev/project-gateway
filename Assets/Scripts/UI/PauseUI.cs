@@ -1,8 +1,8 @@
-using ProjectGateway.Core;
-using ProjectGateway.DataPersistence;
+using ProjectDaydream.Core;
+using ProjectDaydream.DataPersistence;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class PauseUI : UIPanel
     {

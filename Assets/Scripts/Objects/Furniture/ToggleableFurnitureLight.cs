@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using ProjectGateway.Logic;
+using ProjectDaydream.Logic;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Furniture
+namespace ProjectDaydream.Objects.Furniture
 {
     public class ToggleableFurnitureLight : Furniture, IInteractable
     {
@@ -17,9 +17,8 @@ namespace ProjectGateway.Objects.Furniture
         
         private AudioSource _audio;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
             _audio = GetComponent<AudioSource>();
         }
         

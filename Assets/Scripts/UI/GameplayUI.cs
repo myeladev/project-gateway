@@ -1,7 +1,8 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class GameplayUI : UIMenu
     {
@@ -15,12 +16,12 @@ namespace ProjectGateway.UI
             Instance = this;
         }
 
-        protected override void OnCancel()
+        public override void OnCancel(BaseEventData _)
         {
             Debug.Log($"Pressing Cancel, there's currently {PanelStack.Count} panels active. Top panel: {(PanelStack.Any() ? PanelStack.Peek() : null )}");
             if (IsAnyPanelActive())
             {
-                base.OnCancel();
+                base.OnCancel(_);
             }
             else
             {

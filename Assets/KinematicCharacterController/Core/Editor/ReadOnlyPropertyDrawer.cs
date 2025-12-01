@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using KinematicCharacterController;
 using UnityEditor;
+using UnityEngine;
 
-namespace KinematicCharacterController
+namespace ProjectDaydream.KinematicCharacterController.Core.Editor
 {
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyPropertyDrawer : PropertyDrawer

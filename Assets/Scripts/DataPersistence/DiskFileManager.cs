@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using ProjectGateway.Common;
+using ProjectDaydream.Common;
 using UnityEngine;
 
-namespace ProjectGateway.DataPersistence
+namespace ProjectDaydream.DataPersistence
 {
     public class DiskFileManager : IFileManager
     {

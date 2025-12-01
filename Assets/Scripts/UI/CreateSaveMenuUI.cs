@@ -1,9 +1,9 @@
-using ProjectGateway.DataPersistence;
+using ProjectDaydream.DataPersistence;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class CreateSaveMenuUI : UIPanel
     {

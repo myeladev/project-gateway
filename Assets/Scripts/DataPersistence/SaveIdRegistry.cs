@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ProjectGateway.SaveData
+namespace ProjectDaydream.SaveData
 {
 #if UNITY_EDITOR
     static class SaveIdRegistry

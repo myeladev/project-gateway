@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using ProjectGateway.Logic;
+using ProjectDaydream.Logic;
 using UnityEngine;
 
-namespace ProjectGateway.Objects
+namespace ProjectDaydream.Objects
 {
     public class ElevatorButton : MonoBehaviour, IInteractable
     {
@@ -28,7 +28,7 @@ namespace ProjectGateway.Objects
             //_buttonLight.enabled = false;
         }
 
-        public bool IsInteractable => MyPlayer.instance.Character.CanInteract || MyPlayer.instance.Character.movingFurniture;
+        public bool IsInteractable => InteractController.Instance.CanInteract || InteractController.Instance.movingFurniture;
         
         public List<string> GetInteractOptions(InteractContext context)
         {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectGateway.Logic
+namespace ProjectDaydream.Logic
 {
     public class RainSoundManager : MonoBehaviour
     {

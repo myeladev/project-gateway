@@ -1,4 +1,4 @@
-﻿namespace ProjectGateway.DataPersistence
+﻿namespace ProjectDaydream.DataPersistence
 {
     [System.Serializable]
     public class GameMetaData

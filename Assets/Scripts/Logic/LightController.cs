@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using ProjectGateway.Core;
+using ProjectDaydream.Core;
 using UnityEngine;
 
-namespace ProjectGateway.Logic
+namespace ProjectDaydream.Logic
 {
     public class LightController : MonoBehaviour
     {

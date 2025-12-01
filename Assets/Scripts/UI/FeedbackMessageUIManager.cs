@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class FeedbackMessageUIManager : MonoBehaviour
     {

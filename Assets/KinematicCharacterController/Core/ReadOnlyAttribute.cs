@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace KinematicCharacterController
+namespace ProjectDaydream.KinematicCharacterController.Core
 {
     public class ReadOnlyAttribute : PropertyAttribute
     {

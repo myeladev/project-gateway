@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
-namespace ProjectGateway.Shaders
+namespace ProjectDaydream.Shaders
 {
     [Serializable, VolumeComponentMenu("Post-processing/Custom/Sobel")]
     public sealed class Sobel : CustomPostProcessVolumeComponent, IPostProcessComponent

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using ProjectGateway.Logic;
+using ProjectDaydream.Logic;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class OptionsUI : MonoBehaviour
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
-namespace ProjectGateway.Objects
+namespace ProjectDaydream.Objects
 {
     public class Elevator : MonoBehaviour
     {

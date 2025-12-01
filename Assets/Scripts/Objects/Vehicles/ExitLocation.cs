@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Vehicles
+namespace ProjectDaydream.Objects.Vehicles
 {
     public class ExitLocation : MonoBehaviour
     {

@@ -1,20 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using ProjectGateway.Common;
-using ProjectGateway.SaveData;
-using ProjectGateway.UI;
+using ProjectDaydream.Common;
+using ProjectDaydream.Logic;
+using ProjectDaydream.SaveData;
+using ProjectDaydream.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace ProjectGateway.DataPersistence
+namespace ProjectDaydream.DataPersistence
 {
     public class DataPersistenceManager : MonoBehaviour
     {
         private IFileManager fileManager;
         private GameMetaData currentGameMetaData;
         public static DataPersistenceManager Instance;
+        private InputAction _quicksaveAction;
         private void Awake()
         {
             Instance = this;
@@ -22,9 +24,14 @@ namespace ProjectGateway.DataPersistence
             fileManager = new DiskFileManager();
         }
 
+        private void Start()
+        {
+            _quicksaveAction = InputSystem.actions.FindAction("Quicksave");
+        }
+
         private void Update()
         {
-            if (currentGameMetaData != null && Input.GetKeyDown(KeyCode.F5))
+            if (currentGameMetaData != null && _quicksaveAction.WasPressedThisFrame())
             {
                 SaveProfile();
                 FeedbackMessageUIManager.instance.ShowMessage("Game saved");
@@ -53,7 +60,7 @@ namespace ProjectGateway.DataPersistence
                 agents[i].SaveData(ref gameData);
             }
 
-            MyPlayer.instance.SaveData(ref gameData);
+            PlayerController.Instance.SaveData(ref gameData);
             
             fileManager.SaveProfileData(metaData.profileName, gameData);
         }
@@ -70,7 +77,7 @@ namespace ProjectGateway.DataPersistence
             // Restore all agents
             foreach (var a in agents) a.LoadData(gameData);
 
-            MyPlayer.instance.LoadData(gameData);
+            PlayerController.Instance.LoadData(gameData);
             
             // TODO: spawned objects
             // If not found: this is a spawned/missing object → instantiate via your PrefabRegistry, then Restore(rec)

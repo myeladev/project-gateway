@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectGateway.Core
+namespace ProjectDaydream.Core
 {
     public class MaterialDatabase : MonoBehaviour
     {

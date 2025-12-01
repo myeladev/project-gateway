@@ -1,8 +1,8 @@
-using ProjectGateway.Objects.Items;
+using ProjectDaydream.Objects.Items;
 using TMPro;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class InventoryListItemUI : MonoBehaviour
     {

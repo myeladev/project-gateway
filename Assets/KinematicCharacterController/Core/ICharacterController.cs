@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using ProjectDaydream.KinematicCharacterController.Core;
 using UnityEngine;
 
 namespace KinematicCharacterController

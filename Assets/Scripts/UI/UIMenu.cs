@@ -4,11 +4,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     [RequireComponent(typeof(Canvas))]
     [DisallowMultipleComponent]
-    public class UIMenu : MonoBehaviour
+    public class UIMenu : MonoBehaviour, ICancelHandler
     {
         [SerializeField]
         private UIPanel initialPanel;
@@ -24,7 +24,7 @@ namespace ProjectGateway.UI
             
         }
 
-        protected virtual void OnCancel()
+        public virtual void OnCancel(BaseEventData _)
         {
             Debug.Log(rootCanvas.enabled + " - " + rootCanvas.gameObject.activeInHierarchy, gameObject);
             if (rootCanvas.enabled && rootCanvas.gameObject.activeInHierarchy)

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using ProjectGateway.Logic;
-using ProjectGateway.UI;
+using ProjectDaydream.Logic;
+using ProjectDaydream.UI;
 
-namespace ProjectGateway.Objects.Furniture
+namespace ProjectDaydream.Objects.Furniture
 {
     public class Bed : Furniture, IInteractable
     {
@@ -22,9 +22,9 @@ namespace ProjectGateway.Objects.Furniture
             switch (option)
             {
                 case "Sleep":
-                    if (MyPlayer.instance.sleep <= 90f)
+                    if (true) // TODO: PlayerController.Instance.sleep <= 90f)
                     {
-                        MyPlayer.instance.Sleep(this);
+                        // TODO: PlayerController.Instance.Sleep(this);
                     }
                     else
                     {

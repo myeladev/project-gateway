@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using ProjectGateway.Logic;
-using ProjectGateway.UI;
+using ProjectDaydream.Logic;
+using ProjectDaydream.UI;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Vehicles
+namespace ProjectDaydream.Objects.Vehicles
 {
     public class VehicleStorage : MonoBehaviour, IInteractable
     {
@@ -39,7 +39,7 @@ namespace ProjectGateway.Objects.Vehicles
                     _storedFurniture.Add(furnitureToStow);
                     furnitureToStow.gameObject.SetActive(true);
                     furnitureToStow.GetComponent<Collider>().enabled = false;
-                    MyPlayer.instance.Character.ReleaseHeldFurniture();
+                    InteractController.Instance.ReleaseHeldFurniture();
                 }
                 else
                 {
@@ -52,7 +52,7 @@ namespace ProjectGateway.Objects.Vehicles
             }
         }
 
-        public bool IsInteractable => MyPlayer.instance.Character.CanInteract || MyPlayer.instance.Character.movingFurniture;
+        public bool IsInteractable => InteractController.Instance.CanInteract || InteractController.Instance.movingFurniture;
         public List<string> GetInteractOptions(InteractContext context)
         {
             var interactKeys = new List<string> { $"Stow Furniture" };
@@ -70,13 +70,13 @@ namespace ProjectGateway.Objects.Vehicles
             switch (option)
             {
                 case "Stow Furniture":
-                    StowFurniture(MyPlayer.instance.Character.movingFurniture);
+                    StowFurniture(InteractController.Instance.movingFurniture);
                     break;
                 case "Remove Furniture":
                     var furnitureToMove = GetFurnitureToRemove();
                     if (furnitureToMove)
                     {
-                        MyPlayer.instance.Character.MoveFurniture(furnitureToMove);
+                        InteractController.Instance.MoveFurniture(furnitureToMove);
                         _storedFurniture.Remove(furnitureToMove);
                         furnitureToMove.gameObject.SetActive(false);
                     }

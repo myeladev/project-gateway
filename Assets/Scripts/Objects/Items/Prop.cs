@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProjectGateway.DataPersistence;
-using ProjectGateway.Logic;
-using ProjectGateway.SaveData;
+using ProjectDaydream.DataPersistence;
+using ProjectDaydream.Logic;
+using ProjectDaydream.SaveData;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Items
+namespace ProjectDaydream.Objects.Items
 {
     public class Prop : MonoBehaviour, IInteractable, IDataPersistence
     {
-        public bool IsInteractable => MyPlayer.instance.Character.CanInteract;
+        public bool IsInteractable => InteractController.Instance.CanInteract;
 
         public List<string> GetInteractOptions(InteractContext context)
         {
@@ -22,7 +22,6 @@ namespace ProjectGateway.Objects.Items
                 : new List<string>();
         }
 
-        private MyCharacterController _player;
         protected Rigidbody Rigidbody;
         private Vector3 _originalPosition;
         private Quaternion _originalRotation;
@@ -30,7 +29,6 @@ namespace ProjectGateway.Objects.Items
         protected void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
-            _player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<MyCharacterController>();
             _originalPosition = transform.position;
             _originalRotation = transform.rotation;
         }

@@ -1,9 +1,9 @@
-using ProjectGateway.Common;
-using ProjectGateway.Logic;
+using ProjectDaydream.Logic;
+using ProjectDaydream.Common;
 using TMPro;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class SleepUIManager : MonoBehaviour
     {
@@ -25,9 +25,9 @@ namespace ProjectGateway.UI
 
         private void Update()
         {
-            _canvasGroup.alpha = MyPlayer.instance.isSleeping ? 1f : 0f;
+            _canvasGroup.alpha = false /*TODO:PlayerController.instance.isSleeping*/ ? 1f : 0f;
             timeText.text = $"[{weatherManager.GetFriendlyTimeString()}]";
-            sleepFillBar.UpdateBar(MyPlayer.instance.sleep, 100, sleepBackgroundBar);
+            sleepFillBar.UpdateBar(100/*TODO:PlayerController.instance.sleep*/, 100, sleepBackgroundBar);
         }
     }
 }

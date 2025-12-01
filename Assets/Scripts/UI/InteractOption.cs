@@ -1,8 +1,8 @@
-using ProjectGateway.UI;
+using ProjectDaydream.UI;
 using TMPro;
 using UnityEngine;
 
-namespace ProjectGateway.Logic
+namespace ProjectDaydream.Logic
 {
     public class InteractOption : MonoBehaviour
     {

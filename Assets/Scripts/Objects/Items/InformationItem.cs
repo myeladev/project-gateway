@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using ProjectGateway.Logic;
-using ProjectGateway.UI;
+using ProjectDaydream.Logic;
+using ProjectDaydream.UI;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Items
+namespace ProjectDaydream.Objects.Items
 {
     public class InformationItem : Item, IInteractable
     {
@@ -27,7 +27,7 @@ namespace ProjectGateway.Objects.Items
             switch (option)
             {
                 case "Read":
-                    InformationUI.instance.ShowMessage(informationText);
+                    InformationUI.Instance.ShowMessage(informationText);
                     break;
             }
         }

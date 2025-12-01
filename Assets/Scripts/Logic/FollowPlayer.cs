@@ -1,12 +1,12 @@
-using ProjectGateway.Core;
+using ProjectDaydream.Core;
 using UnityEngine;
 
-namespace ProjectGateway.Logic
+namespace ProjectDaydream.Logic
 {
     public class FollowPlayer : MonoBehaviour
     {
         private Vector3 offset;
-        public MyPlayer player;
+        public PlayerController player;
         
         // Start is called before the first frame update
         void Awake()
@@ -17,8 +17,7 @@ namespace ProjectGateway.Logic
         // Update is called once per frame
         void Update()
         {
-            var targetPosition = player.Character.transform.position;
-            if(player.IsInVehicle) targetPosition = player.drivingVehicle.transform.position;
+            var targetPosition = player.character.transform.position;
             if(SceneManager.Instance.IsInMainMenu) targetPosition = Camera.main.transform.position;
             transform.position = targetPosition + offset;
         }

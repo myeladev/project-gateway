@@ -1,6 +1,6 @@
-using ProjectGateway.Core;
+using ProjectDaydream.Core;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class SettingsUI : UIPanel
     {

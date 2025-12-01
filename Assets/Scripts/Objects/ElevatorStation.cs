@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectGateway.Objects
+namespace ProjectDaydream.Objects
 {
     public class ElevatorStation : MonoBehaviour
     {

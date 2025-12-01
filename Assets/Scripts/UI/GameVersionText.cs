@@ -2,7 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
-namespace ProjectGateway
+namespace ProjectDaydream
 {
     public class GameVersionText : MonoBehaviour
     {

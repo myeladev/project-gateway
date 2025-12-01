@@ -1,4 +1,4 @@
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class MenuListUI : UIPanel
     {

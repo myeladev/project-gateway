@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
     [DisallowMultipleComponent]

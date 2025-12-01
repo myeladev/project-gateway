@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectGateway
+namespace ProjectDaydream.Common
 {
     public class LerpRotationToParent : MonoBehaviour
     {

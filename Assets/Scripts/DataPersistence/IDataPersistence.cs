@@ -1,4 +1,4 @@
-﻿namespace ProjectGateway.DataPersistence
+﻿namespace ProjectDaydream.DataPersistence
 {
     public interface IDataPersistence
     {

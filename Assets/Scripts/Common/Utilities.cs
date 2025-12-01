@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-namespace ProjectGateway.Common
+namespace ProjectDaydream.Common
 {
     public static class Utilities
     {

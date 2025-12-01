@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using ProjectGateway.Logic;
-using ProjectGateway.UI;
+using ProjectDaydream.Logic;
+using ProjectDaydream.UI;
 
-namespace ProjectGateway.Objects.Items
+namespace ProjectDaydream.Objects.Items
 {
     public class Food : Item, IInteractable
     {
@@ -24,10 +24,10 @@ namespace ProjectGateway.Objects.Items
             switch (option)
             {
                 case "Eat":
-                    MyPlayer.instance.EatFood(this);
+                    // TODO: PlayerController.instance.EatFood(this);
                     if (context == InteractContext.Inventory)
                     {
-                        MyPlayer.instance.inventory.RemoveFromInventory(this);
+                        InventoryController.Instance.RemoveFromInventory(this);
                         InventoryUI.Instance.Refresh();
                     }
                     Destroy(gameObject);

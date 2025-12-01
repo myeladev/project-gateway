@@ -1,6 +1,6 @@
-﻿using ProjectGateway.DataPersistence;
+﻿using ProjectDaydream.DataPersistence;
 
-namespace ProjectGateway.Core
+namespace ProjectDaydream.Core
 {
     public class GameManager
     {

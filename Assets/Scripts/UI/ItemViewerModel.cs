@@ -1,7 +1,7 @@
-using ProjectGateway.Common;
+using ProjectDaydream.Common;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class ItemViewerModel : MonoBehaviour
     {

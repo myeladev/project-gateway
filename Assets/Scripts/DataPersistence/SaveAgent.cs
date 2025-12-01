@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using ProjectGateway.DataPersistence;
+using ProjectDaydream.DataPersistence;
 using UnityEditor;
 using UnityEngine;
 
-namespace ProjectGateway.SaveData
+namespace ProjectDaydream.SaveData
 {
     [DisallowMultipleComponent]
     public class SaveAgent : MonoBehaviour

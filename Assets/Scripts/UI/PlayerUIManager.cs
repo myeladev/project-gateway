@@ -1,9 +1,10 @@
-using ProjectGateway.Common;
-using ProjectGateway.Objects.Items;
+using ProjectDaydream.Objects.Items;
+using ProjectDaydream.Common;
+using ProjectDaydream.Logic;
 using TMPro;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class PlayerUIManager : MonoBehaviour
     {
@@ -29,10 +30,10 @@ namespace ProjectGateway.UI
         
         private void Update()
         {
-            hungerFillBar.UpdateBar(Mathf.Clamp(MyPlayer.instance.hunger, 0, 100), 100, hungerBackgroundBar);
-            sleepFillBar.UpdateBar(MyPlayer.instance.sleep, 100, sleepBackgroundBar);
-            weightFillBar.UpdateBar(MyPlayer.instance.inventory.CurrentWeight, Inventory.CarryLimit, weightBackgroundBar);
-            weightCapacityText.text = $"{MyPlayer.instance.inventory.CurrentWeight:N1} / {Inventory.CarryLimit:N0}";
+            hungerFillBar.UpdateBar(Mathf.Clamp(100 /*TODO:PlayerController.Instance.hunger*/, 0, 100), 100, hungerBackgroundBar);
+            sleepFillBar.UpdateBar(100 /*TODO:PlayerController.Instance.sleep*/, 100, sleepBackgroundBar);
+            weightFillBar.UpdateBar(InventoryController.Instance.CurrentWeight, InventoryController.CarryLimit, weightBackgroundBar);
+            weightCapacityText.text = $"{InventoryController.Instance.CurrentWeight:N1} / {InventoryController.CarryLimit:N0}";
         }
     }
 }

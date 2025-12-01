@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using ProjectGateway.Logic;
-using ProjectGateway.Objects.Items;
-using ProjectGateway.UI;
+using ProjectDaydream.Logic;
+using ProjectDaydream.Objects.Items;
+using ProjectDaydream.UI;
 
-namespace ProjectGateway.Objects
+namespace ProjectDaydream.Objects
 {
     public class DoorObject : Prop, IInteractable
     {

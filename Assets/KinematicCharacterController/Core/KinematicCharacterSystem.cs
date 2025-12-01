@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using KinematicCharacterController;
 using UnityEngine;
 
-namespace KinematicCharacterController
+namespace ProjectDaydream.KinematicCharacterController.Core
 {
     /// <summary>
     /// The system that manages the simulation of KinematicCharacterMotor and PhysicsMover

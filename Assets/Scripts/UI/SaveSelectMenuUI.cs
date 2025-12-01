@@ -1,8 +1,8 @@
 using System;
-using ProjectGateway.DataPersistence;
+using ProjectDaydream.DataPersistence;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class SaveSelectMenuUI : UIPanel
     {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using ProjectGateway.Logic;
+using ProjectDaydream.Logic;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Furniture
+namespace ProjectDaydream.Objects.Furniture
 {
     public class LightSwitch : MonoBehaviour, IInteractable
     {

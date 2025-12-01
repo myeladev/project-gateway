@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Vehicles
+namespace ProjectDaydream.Objects.Vehicles
 {
     public class CarLights : MonoBehaviour
     {

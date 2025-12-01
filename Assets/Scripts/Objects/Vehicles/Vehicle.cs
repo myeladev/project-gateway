@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using ProjectGateway.Logic;
-using ProjectGateway.Objects.Items;
-using ProjectGateway.UI;
+using ProjectDaydream.Logic;
+using ProjectDaydream.Objects.Items;
+using ProjectDaydream.UI;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Vehicles
+namespace ProjectDaydream.Objects.Vehicles
 {
     public class Vehicle : Prop, IInteractable
     {
@@ -177,7 +177,7 @@ namespace ProjectGateway.Objects.Vehicles
             }
         }
 
-        public new bool IsInteractable => MyPlayer.instance.Character.CanInteract;
+        public new bool IsInteractable => InteractController.Instance.CanInteract;
         public new List<string> GetInteractOptions(InteractContext context)
         {
             // Get the base prop interactions
@@ -201,7 +201,7 @@ namespace ProjectGateway.Objects.Vehicles
         private void Drive()
         {
             hasControl = true;
-            MyPlayer.instance.SetVehicle(this);
+            //PlayerController.Instance.SetVehicle(this);
             carLights.OperateFrontLights(true);
         }
         
@@ -215,9 +215,9 @@ namespace ProjectGateway.Objects.Vehicles
                 return;
             }
             hasControl = false;
-            MyPlayer.instance.SetVehicle(null);
+            //PlayerController.Instance.SetVehicle(null);
             carLights.OperateFrontLights(false);
-            MyPlayer.instance.Character.Motor.SetPosition(exitLocation.Value);
+            //PlayerController.Instance.Character.Motor.SetPosition(exitLocation.Value);
         }
 
         private Vector3? GetFreeExitLocation()

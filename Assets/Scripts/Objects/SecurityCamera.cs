@@ -1,6 +1,7 @@
+using ProjectDaydream.Logic;
 using UnityEngine;
 
-namespace ProjectGateway.Objects
+namespace ProjectDaydream.Objects
 {
     public class SecurityCamera : MonoBehaviour
     {
@@ -11,7 +12,7 @@ namespace ProjectGateway.Objects
         {
             if (!cameraObjectRenderer.isVisible)
             {
-                anchor.LookAt(MyPlayer.instance.Character.transform.position + (Vector3.up * 0.75f));
+                anchor.LookAt(PlayerController.Instance.character.transform.position + (Vector3.up * 0.75f));
             }
         }
     }

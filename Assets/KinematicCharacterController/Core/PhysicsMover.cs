@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using KinematicCharacterController;
 using UnityEngine;
 
-namespace KinematicCharacterController
+namespace ProjectDaydream.KinematicCharacterController.Core
 {
     /// <summary>
     /// Represents the entire state of a PhysicsMover that is pertinent for simulation.

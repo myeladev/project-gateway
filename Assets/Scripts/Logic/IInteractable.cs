@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProjectGateway.Logic
+namespace ProjectDaydream.Logic
 {
     public interface IInteractable
     {

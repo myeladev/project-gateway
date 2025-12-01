@@ -1,7 +1,8 @@
 using KinematicCharacterController;
+using ProjectDaydream.KinematicCharacterController.Core;
 using UnityEngine;
 
-namespace ProjectGateway.Objects
+namespace ProjectDaydream.Objects
 {
     public class ElevatorCarriageController : MonoBehaviour, IMoverController
     {

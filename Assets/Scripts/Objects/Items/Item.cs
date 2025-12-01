@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using ProjectGateway.Common;
-using ProjectGateway.Logic;
-using ProjectGateway.UI;
+using ProjectDaydream.Common;
+using ProjectDaydream.Logic;
+using ProjectDaydream.UI;
 using UnityEngine;
 
-namespace ProjectGateway.Objects.Items
+namespace ProjectDaydream.Objects.Items
 {
     public class Item : Prop, IInteractable
     {
@@ -38,7 +38,7 @@ namespace ProjectGateway.Objects.Items
             switch (option)
             {
                 case "Drop":
-                    MyPlayer.instance.inventory.RemoveFromInventory(this);
+                    InventoryController.Instance.RemoveFromInventory(this);
                     InventoryUI.Instance.Refresh();
                     
                     var targetPosition = Camera.main.transform.position + Camera.main.transform.forward * 2f;
@@ -48,7 +48,7 @@ namespace ProjectGateway.Objects.Items
                     Rigidbody.linearVelocity = Vector3.zero;
                     break;
                 case "Pickup":
-                    var success = MyPlayer.instance.inventory.AttemptToAddItem(this);
+                    var success = InventoryController.Instance.AttemptToAddItem(this);
 
                     if (!success)
                     {

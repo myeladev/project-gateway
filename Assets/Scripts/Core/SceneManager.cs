@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using ProjectGateway.DataPersistence;
+using ProjectDaydream.DataPersistence;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace ProjectGateway.Core
+namespace ProjectDaydream.Core
 {
     public class SceneManager : MonoBehaviour
     {

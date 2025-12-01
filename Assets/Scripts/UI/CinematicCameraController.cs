@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
-using ProjectGateway.Core;
+using ProjectDaydream.Core;
 using UnityEngine;
 
-namespace ProjectGateway.UI
+namespace ProjectDaydream.UI
 {
     public class CinematicCameraController : MonoBehaviour
     {
