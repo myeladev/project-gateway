@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using ProjectDaydream.Core;
 using ProjectDaydream.DataPersistence;
+using ProjectDaydream.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,13 +13,18 @@ namespace ProjectDaydream.Logic
         public Transform cameraFollowPoint;
         public CharacterController character;
         public static PlayerController Instance;
+        public Transform flashlightTransform;
         
+        [SerializeField] 
+        private List<Light> flashlight = new();
         private InputAction _moveAction;
         private InputAction _lookAction;
         private InputAction _jumpAction;
         private InputAction _sprintAction;
         private InputAction _crouchAction;
         private InputAction _interactAction;
+        private InputAction _cancelAction;
+        private InputAction _flashlightAction;
         
         private void Awake()
         {
@@ -32,6 +39,8 @@ namespace ProjectDaydream.Logic
             _sprintAction = InputSystem.actions.FindAction("Sprint");
             _crouchAction = InputSystem.actions.FindAction("Crouch");
             _interactAction = InputSystem.actions.FindAction("Interact");
+            _cancelAction = InputSystem.actions.FindAction("Cancel");
+            _flashlightAction = InputSystem.actions.FindAction("Flashlight");
             
             Cursor.lockState = CursorLockMode.Locked;
 
@@ -45,10 +54,52 @@ namespace ProjectDaydream.Logic
 
         private void Update()
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Mouse.current.leftButton.wasPressedThisFrame
+                && (!SceneManager.Instance.IsInMainMenu && !GameplayUI.Instance.IsAnyPanelActive()))
             {
-                //Cursor.lockState = CursorLockMode.Locked;
+                Cursor.lockState = CursorLockMode.Locked;
             }
+            
+            // Handle exiting things
+            if (_cancelAction.WasPressedThisFrame() && Cursor.lockState == CursorLockMode.Locked)
+            {
+                //drivingVehicle?.Exit();
+                if(character.ActiveSeatingAnchor) character.Sit(null);
+
+                //if (isSleeping) Wake();
+            }
+                
+            // Handle flashlight control
+            if (_flashlightAction.WasPressedThisFrame() && Cursor.lockState == CursorLockMode.Locked)
+            {
+                foreach (var fLight in flashlight)
+                {
+                    fLight.enabled = !fLight.enabled;
+                }
+            }
+
+            if(flashlightTransform != null)
+            {
+                flashlightTransform.position = Vector3.Lerp(flashlightTransform.position, cameraFollowPoint.position - (cameraFollowPoint.up * 0.25f), Time.deltaTime * 30f);
+                flashlightTransform.rotation = Quaternion.Lerp(flashlightTransform.rotation, Camera.main.transform.rotation, Time.deltaTime * 10f);
+            }
+
+            /* TODO: Move to own player stats manager class?
+            hunger -= Time.deltaTime * HungerFallRate;
+            hunger = Mathf.Clamp(hunger, 0, 120);
+
+            if (isSleeping)
+            {
+                Time.timeScale = 20f;
+                sleep += Time.deltaTime * SleepRecoveryRate;
+            }
+            else
+            {
+                Time.timeScale = 1f;
+                sleep -= Time.deltaTime * SleepFallRate;
+            }
+            sleep = Mathf.Clamp(sleep, 0, 100);
+            */
 
             HandleCharacterInput();
         }

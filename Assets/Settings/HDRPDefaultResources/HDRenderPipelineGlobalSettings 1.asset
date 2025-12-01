@@ -194,24 +194,7 @@ MonoBehaviour:
       - rid: 5017142466711912479
       - rid: 5017142466711912480
     m_RuntimeSettings:
-      m_List:
-      - rid: 5017142466711912449
-      - rid: 5017142466711912451
-      - rid: 5017142466711912453
-      - rid: 5017142466711912454
-      - rid: 5017142466711912456
-      - rid: 5017142466711912457
-      - rid: 5017142466711912458
-      - rid: 5017142466711912460
-      - rid: 5017142466711912461
-      - rid: 5017142466711912462
-      - rid: 5017142466711912463
-      - rid: 5017142466711912465
-      - rid: 5017142466711912466
-      - rid: 5017142466711912468
-      - rid: 5017142466711912472
-      - rid: 5017142466711912476
-      - rid: 5017142466711912479
+      m_List: []
   renderingLayerNames:
   - Light Layer default
   - Light Layer 1
@@ -444,9 +427,7 @@ MonoBehaviour:
           m_CustomPostProcessTypesAsString: []
         m_AfterPostProcessCustomPostProcesses:
           m_InjectionPoint: 2
-          m_CustomPostProcessTypesAsString:
-          - ProjectGateway.Shaders.Sobel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-            PublicKeyToken=null
+          m_CustomPostProcessTypesAsString: []
     - rid: 5017142466711912455
       type: {class: DiffusionProfileDefaultSettings, ns: UnityEngine.Rendering.HighDefinition,
         asm: Unity.RenderPipelines.HighDefinition.Runtime}

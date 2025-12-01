@@ -8,6 +8,8 @@ namespace ProjectDaydream.UI
 {
     public class CinematicCameraController : MonoBehaviour
     {
+        [SerializeField] private float switchDuration = 10f;
+        private float timer;
         private List<CinemachineVirtualCamera> cameras = new ();
         private int index;
         
@@ -27,9 +29,10 @@ namespace ProjectDaydream.UI
             if (SceneManager.Instance.IsInMainMenu)
             {
                 if(!cameras[index].isActiveAndEnabled) cameras[index].gameObject.SetActive(true);
-                if (Mathf.Approximately(cameras[index].GetCinemachineComponent<CinemachineTrackedDolly>().m_PathPosition,
-                        1f))
+                timer += Time.deltaTime;
+                if (timer >= switchDuration)
                 {
+                    timer = 0f;
                     cameras[index].gameObject.SetActive(false);
                     index++;
                     index %= cameras.Count;

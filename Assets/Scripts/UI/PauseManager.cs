@@ -1,3 +1,4 @@
+using ProjectDaydream.Core;
 using ProjectDaydream.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -27,6 +28,8 @@ namespace ProjectDaydream.UI
         private void OnPausePerformed(InputAction.CallbackContext ctx)
         {
             if (!ctx.performed) return;
+            if (GameplayUI.Instance.IsAnyPanelActive()) return;
+            if (SceneManager.Instance.IsInMainMenu) return;
 
             if (!isPaused)
                 OpenPause();
@@ -37,14 +40,14 @@ namespace ProjectDaydream.UI
         private void OpenPause()
         {
             isPaused = true;
-            pauseMenu.Show();
+            GameplayUI.Instance.PushPanel(pauseMenu);
             Time.timeScale = 0f;
         }
 
         private void ClosePause()
         {
             isPaused = false;
-            pauseMenu.Hide();
+            GameplayUI.Instance.PopPanel();
             Time.timeScale = 1f;
 
             EventSystem.current.SetSelectedGameObject(null);

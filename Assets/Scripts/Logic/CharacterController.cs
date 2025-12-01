@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using KinematicCharacterController;
 using ProjectDaydream.KinematicCharacterController.Core;
+using DG.Tweening;
 
 namespace ProjectDaydream.Logic
 {
@@ -39,7 +40,8 @@ namespace ProjectDaydream.Logic
         public KinematicCharacterMotor Motor;
 
         [Header("Stable Movement")]
-        public float MaxStableMoveSpeed = 10f;
+        public float MaxStableMoveSpeed = 7f;
+        public float MaxStableSprintSpeed = 10f;
         public float StableMovementSharpness = 15;
         public float OrientationSharpness = 10;
         public float MaxStableDistanceFromLedge = 5f;
@@ -71,7 +73,7 @@ namespace ProjectDaydream.Logic
 
         [Header("Misc")]
         public List<Collider> IgnoredColliders = new List<Collider>();
-        public bool OrientTowardsGravity = false;
+        public bool OrientTowardsGravity = true;
         public Vector3 Gravity = new Vector3(0, -30f, 0);
         public Transform MeshRoot;
 
@@ -85,6 +87,7 @@ namespace ProjectDaydream.Logic
         private bool _jumpedThisFrame = false;
         private bool _jumpInputIsHeld = false;
         private bool _crouchInputIsHeld = false;
+        private bool _sprintInputIsHeld = false;
         private float _timeSinceJumpRequested = Mathf.Infinity;
         private float _timeSinceLastAbleToJump = 0f;
         private Vector3 _internalVelocityAdd = Vector3.zero;
@@ -242,6 +245,7 @@ namespace ProjectDaydream.Logic
             
             _jumpInputIsHeld = inputs.JumpHeld;
             _crouchInputIsHeld = inputs.CrouchHeld;
+            _sprintInputIsHeld = inputs.SprintHeld;
 
             // Clamp input
             Vector3 moveInputVector = Vector3.ClampMagnitude(new Vector3(inputs.MoveAxisRight, 0f, inputs.MoveAxisForward), 1f);
@@ -278,7 +282,7 @@ namespace ProjectDaydream.Logic
                             {
                                 _isCrouching = true;
                                 Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
-                                MeshRoot.localScale = new Vector3(1f, 0.5f, 1f);
+                                MeshRoot.DOScale(new Vector3(1f, 0.5f, 1f), 0.2f).SetEase(Ease.OutQuad);
                             }
                         }
                         else if (inputs.CrouchUp)
@@ -387,7 +391,7 @@ namespace ProjectDaydream.Logic
             {
                 case CharacterState.Default:
                 {
-                    Vector3 targetMovementVelocity = Vector3.zero;
+                    Vector3 targetMovementVelocity;
                     if (Motor.GroundingStatus.IsStableOnGround)
                     {
                         // Reorient velocity on slope
@@ -396,7 +400,9 @@ namespace ProjectDaydream.Logic
                         // Calculate target velocity
                         Vector3 inputRight = Vector3.Cross(_moveInputVector, Motor.CharacterUp);
                         Vector3 reorientedInput = Vector3.Cross(Motor.GroundingStatus.GroundNormal, inputRight).normalized * _moveInputVector.magnitude;
-                        targetMovementVelocity = reorientedInput * MaxStableMoveSpeed;
+                        var usedMoveSpeed = _sprintInputIsHeld ? MaxStableSprintSpeed : MaxStableMoveSpeed;
+                        usedMoveSpeed *= _isCrouching ? 0.5f : 1f;
+                        targetMovementVelocity = reorientedInput * usedMoveSpeed;
 
                         // Smooth movement Velocity
                         currentVelocity = Vector3.Lerp(currentVelocity, targetMovementVelocity, 1 - Mathf.Exp(-StableMovementSharpness * deltaTime));
@@ -416,7 +422,7 @@ namespace ProjectDaydream.Logic
                             }
 
                             Vector3 velocityDiff = Vector3.ProjectOnPlane(targetMovementVelocity - currentVelocity, Gravity);
-                            currentVelocity += velocityDiff * AirAccelerationSpeed * deltaTime;
+                            currentVelocity += velocityDiff * (AirAccelerationSpeed * deltaTime);
                         }
 
                         // Gravity
@@ -540,101 +546,101 @@ namespace ProjectDaydream.Logic
             switch (CurrentCharacterState)
             {
                 case CharacterState.Default:
+                {
+                    // Handle jump-related values
                     {
-                        // Handle jump-related values
+                        // Handle jumping pre-ground grace period
+                        if (_jumpRequested && _timeSinceJumpRequested > JumpPreGroundingGraceTime)
                         {
-                            // Handle jumping pre-ground grace period
-                            if (_jumpRequested && _timeSinceJumpRequested > JumpPreGroundingGraceTime)
-                            {
-                                _jumpRequested = false;
-                            }
-
-                            if (AllowJumpingWhenSliding ? Motor.GroundingStatus.FoundAnyGround : Motor.GroundingStatus.IsStableOnGround)
-                            {
-                                // If we're on a ground surface, reset jumping values
-                                if (!_jumpedThisFrame)
-                                {
-                                    _jumpConsumed = false;
-                                }
-                                _timeSinceLastAbleToJump = 0f;
-                            }
-                            else
-                            {
-                                // Keep track of time since we were last able to jump (for grace period)
-                                _timeSinceLastAbleToJump += deltaTime;
-                            }
+                            _jumpRequested = false;
                         }
 
-                        // Handle uncrouching
-                        if (_isCrouching && !_shouldBeCrouching)
+                        if (AllowJumpingWhenSliding ? Motor.GroundingStatus.FoundAnyGround : Motor.GroundingStatus.IsStableOnGround)
                         {
-                            // Do an overlap test with the character's standing height to see if there are any obstructions
-                            Motor.SetCapsuleDimensions(0.5f, 2f, 1f);
-                            if (Motor.CharacterOverlap(
-                                Motor.TransientPosition,
-                                Motor.TransientRotation,
-                                _probedColliders,
-                                Motor.CollidableLayers,
-                                QueryTriggerInteraction.Ignore) > 0)
+                            // If we're on a ground surface, reset jumping values
+                            if (!_jumpedThisFrame)
                             {
-                                // If obstructions, just stick to crouching dimensions
-                                Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
+                                _jumpConsumed = false;
                             }
-                            else
-                            {
-                                // If no obstructions, uncrouch
-                                MeshRoot.localScale = new Vector3(1f, 1f, 1f);
-                                _isCrouching = false;
-                            }
+                            _timeSinceLastAbleToJump = 0f;
                         }
-                        break;
+                        else
+                        {
+                            // Keep track of time since we were last able to jump (for grace period)
+                            _timeSinceLastAbleToJump += deltaTime;
+                        }
                     }
+
+                    // Handle uncrouching
+                    if (_isCrouching && !_shouldBeCrouching)
+                    {
+                        // Do an overlap test with the character's standing height to see if there are any obstructions
+                        Motor.SetCapsuleDimensions(0.5f, 2f, 1f);
+                        if (Motor.CharacterOverlap(
+                            Motor.TransientPosition,
+                            Motor.TransientRotation,
+                            _probedColliders,
+                            Motor.CollidableLayers,
+                            QueryTriggerInteraction.Ignore) > 0)
+                        {
+                            // If obstructions, just stick to crouching dimensions
+                            Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
+                        }
+                        else
+                        {
+                            // If no obstructions, uncrouch
+                            MeshRoot.DOScale(new Vector3(1f, 1f, 1f), 0.2f).SetEase(Ease.OutQuad);
+                            _isCrouching = false;
+                        }
+                    }
+                    break;
+                }
                 case CharacterState.Climbing:
+                {
+                    switch (ClimbingState)
                     {
-                        switch (ClimbingState)
-                        {
-                            case ClimbingState.Climbing:
-                                // Detect getting off ladder during climbing
-                                ActiveLadder.ClosestPointOnLadderSegment(Motor.TransientPosition, out _onLadderSegmentState);
-                                if (Mathf.Abs(_onLadderSegmentState) > 0.05f)
-                                {
-                                    ClimbingState = ClimbingState.DeAnchoring;
+                        case ClimbingState.Climbing:
+                            // Detect getting off ladder during climbing
+                            ActiveLadder.ClosestPointOnLadderSegment(Motor.TransientPosition, out _onLadderSegmentState);
+                            if (Mathf.Abs(_onLadderSegmentState) > 0.05f)
+                            {
+                                ClimbingState = ClimbingState.DeAnchoring;
 
-                                    // If we're higher than the ladder top point
-                                    if (_onLadderSegmentState > 0)
-                                    {
-                                        _ladderTargetPosition = ActiveLadder.TopReleasePoint.position;
-                                        _ladderTargetRotation = ActiveLadder.TopReleasePoint.rotation;
-                                    }
-                                    // If we're lower than the ladder bottom point
-                                    else if (_onLadderSegmentState < 0)
-                                    {
-                                        _ladderTargetPosition = ActiveLadder.BottomReleasePoint.position;
-                                        _ladderTargetRotation = ActiveLadder.BottomReleasePoint.rotation;
-                                    }
-                                }
-                                break;
-                            case ClimbingState.Anchoring:
-                            case ClimbingState.DeAnchoring:
-                                // Detect transitioning out from anchoring states
-                                if (_anchoringTimer >= anchoringDuration)
+                                // If we're higher than the ladder top point
+                                if (_onLadderSegmentState > 0)
                                 {
-                                    if (ClimbingState == ClimbingState.Anchoring)
-                                    {
-                                        ClimbingState = ClimbingState.Climbing;
-                                    }
-                                    else if (ClimbingState == ClimbingState.DeAnchoring)
-                                    {
-                                        TransitionToState(CharacterState.Default);
-                                    }
+                                    _ladderTargetPosition = ActiveLadder.TopReleasePoint.position;
+                                    _ladderTargetRotation = ActiveLadder.TopReleasePoint.rotation;
                                 }
+                                // If we're lower than the ladder bottom point
+                                else if (_onLadderSegmentState < 0)
+                                {
+                                    _ladderTargetPosition = ActiveLadder.BottomReleasePoint.position;
+                                    _ladderTargetRotation = ActiveLadder.BottomReleasePoint.rotation;
+                                }
+                            }
+                            break;
+                        case ClimbingState.Anchoring:
+                        case ClimbingState.DeAnchoring:
+                            // Detect transitioning out from anchoring states
+                            if (_anchoringTimer >= anchoringDuration)
+                            {
+                                if (ClimbingState == ClimbingState.Anchoring)
+                                {
+                                    ClimbingState = ClimbingState.Climbing;
+                                }
+                                else if (ClimbingState == ClimbingState.DeAnchoring)
+                                {
+                                    TransitionToState(CharacterState.Default);
+                                }
+                            }
 
-                                // Keep track of time since we started anchoring
-                                _anchoringTimer += deltaTime;
-                                break;
-                        }
-                        break;
+                            // Keep track of time since we started anchoring
+                            _anchoringTimer += deltaTime;
+                            break;
                     }
+                    break;
+                }
             }
         }
 
