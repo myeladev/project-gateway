@@ -64,8 +64,7 @@ namespace ProjectDaydream.Logic
             if (_cancelAction.WasPressedThisFrame() && Cursor.lockState == CursorLockMode.Locked)
             {
                 //drivingVehicle?.Exit();
-                if(character.ActiveSeatingAnchor) character.Sit(null);
-
+                
                 //if (isSleeping) Wake();
             }
                 
@@ -165,6 +164,8 @@ namespace ProjectDaydream.Logic
                 var playerSpawn = GameObject.FindGameObjectWithTag("PlayerSpawn");
                 character.Motor.SetPosition(playerSpawn.transform.position);
             }
+
+            character.TransitionToState(CharacterState.Default);
         }
 
         public void SaveData(ref GameData data)

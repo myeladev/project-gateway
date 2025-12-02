@@ -23,9 +23,9 @@ namespace ProjectDaydream.UI
         {
             OnShow();
             
-            Sequence showSequence = DOTween.Sequence();
-            showSequence.Join(canvasGroup.DOFade(1f, 0.5f));
-            showSequence.Join(transform.DOLocalMoveY(startPos.y, 0.5f));
+            Sequence showSequence = DOTween.Sequence().SetUpdate(true);
+            showSequence.Join(canvasGroup.DOFade(1f, 0.5f).SetUpdate(true));
+            showSequence.Join(transform.DOLocalMoveY(startPos.y, 0.5f).SetUpdate(true));
             showSequence.OnComplete(() =>
             {
                 canvasGroup.interactable = true;
@@ -38,9 +38,9 @@ namespace ProjectDaydream.UI
         public void Hide()
         {
             OnHide();
-            Sequence hideSequence = DOTween.Sequence();
-            hideSequence.Join(canvasGroup.DOFade(0f, 0.5f));
-            hideSequence.Join(transform.DOLocalMoveY(startPos.y + 20f, 0.5f));
+            Sequence hideSequence = DOTween.Sequence().SetUpdate(true);
+            hideSequence.Join(canvasGroup.DOFade(0f, 0.5f).SetUpdate(true));
+            hideSequence.Join(transform.DOLocalMoveY(startPos.y + 20f, 0.5f).SetUpdate(true));
             hideSequence.OnComplete(() => {
                 canvasGroup.interactable = false;
                 canvasGroup.blocksRaycasts = false;

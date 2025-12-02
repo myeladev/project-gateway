@@ -43,7 +43,11 @@ namespace ProjectDaydream.UI
         private IInteractable _interactable;
         private void Update()
         {
-            if(SceneManager.Instance.IsInMainMenu) return;
+            if (SceneManager.Instance.IsInMainMenu)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                return;
+            }
             Cursor.lockState = GameplayUI.Instance.IsAnyPanelActive() ? CursorLockMode.None : optionsPanel.IsViewingOptions ? CursorLockMode.None : CursorLockMode.Locked;
             
             if (!InteractController.Instance.CanInteract)

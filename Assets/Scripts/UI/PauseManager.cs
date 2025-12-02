@@ -1,56 +1,49 @@
 using ProjectDaydream.Core;
-using ProjectDaydream.UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace ProjectDaydream.UI
 {
     public class PauseManager : MonoBehaviour
     {
-        [SerializeField] private InputAction pauseAction;
+        public static PauseManager Instance;
+        
+        [HideInInspector] public bool isPaused;
         [SerializeField] private UIPanel pauseMenu;
 
-        private bool isPaused;
+        private InputAction _pauseAction;
 
-        void Start()
+        private void Awake()
         {
-            pauseAction = new InputAction(
-                name: "Pause",
-                type: InputActionType.Button,
-                binding: "<Keyboard>/escape"
-            );
-
-            pauseAction.performed += OnPausePerformed;
-            pauseAction.Enable();
+            Instance = this;
+            _pauseAction = InputSystem.actions.FindAction("Exit");
         }
 
-        private void OnPausePerformed(InputAction.CallbackContext ctx)
+        private void Update()
         {
-            if (!ctx.performed) return;
-            if (GameplayUI.Instance.IsAnyPanelActive()) return;
-            if (SceneManager.Instance.IsInMainMenu) return;
-
-            if (!isPaused)
-                OpenPause();
-            else
-                ClosePause();
+            if (_pauseAction.WasPressedThisFrame() && !SceneManager.Instance.IsInMainMenu)
+            {
+                if (!isPaused)
+                {
+                    GameplayUI.Instance.PushPanel(pauseMenu);
+                }
+                else
+                {
+                    GameplayUI.Instance.PopPanel();
+                }
+            }
         }
 
-        private void OpenPause()
+        public void Pause()
         {
             isPaused = true;
-            GameplayUI.Instance.PushPanel(pauseMenu);
             Time.timeScale = 0f;
         }
 
-        private void ClosePause()
+        public void Unpause()
         {
             isPaused = false;
-            GameplayUI.Instance.PopPanel();
             Time.timeScale = 1f;
-
-            EventSystem.current.SetSelectedGameObject(null);
         }
     }
 }

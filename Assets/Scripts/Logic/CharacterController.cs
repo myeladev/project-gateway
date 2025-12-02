@@ -20,6 +20,13 @@ namespace ProjectDaydream.Logic
         Climbing,
         DeAnchoring
     }
+    
+    public enum SittingState
+    {
+        Anchoring,
+        Sitting,
+        DeAnchoring
+    }
 
     public struct PlayerCharacterInputs
     {
@@ -101,13 +108,22 @@ namespace ProjectDaydream.Logic
         // Ladder vars
         private float _ladderUpDownInput;
         private LadderController ActiveLadder { get; set; }
+        private SittingState _internalSittingState;
+        private SittingState SittingState
+        {
+            get => _internalSittingState;
+            set
+            {
+                _internalSittingState = value;
+                _anchoringTimer = 0f;
+                _anchoringStartPosition = Motor.TransientPosition;
+                _anchoringStartRotation = Motor.TransientRotation;
+            }
+        }
         private ClimbingState _internalClimbingState;
         private ClimbingState ClimbingState
         {
-            get
-            {
-                return _internalClimbingState;
-            }
+            get => _internalClimbingState;
             set
             {
                 _internalClimbingState = value;
@@ -122,7 +138,7 @@ namespace ProjectDaydream.Logic
         private float _anchoringTimer = 0f;
         private Vector3 _anchoringStartPosition = Vector3.zero;
         private Quaternion _anchoringStartRotation = Quaternion.identity;
-        private Quaternion _rotationBeforeClimbing = Quaternion.identity;
+        private Quaternion _rotationBeforeAnchoring = Quaternion.identity;
 
         private void Start()
         {
@@ -153,6 +169,7 @@ namespace ProjectDaydream.Logic
             {
                 case CharacterState.Default:
                 {
+                    Motor.SetGroundSolvingActivation(true);
                     break;
                 }
                 case CharacterState.Swimming:
@@ -162,7 +179,7 @@ namespace ProjectDaydream.Logic
                 }
                 case CharacterState.Climbing:
                 {
-                    _rotationBeforeClimbing = Motor.TransientRotation;
+                    _rotationBeforeAnchoring = Motor.TransientRotation;
 
                     Motor.SetMovementCollisionsSolvingActivation(false);
                     Motor.SetGroundSolvingActivation(false);
@@ -175,14 +192,11 @@ namespace ProjectDaydream.Logic
                 }
                 case CharacterState.Sitting:
                 {
-                    _rotationBeforeClimbing = Motor.TransientRotation;
+                    _rotationBeforeAnchoring = Motor.TransientRotation;
 
                     Motor.SetMovementCollisionsSolvingActivation(false);
                     Motor.SetGroundSolvingActivation(false);
-
-                    // Store the target position and rotation to snap to
-                    _ladderTargetPosition = ActiveSeatingAnchor.transform.position;
-                    _ladderTargetRotation = ActiveSeatingAnchor.transform.rotation;
+                    SittingState = SittingState.Anchoring;
                     break;
                 }
             }
@@ -196,15 +210,23 @@ namespace ProjectDaydream.Logic
             switch (state)
             {
                 case CharacterState.Default:
-                    {
-                        break;
-                    }
+                {
+                    break;
+                }
                 case CharacterState.Climbing:
-                    {
-                        Motor.SetMovementCollisionsSolvingActivation(true);
-                        Motor.SetGroundSolvingActivation(true);
-                        break;
-                    }
+                {
+                    Motor.SetMovementCollisionsSolvingActivation(true);
+                    Motor.SetGroundSolvingActivation(true);
+                    break;
+                }
+                case CharacterState.Sitting:
+                {
+                    Motor.SetMovementCollisionsSolvingActivation(true);
+                    Motor.SetGroundSolvingActivation(true);
+                    ActiveSeatingAnchor = null;
+                    _shouldBeCrouching = false;
+                    break;
+                }
             }
         }
 
@@ -236,7 +258,7 @@ namespace ProjectDaydream.Logic
                             {
                                 ClimbingState = ClimbingState.DeAnchoring;
                                 _ladderTargetPosition = Motor.TransientPosition;
-                                _ladderTargetRotation = _rotationBeforeClimbing;
+                                _ladderTargetRotation = _rotationBeforeAnchoring;
                             }
                         }
                     }
@@ -261,44 +283,57 @@ namespace ProjectDaydream.Logic
             switch (CurrentCharacterState)
             {
                 case CharacterState.Default:
+                    // Move and look inputs
+                    _moveInputVector = cameraPlanarRotation * moveInputVector;
+                    _lookInputVector = cameraPlanarDirection;
+
+                    // Jumping input
+                    if (inputs.JumpDown)
                     {
-                        // Move and look inputs
-                        _moveInputVector = cameraPlanarRotation * moveInputVector;
-                        _lookInputVector = cameraPlanarDirection;
-
-                        // Jumping input
-                        if (inputs.JumpDown)
-                        {
-                            _timeSinceJumpRequested = 0f;
-                            _jumpRequested = true;
-                        }
-
-                        // Crouching input
-                        if (inputs.CrouchDown)
-                        {
-                            _shouldBeCrouching = true;
-
-                            if (!_isCrouching)
-                            {
-                                _isCrouching = true;
-                                Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
-                                MeshRoot.DOScale(new Vector3(1f, 0.5f, 1f), 0.2f).SetEase(Ease.OutQuad);
-                            }
-                        }
-                        else if (inputs.CrouchUp)
-                        {
-                            _shouldBeCrouching = false;
-                        }
-                        break;
+                        _timeSinceJumpRequested = 0f;
+                        _jumpRequested = true;
                     }
+
+                    // Crouching input
+                    if (inputs.CrouchDown)
+                    {
+                        _shouldBeCrouching = true;
+
+                        if (!_isCrouching)
+                        {
+                            _isCrouching = true;
+                            Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
+                            MeshRoot.DOScale(new Vector3(1f, 0.5f, 1f), 0.2f).SetEase(Ease.OutQuad);
+                        }
+                    }
+                    else if (inputs.CrouchUp)
+                    {
+                        _shouldBeCrouching = false;
+                    }
+                    break;
                 case CharacterState.Swimming:
-                {
                     _jumpRequested = inputs.JumpHeld;
 
                     _moveInputVector = inputs.CameraRotation * moveInputVector;
                     _lookInputVector = cameraPlanarDirection;
                     break;
-                }
+                case CharacterState.Sitting:
+                    _lookInputVector = cameraPlanarDirection;
+
+                    _shouldBeCrouching = true;
+
+                    if (!_isCrouching)
+                    {
+                        _isCrouching = true;
+                        Motor.SetCapsuleDimensions(0.5f, 1f, 0.5f);
+                        MeshRoot.DOScale(new Vector3(1f, 0.5f, 1f), anchoringDuration).SetEase(Ease.OutQuad);
+                    }
+                    
+                    _jumpRequested = inputs.JumpDown;
+
+                    _moveInputVector = inputs.CameraRotation * moveInputVector;
+                    _lookInputVector = cameraPlanarDirection;
+                    break;
             }
         }
 
@@ -472,6 +507,7 @@ namespace ProjectDaydream.Logic
                 }
                 case CharacterState.Swimming:
                 {
+                    if (!_waterZone) break;
                     float verticalInput = 0f + (_jumpInputIsHeld ? 1f : 0f) + (_crouchInputIsHeld ? -1f : 0f);
 
                     // Smoothly interpolate to target swimming velocity
@@ -521,15 +557,17 @@ namespace ProjectDaydream.Logic
                 {
                     currentVelocity = Vector3.zero;
 
-                    switch (ClimbingState)
+                    switch (SittingState)
                     {
-                        case ClimbingState.Climbing:
-                            currentVelocity = (_ladderUpDownInput * ActiveLadder.transform.up).normalized * climbingSpeed;
+                        case SittingState.Sitting:
                             break;
-                        case ClimbingState.Anchoring:
-                        case ClimbingState.DeAnchoring:
-                            Vector3 tmpPosition = Vector3.Lerp(_anchoringStartPosition, _ladderTargetPosition, (_anchoringTimer / anchoringDuration));
-                            currentVelocity = Motor.GetVelocityForMovePosition(Motor.TransientPosition, tmpPosition, deltaTime);
+                        case SittingState.Anchoring:
+                            Vector3 tmpAnchorPosition = Vector3.Lerp(_anchoringStartPosition, ActiveSeatingAnchor.position, (_anchoringTimer / anchoringDuration));
+                            currentVelocity = Motor.GetVelocityForMovePosition(Motor.TransientPosition, tmpAnchorPosition, deltaTime);
+                            break;
+                        case SittingState.DeAnchoring:
+                            Vector3 tmpDeanchorPosition = Vector3.Lerp(ActiveSeatingAnchor.position, _anchoringStartPosition, (_anchoringTimer / anchoringDuration));
+                            currentVelocity = Motor.GetVelocityForMovePosition(Motor.TransientPosition, tmpDeanchorPosition, deltaTime);
                             break;
                     }
                     break;
@@ -641,6 +679,37 @@ namespace ProjectDaydream.Logic
                     }
                     break;
                 }
+                case CharacterState.Sitting:
+                {
+                    switch (SittingState)
+                    {
+                        case SittingState.Sitting:
+                            if (_jumpInputIsHeld)
+                            {
+                                SittingState = SittingState.DeAnchoring;
+                            }
+                            break;
+                        case SittingState.Anchoring:
+                        case SittingState.DeAnchoring:
+                            // Detect transitioning out from anchoring states
+                            if (_anchoringTimer >= anchoringDuration)
+                            {
+                                if (SittingState == SittingState.Anchoring)
+                                {
+                                    SittingState = SittingState.Sitting;
+                                }
+                                else if (SittingState == SittingState.DeAnchoring)
+                                {
+                                    TransitionToState(CharacterState.Default);
+                                }
+                            }
+
+                            // Keep track of time since we started anchoring
+                            _anchoringTimer += deltaTime;
+                            break;
+                    }
+                    break;
+                }
             }
         }
 
@@ -695,6 +764,10 @@ namespace ProjectDaydream.Logic
 
         public void Sit(Transform seatingAnchor)
         {
+            if(!seatingAnchor) return;
+            _anchoringTimer = 0f;
+            _anchoringStartPosition = Motor.TransientPosition;
+            _anchoringStartRotation = Motor.TransientRotation;
             ActiveSeatingAnchor = seatingAnchor;
             TransitionToState(CharacterState.Sitting);
         }
