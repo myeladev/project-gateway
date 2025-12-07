@@ -1,52 +1,97 @@
 using System.Collections.Generic;
-using System.Linq;
+using ProjectDaydream.Core;
 using ProjectDaydream.Logic;
+using ProjectDaydream.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ProjectDaydream.Objects.Items
 {
+
     public class InventoryController : MonoBehaviour
     {
         public static InventoryController Instance;
-        private readonly List<Item> _items = new();
-        private GameObject _player;
-
-        public const int CarryLimit = 200;
-        public float CurrentWeight => _items.Sum(item => item.weight);
+        
+        private InputAction _inventoryAction;
+        [SerializeField] private UIPanel inventoryMenu;
 
         private void Awake()
         {
-            Instance = this;
-            _player = GetComponent<PlayerController>().character.gameObject;
-        }
-
-        public bool AttemptToAddItem(Item itemToAdd)
-        {
-            var hasSpaceToAddItem = CarryLimit - CurrentWeight >= itemToAdd.weight;
-
-            if (hasSpaceToAddItem)
+            if (Instance != null && Instance != this)
             {
-                AddItemToInventory(itemToAdd);
-                return true;
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+            }
+            _inventoryAction = InputSystem.actions.FindAction("Inventory");
+            Pockets = new ContainerGrid(8, 1);
+        }
+        
+        private void Update()
+        {
+            if (_inventoryAction.WasPressedThisFrame() && !SceneManager.Instance.IsInMainMenu)
+            {
+                if (GameplayUI.Instance.IsPanelActive(inventoryMenu))
+                {
+                    GameplayUI.Instance.PopPanel();
+                }
+                else
+                {
+                    GameplayUI.Instance.PushPanel(inventoryMenu);
+                }
+            }
+        }
+        
+        public ContainerGrid Pockets;
+        public ContainerObject backpack;
+
+        public bool TryAddItem(ContainerGridItem item, ContainerGrid selectedContainerGrid = null, int? x = null, int? y = null)
+        {
+            if (selectedContainerGrid is not null && x.HasValue && y.HasValue)
+            {
+                bool added = selectedContainerGrid.PlaceItem(item, x.Value, y.Value);
+                if (added)
+                {
+                    InventoryUI.Instance.Refresh();
+                }
+                return added;
+            }
+            
+            ContainerGrid selectedContainer = Pockets;
+
+            if (!Pockets.HasAnyAvailableSpace())
+            {
+                if (backpack is not null)
+                {
+                    selectedContainer = backpack.ContainerGrid;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+            // Try to find the first available space
+            for (int row = 0; row <= selectedContainer.Width; row++)
+            {
+                for (int col = 0; col <= selectedContainer.Height; col++)
+                {
+                    if (selectedContainer.CanPlaceItem(row, col))
+                    {
+                        bool added = selectedContainer.PlaceItem(item, row, col);
+                        if (added)
+                        {
+                            InventoryUI.Instance.Refresh();
+                        }
+                        return added;
+                    }
+                }
             }
 
+            // No space found
             return false;
         }
-
-        private void AddItemToInventory(Item itemToAdd)
-        {
-            _items.Add(itemToAdd);
-        }
-
-        public GameObject RemoveFromInventory(Item itemToRemove)
-        {
-            _items.Remove(itemToRemove);
-            
-            itemToRemove.transform.position = _player.transform.position;
-
-            return itemToRemove.gameObject;
-        }
-
-        public List<Item> GetItems() => _items;
     }
 }

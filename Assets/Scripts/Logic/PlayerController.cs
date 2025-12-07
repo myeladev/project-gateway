@@ -25,6 +25,7 @@ namespace ProjectDaydream.Logic
         private InputAction _interactAction;
         private InputAction _cancelAction;
         private InputAction _flashlightAction;
+        private InputAction _inventoryAction;
         
         private void Awake()
         {
@@ -41,6 +42,7 @@ namespace ProjectDaydream.Logic
             _interactAction = InputSystem.actions.FindAction("Interact");
             _cancelAction = InputSystem.actions.FindAction("Cancel");
             _flashlightAction = InputSystem.actions.FindAction("Flashlight");
+            _inventoryAction = InputSystem.actions.FindAction("Inventory");
             
             Cursor.lockState = CursorLockMode.Locked;
 
@@ -99,7 +101,7 @@ namespace ProjectDaydream.Logic
             }
             sleep = Mathf.Clamp(sleep, 0, 100);
             */
-
+            
             HandleCharacterInput();
         }
 

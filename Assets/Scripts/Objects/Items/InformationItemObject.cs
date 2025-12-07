@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProjectDaydream.Objects.Items
 {
-    public class InformationItem : Item, IInteractable
+    public class InformationItemObject : ItemObject, IInteractable
     {
         [SerializeField]
         [TextArea]

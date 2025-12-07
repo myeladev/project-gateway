@@ -1,4 +1,5 @@
 using System.Linq;
+using ProjectDaydream.Logic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -28,6 +29,13 @@ namespace ProjectDaydream.UI
                 PushPanel(pauseUI);
             }
             Debug.Log($"Done with Cancel, there's currently {PanelStack.Count} panels active. Top panel: {(PanelStack.Any() ? PanelStack.Peek() : null )}");
+        }
+
+        public void OpenContainer(ContainerObject containerObject)
+        {
+            PopAllPanels();
+            PushPanel(InventoryUI.Instance);
+            InventoryUI.Instance.ShowContainer(containerObject);
         }
     }
 }

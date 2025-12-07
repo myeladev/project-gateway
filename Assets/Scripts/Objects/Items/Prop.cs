@@ -59,7 +59,12 @@ namespace ProjectDaydream.Objects.Items
         {
             PropSaveData saveData = data.props.FirstOrDefault(m => GetComponent<SaveAgent>().id == m.id);
             if (saveData == null) return;
+            
+            LoadFromSaveData(saveData);
+        }
 
+        protected virtual void LoadFromSaveData(PropSaveData saveData)
+        {
             transform.SetPositionAndRotation(
                 new Vector3(saveData.position[0], saveData.position[1], saveData.position[2]),
                 Quaternion.Euler(saveData.rotation[0], saveData.rotation[1], saveData.rotation[2])
@@ -68,12 +73,17 @@ namespace ProjectDaydream.Objects.Items
 
         public void SaveData(ref GameData data)
         {
-            data.props.Add(new PropSaveData
+            data.props.Add(GetSaveData());
+        }
+        
+        protected PropSaveData GetSaveData()
+        {
+            return new PropSaveData
             {
                 id = GetComponent<SaveAgent>().id,
                 position = new[] { transform.position.x, transform.position.y, transform.position.z },
                 rotation = new[] { transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z },
-            });
+            };
         }
     }
     

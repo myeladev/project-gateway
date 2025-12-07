@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProjectDaydream.Common;
@@ -7,12 +8,9 @@ using UnityEngine;
 
 namespace ProjectDaydream.Objects.Items
 {
-    public class Item : Prop, IInteractable
+    public class ItemObject : Prop, IInteractable
     {
-        public string itemName;
-        [TextArea]
-        public string itemDescription;
-        public float weight;
+        public Item item;
         private List<Collider> _colliders;
         public bool canClean;
 
@@ -38,9 +36,6 @@ namespace ProjectDaydream.Objects.Items
             switch (option)
             {
                 case "Drop":
-                    InventoryController.Instance.RemoveFromInventory(this);
-                    InventoryUI.Instance.Refresh();
-                    
                     var targetPosition = Camera.main.transform.position + Camera.main.transform.forward * 2f;
                     transform.position = targetPosition;
                     _colliders.ForEach(m => m.enabled = true);
@@ -48,7 +43,7 @@ namespace ProjectDaydream.Objects.Items
                     Rigidbody.linearVelocity = Vector3.zero;
                     break;
                 case "Pickup":
-                    var success = InventoryController.Instance.AttemptToAddItem(this);
+                    var success = InventoryController.Instance.TryAddItem(new ContainerGridItem(item));
 
                     if (!success)
                     {

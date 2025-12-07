@@ -31,7 +31,7 @@ namespace ProjectDaydream
         private const float FurniturePlacementRange = 4f;
         private Collider _furniturePlacementMarkerCollider;
         private Prop _holdingProp;
-        private Item _holdingItem;
+        private ItemObject _holdingItemObject;
         private Camera _camera;
         private InputAction _interactAction;
         private InputAction _rotateObjectAction;
@@ -149,6 +149,6 @@ namespace ProjectDaydream
             furniturePlacementMarker.gameObject.SetActive(false);
         }
 
-        public bool CanClean() => _holdingItem?.canClean ?? false;
+        public bool CanClean() => _holdingItemObject?.canClean ?? false;
     }
 }

@@ -4,7 +4,7 @@ using ProjectDaydream.UI;
 
 namespace ProjectDaydream.Objects.Items
 {
-    public class Food : Item, IInteractable
+    public class Food : ItemObject, IInteractable
     {
         public float hungerRestoration;
         
@@ -27,7 +27,7 @@ namespace ProjectDaydream.Objects.Items
                     // TODO: PlayerController.instance.EatFood(this);
                     if (context == InteractContext.Inventory)
                     {
-                        InventoryController.Instance.RemoveFromInventory(this);
+                        //InventoryController.Instance.RemoveFromInventory(this);
                         InventoryUI.Instance.Refresh();
                     }
                     Destroy(gameObject);

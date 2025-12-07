@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using ProjectDaydream.Logic;
 using ProjectDaydream.Objects.Items;
 using TMPro;
@@ -9,28 +6,22 @@ using UnityEngine.InputSystem;
 
 namespace ProjectDaydream.UI
 {
+    /// <summary>
+    /// Controls how the player's UI is displayed on screen.
+    /// </summary>
     public class InventoryUI : UIPanel
     {
-        [SerializeField]
-        private List<InventoryListItemUI> activeItems = new();
-        [SerializeField]
-        private GameObject listItemPrefab;
-        [SerializeField]
-        private Transform itemListContentWindow;
-        [SerializeField]
-        private TextMeshProUGUI itemDetailName;
-        [SerializeField]
-        private TextMeshProUGUI itemDetailDescription;
-        [SerializeField]
-        private GameObject noItemsText;
-        [SerializeField]
-        private TextMeshProUGUI itemContextActions;
-        [SerializeField]
-        private ItemViewerModel itemViewerModel;
-
-        private Item _selectedItem;
+        private ItemObject _hoveredItemObject;
         private InputAction _interactAction;
         private InputAction _dropAction;
+        
+        [SerializeField] private ContainerGridUI pocketGrid;
+        [SerializeField] private ContainerGridUI backpackGrid;
+        /// <summary>
+        /// The grid of the container object that the player is currently interacting with.
+        /// </summary>
+        [SerializeField] private ContainerGridUI focusContainerGrid;
+        [SerializeField] private GameObject focusContainerPanel;
 
         public static InventoryUI Instance;
         
@@ -38,6 +29,8 @@ namespace ProjectDaydream.UI
         {
             base.Awake();
             Instance = this;
+            pocketGrid.Init(InventoryController.Instance.Pockets);
+            backpackGrid.Init(InventoryController.Instance.backpack?.ContainerGrid);
         }
         
         private void Start()
@@ -48,14 +41,37 @@ namespace ProjectDaydream.UI
         
         void Update()
         {
-            if (_selectedItem && GameplayUI.Instance.IsPanelActive(this))
+            if (_hoveredItemObject && GameplayUI.Instance.IsPanelActive(this))
             {
-                IInteractable interactable = _selectedItem;
+                IInteractable interactable = _hoveredItemObject;
                 if (_interactAction.WasPressedThisFrame()) interactable.Interact("Use", InteractContext.Inventory);
                 if (_dropAction.WasPressedThisFrame()) interactable.Interact("Drop", InteractContext.Inventory);
             }
         }
 
+        private Vector2Int? _draggedItemPosition;
+
+        public void StartDragging(ContainerCellUI cell)
+        {
+            _draggedItemPosition = new Vector2Int(cell.x, cell.y);
+            Debug.Log("Start", cell);
+        }
+
+        public void FinishDragging(ContainerCellUI cell)
+        {
+            if (!cell) return;
+            Debug.Log("Finish", cell);
+            if (_draggedItemPosition is null) return;
+            
+            // Invoke the TrySwapItems method from InventoryController
+            cell.ContainerGrid.TrySwapItems(_draggedItemPosition.Value, cell.ContainerGrid, cell.Position);
+
+            // Refresh the UI after the swap
+            Refresh();
+            
+            // Clear the position of the dragged item
+            _draggedItemPosition = null;
+        }
         public override void OnShow()
         {
             Refresh();
@@ -63,27 +79,11 @@ namespace ProjectDaydream.UI
         
         public void Refresh()
         {
-            SelectItem(null); 
-            _selectedItem = null;
-            foreach(Transform child in itemListContentWindow.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            focusContainerPanel.gameObject.SetActive(false);
+            _hoveredItemObject = null;
             
-            var items = InventoryController.Instance.GetItems();
-            foreach (var item in items)
-            {
-                var newListItem = Instantiate(listItemPrefab, itemListContentWindow);
-                newListItem.GetComponent<InventoryListItemUI>().Init(item);
-            }
-            
-            if (items.Any())
-            {
-                // TODO: Change this to a local index variable, so that we keep position in the list when dropping items
-                // We can reset the index to 0 when the UI is reopened
-                SelectItem(items.First());
-            }
-            noItemsText.SetActive(!items.Any());
+            pocketGrid.Refresh();
+            backpackGrid?.Refresh();
         }
 
         protected override void OnHide()
@@ -94,23 +94,11 @@ namespace ProjectDaydream.UI
         {
             
         }
-
-        public void SelectItem(Item item)
+        
+        public void ShowContainer(ContainerObject containerObject)
         {
-            _selectedItem = item;
-            itemDetailName.text = item?.itemName;
-            itemDetailDescription.text = item?.itemDescription;
-            var interactStrings = (item as IInteractable)?.GetInteractOptions(InteractContext.Inventory).ToList();
-            itemContextActions.text = interactStrings?.Any() ?? false ? string.Join(Environment.NewLine, interactStrings) : "";
-
-            if (item)
-            {
-                itemViewerModel.SetItem(item.gameObject);
-            }
-            else
-            {
-                itemViewerModel.ClearItem();
-            }
+            focusContainerGrid.Init(containerObject.ContainerGrid);
+            focusContainerPanel.gameObject.SetActive(true);
         }
     }
 }
