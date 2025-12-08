@@ -6,11 +6,16 @@ namespace ProjectDaydream.Logic
     {
         [Header("Audio Settings")] 
         public AudioSource rainAudioSource;
+        public AudioLowPassFilter lowPassFilter;
         public float fadeSpeed = 2.0f;
         [Range(0, 1)]
         public float shelteredVolume = 0f;
         [Range(0, 1)]
-        public float normalVolume = 0.2f;
+        public float normalVolume = 1f;
+        [Range(1000, 10000)]
+        public float shelteredLowPassFilterCutoff = 1000f;
+        [Range(1000, 10000)]
+        public float normalLowPassFilterCutoff = 10000f;
 
         [Header("Raycast Settings")] public float rayDistance = 300.0f;
         public LayerMask layerMask; // Specify which layers the raycast should interact with.
@@ -22,10 +27,13 @@ namespace ProjectDaydream.Logic
 
             // Fade the volume based on whether the raycast hits an object (indicating shelter)
             var targetVolume = isSheltered ? shelteredVolume : normalVolume;
-            
+            var targetCutoff = isSheltered ? shelteredLowPassFilterCutoff : normalLowPassFilterCutoff;
+
             // Calculate the amount to change per second based on fadeSpeed
             float volumeChangeRate = Mathf.Abs(targetVolume - (isSheltered ? normalVolume : shelteredVolume)) / (isSheltered ? fadeSpeed : fadeSpeed / 3f);
             
+            lowPassFilter.cutoffFrequency = 
+                Mathf.MoveTowards(lowPassFilter.cutoffFrequency, targetCutoff, 6000f * Time.deltaTime);
             rainAudioSource.volume =
                 Mathf.MoveTowards(rainAudioSource.volume, targetVolume, volumeChangeRate * Time.deltaTime);
         }
